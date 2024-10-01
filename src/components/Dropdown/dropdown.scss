@@ -1,0 +1,25 @@
+.dropdown-container {
+    position: relative;
+
+    &.padding-end {
+        padding-right: 20px;
+    }
+
+    small.dropdown-text {
+        color: #99abb4 !important;
+        font-size: 80%;
+        font-weight: 400;
+
+        &.required::after {
+            content: "*";
+            color: red;
+            margin-left: 2px;
+        }
+    }
+
+    .help-text {
+        position: absolute;
+        right: 0;
+        top: 12px;
+    }
+}

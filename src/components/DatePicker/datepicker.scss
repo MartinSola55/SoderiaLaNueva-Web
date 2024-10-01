@@ -1,0 +1,22 @@
+.datepicker-container {
+    small.datepicker-text {
+        color: #99abb4 !important;
+        font-size: 80%;
+        font-weight: 400;
+
+        &.required::after {
+            content: "*";
+            color: red;
+            margin-left: 2px;
+        }
+    }
+}
+
+.rs-input-group {
+    border: 1px solid steelblue;
+}
+
+button.rs-btn {
+    color: #575757 !important;
+    background-color: rgba(160, 200, 165, 0.35) !important;
+}

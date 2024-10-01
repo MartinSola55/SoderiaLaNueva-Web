@@ -1,0 +1,28 @@
+.error-container {
+    background-image: url('/src/assets/not-found.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    .error-body h1 {
+        margin-top: 80px;
+        margin-bottom: 40px;
+        font-size: 210px;
+        font-weight: 900;
+        line-height: 210px;
+    }
+
+    .footer {
+        background-color: #2f2f2f;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        height: 45px;
+        width: 100%;
+    }
+}

@@ -1,0 +1,81 @@
+$theme-colors: (
+    "primary": steelblue,
+    "success": rgb(75, 145, 70),
+    "info": lightblue,
+    "danger": crimson,
+    "warning": darkorange,
+    "gray": #99abb4,
+);
+
+// Input
+$input-color: rgb(100, 100, 100);
+$input-placeholder-color: #99abb4;
+$input-border-color: rgba(70, 131, 180, 0.5);
+$input-focus-color: black;
+$input-focus-border-color: tint-color(steelblue, 50%);
+$input-focus-box-shadow: 0 0 0 0.25rem rgba(70, 130, 180, 0.3);
+
+// Checkbox, switch and radio
+$form-check-input-checked-color: steelblue;
+$form-check-input-checked-bg-color: steelblue;
+$form-check-input-checked-border-color: steelblue;
+
+$form-switch-focus-color: steelblue;
+$form-switch-focus-bg-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$form-switch-focus-color}'/></svg>");
+$form-switch-checked-color: steelblue;
+
+$form-check-input-focus-border: steelblue;
+$form-check-input-focus-box-shadow: 0 0 0 0.2rem rgba(70, 130, 180, 0.3);
+
+// BreadCrumb
+$breadcrumb-divider-color: #6c757d;
+$breadcrumb-active-color: #6c757d;
+$breadcrumb-divider: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='#{$breadcrumb-divider-color}'/></svg>");
+
+// Table
+$table-color: #646f75;
+$table-bg: var(--#{$prefix}body-bg);
+$table-accent-bg: transparent;
+
+$table-striped-color: #646f75;
+$table-striped-bg-factor: .07;
+$table-striped-bg: rgba(steelblue, $table-striped-bg-factor);
+
+$table-hover-color: black;
+$table-hover-bg-factor: .075;
+$table-hover-bg: rgba(0, 160, 0, $table-hover-bg-factor);
+
+$table-border-factor: .2;
+$table-border-width: 1px;
+$table-border-color: rgba(70, 130, 180, 0.35);
+
+a:not([role="button"]) {
+    color: steelblue !important;
+    text-decoration: none;
+
+    &:hover {
+        color: rgb(45, 90, 130) !important;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+th {
+    color: #455a64 !important;
+}
+
+p,
+small {
+    color: #99abb4 !important;
+}
+
+// Datepickers
+:root {
+    --rs-primary-100: rgb(220, 230, 248);
+    --rs-primary-500: steelblue;
+    --rs-primary-700: rgb(45, 90, 130);
+}

@@ -1,0 +1,57 @@
+.input-container {
+    textarea {
+        resize: none !important;
+    }
+
+    input {
+        &.input-borderless {
+            border: none;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0;
+            box-shadow: none;
+
+            &:focus {
+                border-bottom: 2px solid steelblue;
+                box-shadow: none;
+                transition: border 0.1s ease-in-out;
+            }
+
+        }
+
+        &.error {
+            border-color: red;
+        }
+
+    }
+
+    .input-display {
+        background-color: inherit;
+
+        &-success {
+            background-color: rgba(143, 188, 143, 0.5) !important;
+        }
+
+        &-warning {
+            border: 1px solid rgba(255, 140, 0, 0.8);
+            background-color: rgba(255, 140, 0, 0.3) !important;
+        }
+
+        &-error {
+            border: 1px solid rgba(220, 20, 60, 0.8);
+            background-color: rgba(220, 20, 60, 0.3) !important;
+        }
+    }
+
+
+    small.input-text {
+        color: #99abb4 !important;
+        font-size: 80%;
+        font-weight: 400;
+
+        &.required::after {
+            content: "*";
+            color: red;
+            margin-left: 2px;
+        }
+    }
+}

@@ -1,0 +1,28 @@
+.table {
+    td {
+        padding: .6rem !important;
+        vertical-align: middle !important;
+    }
+
+    tbody {
+        tr {
+            &.clickable-row {
+                cursor: pointer;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            td{
+                &.clickable-row {
+                cursor: pointer;
+            }
+            }
+        }
+    }
+}
+
+.page-link {
+    color: black !important;
+}

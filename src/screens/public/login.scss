@@ -1,0 +1,9 @@
+.login-container {
+    min-height: 100vh;
+    background-image: url('/src/assets/background-login-image.svg');
+    background-size: cover;
+
+    .card-container {
+        width: 600px;
+    }
+}

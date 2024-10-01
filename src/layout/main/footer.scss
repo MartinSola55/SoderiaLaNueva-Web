@@ -1,0 +1,18 @@
+.custom-footer {
+    background-color: white;
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 60px;
+    height: 45px;
+
+    footer span {
+        color: #99abb4;
+    }
+
+    @media (max-width: 768px) {
+        left: 0;
+    }
+}

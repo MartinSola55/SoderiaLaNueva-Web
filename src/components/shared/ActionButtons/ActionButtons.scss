@@ -1,0 +1,25 @@
+.action-button {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+    background-color: transparent;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.15);
+        border-radius: 50%;
+    }
+
+    &--delete:hover {
+        background-color: rgba(255, 0, 0, 0.15);
+    }
+
+    &--container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+}

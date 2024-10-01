@@ -1,0 +1,50 @@
+.navbar-container {
+    display: flex;
+    flex-direction: row;
+
+    .main-container {
+        width: calc(100% - 60px);
+        min-height: calc(100vh - 80px);
+        padding-bottom: 60px;
+    }
+
+    .custom-navbar {
+        overflow: visible;
+        width: 60px !important;
+        background: #272c33;
+
+        ul {
+            padding: 0;
+
+            li {
+                cursor: pointer;
+
+                &:hover {
+                    background-color: steelblue;
+                    transition: 0.3s;
+
+                    a {
+                        color: black !important;
+                    }
+                }
+
+                a {
+                    padding: 1rem 0;
+                    display: flex;
+                    justify-content: center;
+                    color: rgb(230, 230, 230) !important;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .custom-navbar {
+            display: none;
+        }
+
+        .main-container {
+            width: 100%;
+        }
+    }
+}

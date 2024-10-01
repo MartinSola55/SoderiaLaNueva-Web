@@ -1,0 +1,10 @@
+.custom-checkbox {
+    cursor: pointer;
+
+}
+
+.form-check {
+    &.disabled {
+        cursor: not-allowed !important;
+    }
+}

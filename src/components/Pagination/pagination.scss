@@ -1,0 +1,28 @@
+.custom-pagination-item {
+    .page-link {
+        min-width: 40px !important;
+        text-align: center;
+        color: black !important;
+
+        &:hover {
+            color: black !important;
+        }
+
+        &:focus {
+            color: black !important;
+            background-color: rgba(160, 200, 165, 0.35);
+            box-shadow: none;
+            border: 1px solid steelblue;
+        }
+
+    }
+
+    &.page-item.active {
+        .page-link {
+            color: white !important;
+            background-color: steelblue;
+            border: 1px solid steelblue;
+        }
+
+    }
+}

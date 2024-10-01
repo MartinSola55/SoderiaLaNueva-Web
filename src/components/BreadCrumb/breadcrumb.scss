@@ -1,0 +1,17 @@
+.breadcrumb-container {
+    padding: 20px 40px !important;
+    margin: 0;
+    background-color: white !important;
+    margin-bottom: 30px !important;
+
+    .breadcrumb {
+        margin-bottom: 0;
+    }
+
+    .breadcrumb-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: rgb(73, 144, 70);
+        margin: 0;
+    }
+}

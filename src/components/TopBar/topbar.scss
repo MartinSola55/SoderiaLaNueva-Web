@@ -1,0 +1,284 @@
+.custom-topbar {
+    box-shadow: 0px 1px 1rem 0px rgba(0, 0, 0, 0.1) !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 80px;
+    background-color: white;
+    position: relative;
+    z-index: 2000;
+
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: 20px;
+
+        .logo {
+            width: 130px;
+            height: 50px;
+        }
+
+        .logo-mini {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    .bars-container {
+        margin-left: 20px;
+        cursor: pointer;
+    }
+
+    .icon-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 30px;
+        width: 40px;
+
+        .show-card svg {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            top: -10px;
+            right: 23px;
+            background-color: crimson;
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 1px 7px;
+        }
+
+        svg {
+            border-radius: 45%;
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-out;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+
+
+            path {
+                fill: #455a64 !important;
+            }
+        }
+    }
+
+    .user-container {
+        visibility: hidden;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: white;
+        position: absolute;
+        min-height: 190px;
+        min-width: 300px;
+        max-width: 500px;
+        right: 30px;
+        top: 80px;
+        z-index: 1000;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: 5px;
+        padding: 20px;
+        transition: visibility 0.15s ease-out, opacity 0.3s ease-out;
+
+        &.show-card {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .user-icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-right: 15px;
+                width: 30%;
+            }
+
+            .user-data {
+                margin-top: auto;
+                margin-bottom: auto;
+                width: 70%;
+                padding-right: 30px;
+            }
+
+            svg path {
+                fill: #455a64 !important;
+            }
+        }
+
+        .logout-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: steelblue;
+            color: white !important;
+            border-radius: 5px;
+            padding: 5px !important;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .perfil-details-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: rgb(143, 162, 188);
+            color: white !important;
+            border-radius: 5px;
+            padding: 5px !important;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .close-dialog {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 3px;
+            cursor: pointer;
+
+            & path {
+                fill: #455a64 !important;
+            }
+
+            &:hover {
+                & path {
+                    fill: black !important;
+                }
+            }
+        }
+    }
+
+    .notifications-container {
+        visibility: hidden;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        position: absolute;
+        min-width: 300px;
+        max-width: 500px;
+        right: 30px;
+        top: 80px;
+        z-index: 1000;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: 5px;
+        padding-top: 15px;
+        transition: visibility 0.15s ease-out, opacity 0.3s ease-out;
+
+        .notifications {
+            overflow-y: auto;
+            max-height: 300px;
+
+            .notification {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+
+                span {
+                    margin-right: 20px;
+                }
+
+                .icon-delete {
+                    margin-right: 10px;
+                    padding: 12px;
+                    border-radius: 50%;
+                    transition: 0.2s ease-out;
+
+                    path {
+                        fill: #455a64 !important;
+                    }
+
+                    &:hover {
+                        background-color: crimson;
+
+                        & path {
+                            fill: white !important;
+                        }
+                    }
+                }
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+
+                p {
+                    margin-bottom: 0;
+                    font-weight: 500;
+                }
+
+                &:last-child {
+                    margin-bottom: 0 !important;
+                }
+            }
+        }
+
+        &.show-card {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .close-dialog {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 3px;
+            cursor: pointer;
+
+            & path {
+                fill: #455a64 !important;
+            }
+
+            &:hover {
+                & path {
+                    fill: black !important;
+                }
+            }
+        }
+    }
+
+
+    @media (max-width: 768px) {
+        .logo {
+            display: none;
+        }
+
+        .logo-mini,
+        .bars-container {
+            display: block;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .logo {
+            display: block;
+        }
+
+        .logo-mini,
+        .bars-container {
+            display: none;
+        }
+    }
+}

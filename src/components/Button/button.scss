@@ -1,0 +1,18 @@
+button {
+    color: white !important;
+
+    &.button-link {
+        border: none !important;
+        background-color: transparent !important;
+        color: steelblue !important;
+    }
+}
+
+a[role="button"].btn {
+    color: white !important;
+    text-decoration: none;
+
+    &:hover {
+        color: white !important;
+    }
+}
