@@ -7,6 +7,13 @@ export const formatOptions = (options) => {
     }));
 };
 
+export const formatRoles = (roles) => {
+    return roles.map((role) => ({
+        value: role.id,
+        label: role.name,
+    }));
+};
+
 export const formatOptionsBoolean = (options) => {
     return options.map((option) => ({
         value: option.value,

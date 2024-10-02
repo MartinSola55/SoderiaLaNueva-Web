@@ -1,12 +1,12 @@
 import { Col, Row } from "react-bootstrap";
-import { BreadCrumb, Button, Card, ChangePasswordModal, DownloadFile, Dropdown, Input, Label, Loader, Spinner } from "../../components";
+import { BreadCrumb, Button, Card, ChangePasswordModal, Dropdown, Input, Label, Loader, Spinner } from "../../components";
 import { useEffect, useRef, useState } from "react";
 import Toast from "../../components/Toast/Toast";
 import API from "../../app/API";
 import { Messages } from "../../constants/Messages";
 import { InitialFormStates } from "../../app/InitialFormStates";
 import { useNavigate, useParams } from "react-router";
-import { Dates, formatOptions } from "../../app/Helpers";
+import { Dates, formatRoles } from "../../app/Helpers";
 import App from "../../app/App";
 
 const initialForm = InitialFormStates.User;
@@ -43,7 +43,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
         if (!viewProfileDetails) {
             API.get('User/GetFormData')
                 .then((r) => {
-                    setRoles(r.data.roles);
+                    setRoles(formatRoles(r.data.roles));
                 })
         }
         if (id) {
@@ -64,7 +64,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
         if (submiting)
             return;
 
-        if (!form.fullName || !form.email || (!form.password && !viewProfileDetails && !isEditing) || (!form.phoneNumber && !viewProfileDetails) || (form.role && !viewProfileDetails)) {
+        if (!form.fullName || !form.email || (!form.password && !viewProfileDetails && !isEditing) || (!form.phoneNumber && !viewProfileDetails) || (!form.role && !viewProfileDetails)) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
@@ -76,7 +76,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
             email: form.email,
             password: form.password,
             phoneNumber: form.phoneNumber,
-            role: form.role,
+            roleId: form.role,
         }
 
         if (id) {
@@ -108,7 +108,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
         modalRef.current.open(id);
     };
 
-    if (!App.isManager() && !viewProfileDetails) {
+    if (!App.isAdmin() && !viewProfileDetails) {
         return navigate('/notAllowed');
     }
 
@@ -124,11 +124,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                             loading ? <Spinner /> : (
                                 <>
                                     <Row className="align-items-center">
-                                        <Col xs={12} md={3} className="pe-3 mb-3 d-flex flex-column">
-                                            <Label>Foto de perfil</Label>
-                                            {form.profileImgKey && <DownloadFile fileKey={form.profileImgKey} url='User/getSignedUrl' />}
-                                        </Col>
-                                        <Col xs={12} md={3} className="pe-3 mb-3">
+                                        <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required>Nombre completo</Label>
                                             <Input
                                                 disabled={isWatching || viewProfileDetails}
@@ -137,32 +133,6 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                                 onChange={(value) => handleInputChange(value, 'fullName')}
                                             />
                                         </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col xs={12} md={(!viewProfileDetails && !isWatching && !isEditing) ? 4 : 6} className="pe-3 mb-3">
-                                            <Label required>Email</Label>
-                                            <Input
-                                                disabled={isWatching || viewProfileDetails}
-                                                type="email"
-                                                placeholder="Email"
-                                                value={form.email}
-                                                onChange={(value) => handleInputChange(value, 'email')}
-                                            />
-                                        </Col>
-                                        {!viewProfileDetails && !id && (
-                                            <Col xs={12} md={4} className="pe-3 mb-3">
-                                                <Label required>Contraseña</Label>
-                                                <Input
-                                                    disabled={isWatching}
-                                                    placeholder="Contraseña"
-                                                    type="password"
-                                                    value={form.password}
-                                                    onChange={(value) => handleInputChange(value, 'password')}
-                                                />
-                                            </Col>
-                                        )}
-                                    </Row>
-                                    <Row>
                                         <Col xs={12} md={4} className="pe-3 mb-3">
                                             <Label required>Número de teléfono</Label>
                                             <Input
@@ -174,25 +144,38 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                                 onChange={(value) => handleInputChange(value, 'phoneNumber')}
                                             />
                                         </Col>
-                                        {!viewProfileDetails ? (
-                                            <Col xs={12} md={4} className="pe-3 mb-3">
-                                                <Label required>Rol</Label>
-                                                <Dropdown
-                                                    disabled={isWatching || viewProfileDetails}
-                                                    placeholder="Seleccione un rol"
-                                                    required
-                                                    isMulti={false}
-                                                    items={roles && formatOptions(roles)}
-                                                    value={form.role}
-                                                    onChange={(option) => handleInputChange(option, 'roles')}
-                                                />
-                                            </Col>
-                                        ) : (
-                                            <Col xs={12} md={4} className="pe-3 mb-3">
-                                                <Label required>Rol</Label>
+                                        <Col xs={12} md={4} className="pe-3 mb-3">
+                                            <Label required>Rol</Label>
+                                            <Dropdown
+                                                disabled={isWatching || viewProfileDetails}
+                                                placeholder="Seleccione un rol"
+                                                required
+                                                items={roles}
+                                                value={form.role}
+                                                onChange={(option) => handleInputChange(option.value, 'role')}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col xs={12} md={6} className="pe-3 mb-3">
+                                            <Label required>Email</Label>
+                                            <Input
+                                                disabled={isWatching || viewProfileDetails}
+                                                type="email"
+                                                placeholder="Email"
+                                                value={form.email}
+                                                onChange={(value) => handleInputChange(value, 'email')}
+                                            />
+                                        </Col>
+                                        {!viewProfileDetails && !id && (
+                                            <Col xs={12} md={6} className="pe-3 mb-3">
+                                                <Label required>Contraseña</Label>
                                                 <Input
-                                                    disabled
-                                                    value={form.role}
+                                                    disabled={isWatching}
+                                                    placeholder="Contraseña"
+                                                    type="password"
+                                                    value={form.password}
+                                                    onChange={(value) => handleInputChange(value, 'password')}
                                                 />
                                             </Col>
                                         )}

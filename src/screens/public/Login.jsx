@@ -53,7 +53,6 @@ const Login = () => {
         LocalStorage.setUserName(data.user.fullName);
         LocalStorage.setUserEmail(data.user.email);
         LocalStorage.setSessionExpiration(data.sessionExpiration);
-        LocalStorage.setUserFavoriteForms(data.user.userFavoriteForms);
     }
 
     return (

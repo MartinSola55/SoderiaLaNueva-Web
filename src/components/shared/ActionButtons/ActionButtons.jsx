@@ -11,7 +11,7 @@ import "./ActionButtons.scss";
 
 const ActionButtons = ({
     row = {},
-    canDelete = undefined,
+    canDelete = App.isAdmin(),
     entity = "entidad",
     female = false,
     onUpdate = () => { }
@@ -19,7 +19,6 @@ const ActionButtons = ({
     const navigate = useNavigate();
     const id = row.id;
     const endpoint = row.endpoint;
-    canDelete = canDelete !== undefined ? canDelete : App.canDeleteWithouthRestrictions();
 
     const modalRef = useRef();
 
