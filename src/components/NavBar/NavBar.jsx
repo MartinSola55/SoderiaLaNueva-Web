@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBoxOpen, faHouse, faUser } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../Tooltip/Tooltip";
 import { Link } from "react-router-dom";
 import App from "../../app/App";
@@ -18,6 +18,12 @@ const NavBar = () => {
                 <hr className="mx-3 my-3" style={{ color: 'white' }} />
                 {App.isAdmin() && (
                     <>
+                        <li className="mt-3">
+                            <Tooltip text="Productos" placement="right">
+                                <Link to="/productos/list"><FontAwesomeIcon icon={faBoxOpen} /></Link>
+                            </Tooltip>
+                        </li>
+                        <hr className="mx-3 my-3" style={{ color: 'white' }} />
                         <li className="mt-3">
                             <Tooltip text="Usuarios" placement="right">
                                 <Link to="/usuarios/list"><FontAwesomeIcon icon={faUser} /></Link>

@@ -11,6 +11,8 @@ const NotAllowed = lazy(() => import('../screens/public/NotAllowed.jsx'));
 const Home = lazy(() => import('../screens/main/Home.jsx'));
 const CreateUser = lazy(() => import('../screens/users/CreateUser.jsx'));
 const UserList = lazy(() => import('../screens/users/UserList.jsx'));
+const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx'));
+const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
 
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
@@ -61,6 +63,42 @@ export const AppRoutes = () => (
                         element={
                             <DefaultLayout>
                                 <CreateUser />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Products */}
+                <Route path='/productos' element={<AdminRoute />} >
+                    <Route
+                        path='/productos/list'
+                        element={
+                            <DefaultLayout>
+                                <ProductList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/productos/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/productos/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/productos/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct />
                             </DefaultLayout>
                         }
                     />

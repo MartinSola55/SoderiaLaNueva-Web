@@ -2,54 +2,49 @@ import { Col, Row } from 'react-bootstrap';
 import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast, } from '../../components';
 import { useEffect, useState } from 'react';
 import API from '../../app/API';
-import { Roles } from '../../constants/Roles';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
+import { formatCurrency } from '../../app/Helpers';
 
 const breadcrumbItems = [
     {
         active: true,
-        label: 'Usuarios',
+        label: 'Productos',
     },
 ];
 
-const UserList = () => {
+const ProductList = () => {
     const columns = [
         {
-            name: 'fullName',
-            text: 'Nombre y apellido',
+            name: 'name',
+            text: 'Nombre',
             textCenter: true,
         },
         {
-            name: 'email',
-            text: 'Email',
+            name: 'price',
+            text: 'Precio',
             textCenter: true,
         },
         {
-            name: 'phoneNumber',
-            text: 'Numero de teléfono',
-            textCenter: true,
-        },
-        {
-            name: 'role',
-            text: 'Rol',
+            name: 'type',
+            text: 'Tipo',
             textCenter: true,
         },
         {
             name: 'createdAt',
-            text: 'Fecha de ingreso',
+            text: 'Fecha de creación',
             textCenter: true,
         },
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity="usuario" {...props} />,
+            component: (props) => <ActionButtons entity="producto" {...props} />,
             className: 'text-center',
         },
     ];
 
-    const sortUserItems = [
+    const sortProductItems = [
         { value: 'createdAt-asc', label: 'Creado - Asc.' },
         { value: 'createdAt-desc', label: 'Creado - Desc.' },
     ];
@@ -84,7 +79,6 @@ const UserList = () => {
     useEffect(() => {
         const rq = {
             page: currentPage,
-            roles: [Roles.Admin, Roles.Dealer],
         };
 
         if (sort && sort.column) {
@@ -95,22 +89,21 @@ const UserList = () => {
             rq.sortDirection = 'desc';
         }
 
-        API.post('User/GetAll', rq).then((r) => {
+        API.post('Product/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
-                r.data.users.map((user) => {
+                r.data.products.map((product) => {
                     return {
-                        id: user.id,
-                        email: user.email,
-                        fullName: user.fullName,
-                        endpoint: 'User',
-                        createdAt: user.createdAt,
-                        role: user.role,
-                        phoneNumber: user.phoneNumber,
+                        id: product.id,
+                        name: product.name,
+                        price: formatCurrency(product.price),
+                        type: product.type,
+                        createdAt: product.createdAt,
+                        endpoint: 'Product',
                     };
                 }),
             );
-            if (r.data.users.length === 0) {
+            if (r.data.products.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
         });
@@ -122,17 +115,17 @@ const UserList = () => {
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Usuarios' />
+            <BreadCrumb items={breadcrumbItems} title='Productos' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
-                        title='Usuarios'
+                        title='Productos'
                         body={
                             <>
                                 <Row>
                                     <Col xs={12} sm={6} lg={3} className='mb-3'>
                                         <TableSort
-                                            items={sortUserItems}
+                                            items={sortProductItems}
                                             onChange={handleSortChange}
                                         />
                                     </Col>
@@ -140,7 +133,7 @@ const UserList = () => {
                                         <Input
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre de usuario o email'
+                                            helpText='Nombre'
                                             value={filter}
                                             onChange={handleFilterRows}
                                         />
@@ -149,11 +142,7 @@ const UserList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={columns}
-                                    rows={rows.filter(
-                                        (r) =>
-                                            r.fullName.toLowerCase().includes(filter) ||
-                                            r.email.toLowerCase().includes(filter),
-                                    )}
+                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter))}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
@@ -164,8 +153,8 @@ const UserList = () => {
                         }
                         footer={
                             <div className='d-flex justify-content-end'>
-                                <Button onClick={() => navigate('/usuarios/new')} variant='primary'>
-                                    Nuevo usuario
+                                <Button onClick={() => navigate('/productos/new')} variant='primary'>
+                                    Nuevo producto
                                 </Button>
                             </div>
                         }
@@ -176,4 +165,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default ProductList;

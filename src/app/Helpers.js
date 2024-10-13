@@ -14,11 +14,28 @@ export const formatRoles = (roles) => {
     }));
 };
 
+export const formatTypes = (types) => {
+    return types.map((t) => ({
+        value: t.id,
+        label: t.type,
+    }));
+};
+
 export const formatOptionsBoolean = (options) => {
     return options.map((option) => ({
         value: option.value,
         label: option.label,
     }));
+};
+
+export const formatCurrency = (value) => {
+    if (value === null)
+        return '';
+
+    return `$${value.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    })}`
 };
 
 export const formatRole = (role) => {
