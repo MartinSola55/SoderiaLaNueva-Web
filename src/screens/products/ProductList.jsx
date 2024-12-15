@@ -1,11 +1,20 @@
 import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast, } from '../../components';
+import {
+    ActionButtons,
+    BreadCrumb,
+    Button,
+    Card,
+    Input,
+    Table,
+    TableSort,
+    Toast,
+} from '../../components';
 import { useEffect, useState } from 'react';
 import API from '../../app/API';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { formatCurrency } from '../../app/Helpers';
+import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
 
 const breadcrumbItems = [
     {
@@ -39,7 +48,7 @@ const ProductList = () => {
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity="producto" {...props} />,
+            component: (props) => <ActionButtons entity='producto' {...props} />,
             className: 'text-center',
         },
     ];
@@ -73,21 +82,10 @@ const ProductList = () => {
         if (!App.isAdmin()) {
             return navigate('/notAllowed');
         }
-
     }, [navigate]);
 
     useEffect(() => {
-        const rq = {
-            page: currentPage,
-        };
-
-        if (sort && sort.column) {
-            rq.columnSort = sort.column;
-            rq.sortDirection = sort.direction;
-        } else {
-            rq.columnSort = 'createdAt';
-            rq.sortDirection = 'desc';
-        }
+        const rq = buildGenericGetAllRq(sort, currentPage);
 
         API.post('Product/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
@@ -153,7 +151,10 @@ const ProductList = () => {
                         }
                         footer={
                             <div className='d-flex justify-content-end'>
-                                <Button onClick={() => navigate('/productos/new')} variant='primary'>
+                                <Button
+                                    onClick={() => navigate('/productos/new')}
+                                    variant='primary'
+                                >
                                     Nuevo producto
                                 </Button>
                             </div>

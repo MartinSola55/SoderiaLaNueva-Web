@@ -55,6 +55,23 @@ export const formatRole = (role) => {
     }
 };
 
+export const buildGenericGetAllRq = (sort, currentPage, dateRange) => {
+    const rq = {
+        page: currentPage,
+    };
+
+    if (sort && sort.column) {
+        rq.columnSort = sort.column;
+        rq.sortDirection = sort.direction;
+    }
+    if (dateRange && dateRange.from && dateRange.to) {
+        rq.dateFrom = Dates.formatDate(dateRange.from);
+        rq.dateTo = Dates.formatDate(dateRange.to);
+    }
+
+    return rq;
+};
+
 export const validateInt = (value) => {
     const parsedValue = parseInt(value);
     return value === null || (!isNaN(parsedValue) && parsedValue);

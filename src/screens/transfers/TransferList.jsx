@@ -11,67 +11,70 @@ import {
 } from '../../components';
 import { useEffect, useState } from 'react';
 import API from '../../app/API';
-import { Roles } from '../../constants/Roles';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { buildGenericGetAllRq } from '../../app/Helpers';
+import { buildGenericGetAllRq, Dates, formatCurrency } from '../../app/Helpers';
+import TableFilters from '../../components/shared/FormFilters/FormFilters';
 
 const breadcrumbItems = [
     {
         active: true,
-        label: 'Usuarios',
+        label: 'Transferencias',
     },
 ];
 
-const UserList = () => {
+const TransferList = () => {
     const columns = [
         {
-            name: 'fullName',
-            text: 'Nombre y apellido',
+            name: 'Clientname',
+            text: 'Cliente',
             textCenter: true,
         },
         {
-            name: 'email',
-            text: 'Email',
+            name: 'dealerName',
+            text: 'Repartidor',
             textCenter: true,
         },
         {
-            name: 'phoneNumber',
-            text: 'Numero de teléfono',
-            textCenter: true,
-        },
-        {
-            name: 'role',
-            text: 'Rol',
+            name: 'amount',
+            text: 'Monto',
             textCenter: true,
         },
         {
             name: 'createdAt',
-            text: 'Fecha de ingreso',
+            text: 'Fecha establecida',
+            textCenter: true,
+        },
+        {
+            name: 'createdAt',
+            text: 'Fecha recibida',
             textCenter: true,
         },
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='usuario' {...props} />,
+            component: (props) => <ActionButtons entity='transferencia' {...props} />,
             className: 'text-center',
         },
     ];
 
-    const sortUserItems = [
+    const sortTransferItems = [
         { value: 'createdAt-asc', label: 'Creado - Asc.' },
         { value: 'createdAt-desc', label: 'Creado - Desc.' },
     ];
 
     const navigate = useNavigate();
 
+    // States
     const [rows, setRows] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
+    const [dateRange, setDateRange] = useState({ from: Dates.getToday(), to: Dates.getToday() });
 
+    // Handlers
     const handleFilterRows = (value) => {
         setFilter(value.toLowerCase());
     };
@@ -84,6 +87,11 @@ const UserList = () => {
         setSort({ column, direction });
     };
 
+    const handleResetFilters = () => {
+        setDateRange(null);
+    };
+
+    // Effects
     useEffect(() => {
         if (!App.isAdmin()) {
             return navigate('/notAllowed');
@@ -93,24 +101,21 @@ const UserList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(sort, currentPage);
 
-        rq.roles = [Roles.Admin, Roles.Dealer];
-
-        API.post('User/GetAll', rq).then((r) => {
+        API.post('Transfer/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
-                r.data.users.map((user) => {
+                r.data.transfers.map((transfer) => {
                     return {
-                        id: user.id,
-                        email: user.email,
-                        fullName: user.fullName,
-                        endpoint: 'User',
-                        createdAt: user.createdAt,
-                        role: user.role,
-                        phoneNumber: user.phoneNumber,
+                        id: transfer.id,
+                        clientName: transfer.clientName,
+                        amount: formatCurrency(transfer.amount),
+                        dealerName: transfer.dealerName,
+                        createdAt: transfer.createdAt,
+                        endpoint: 'Transfer',
                     };
                 }),
             );
-            if (r.data.users.length === 0) {
+            if (r.data.transfers.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
         });
@@ -122,25 +127,30 @@ const UserList = () => {
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Usuarios' />
+            <BreadCrumb items={breadcrumbItems} title='Transferencias' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
-                        title='Usuarios'
+                        title='Transferencias'
                         body={
                             <>
                                 <Row>
                                     <Col xs={12} sm={6} lg={3} className='mb-3'>
                                         <TableSort
-                                            items={sortUserItems}
+                                            items={sortTransferItems}
                                             onChange={handleSortChange}
                                         />
                                     </Col>
+                                    <TableFilters
+                                        dateRange={dateRange}
+                                        onRangeChange={setDateRange}
+                                        onReset={handleResetFilters}
+                                    />
                                     <Col xs={12} className='pe-3 mb-3'>
                                         <Input
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre de usuario o email'
+                                            helpText='Nombre de cliente o repartidor'
                                             value={filter}
                                             onChange={handleFilterRows}
                                         />
@@ -151,8 +161,8 @@ const UserList = () => {
                                     columns={columns}
                                     rows={rows.filter(
                                         (r) =>
-                                            r.fullName.toLowerCase().includes(filter) ||
-                                            r.email.toLowerCase().includes(filter),
+                                            r.clientName.toLowerCase().includes(filter) ||
+                                            r.dealerName.toLowerCase().includes(filter),
                                     )}
                                     pagination={true}
                                     currentPage={currentPage}
@@ -164,8 +174,11 @@ const UserList = () => {
                         }
                         footer={
                             <div className='d-flex justify-content-end'>
-                                <Button onClick={() => navigate('/usuarios/new')} variant='primary'>
-                                    Nuevo usuario
+                                <Button
+                                    onClick={() => navigate('/transferencias/new')}
+                                    variant='primary'
+                                >
+                                    Nueva transferencia
                                 </Button>
                             </div>
                         }
@@ -176,4 +189,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default TransferList;
