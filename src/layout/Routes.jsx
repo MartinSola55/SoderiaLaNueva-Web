@@ -4,6 +4,8 @@ import App from '../app/App.js';
 import { Spinner } from '../components/index.jsx';
 import ExpensesList from '../screens/expenses/ExpenseList.jsx';
 import TransferList from '../screens/transfers/TransferList.jsx';
+import SubscriptionList from '../screens/subscriptions/SubscriptionList.jsx';
+import CreateSubscription from '../screens/subscriptions/CreateSubscription.jsx';
 
 // Lazy loading de componentes
 const Login = lazy(() => import('../screens/public/Login.jsx'));
@@ -114,6 +116,42 @@ export const AppRoutes = () => (
                     />
                 </Route>
 
+                {/* Subscriptions */}
+                <Route path='/abonos' element={<AdminRoute />}>
+                    <Route
+                        path='/abonos/list'
+                        element={
+                            <DefaultLayout>
+                                <SubscriptionList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/abonos/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateSubscription isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/abonos/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateSubscription isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/abonos/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateSubscription />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
                 {/* Gastos */}
                 <Route path='/gastos' element={<AdminRoute />}>
                     <Route
@@ -149,6 +187,7 @@ export const AppRoutes = () => (
                         }
                     />
                 </Route>
+
                 {/* Transferencias */}
                 <Route path='/transferencias' element={<AdminRoute />}>
                     <Route

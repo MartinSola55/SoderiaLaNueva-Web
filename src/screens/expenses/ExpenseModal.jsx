@@ -2,8 +2,9 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { Button, Input, Label, Loader, UserDropdown } from '../../components';
 import { Roles } from '../../constants/Roles';
+import { InitialFormStates } from '../../app/InitialFormStates';
 
-const initialExpense = { dealerId: '', description: '', amount: 0 };
+const initialExpense = InitialFormStates.Expense;
 
 // eslint-disable-next-line react/display-name
 const ExpenseModal = forwardRef(({ disabled }, ref) => {

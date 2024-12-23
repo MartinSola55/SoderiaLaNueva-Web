@@ -21,6 +21,16 @@ export const formatTypes = (types) => {
     }));
 };
 
+export const formatProducts = (prod,disabled) => {
+    return prod.map((p,idx) => ({
+        id: p.id,
+        name: p.name,
+        quantity: 0,
+        index: idx,
+        disabled
+    }));
+};
+
 export const formatOptionsBoolean = (options) => {
     return options.map((option) => ({
         value: option.value,
