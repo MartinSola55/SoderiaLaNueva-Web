@@ -1,16 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    BreadCrumb,
-    Button,
-    Card,
-    ChangePasswordModal,
-    Input,
-    Label,
-    Loader,
-    Spinner,
-    Table,
-} from '../../components';
-import { useEffect, useRef, useState } from 'react';
+import { BreadCrumb, Button, Card, Input, Label, Loader, Spinner, Table } from '../../components';
+import { useEffect, useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
 import { Messages } from '../../constants/Messages';
@@ -24,7 +14,6 @@ const initialForm = InitialFormStates.Subscription;
 const CreateSubscription = ({ isWatching = false }) => {
     const navigate = useNavigate();
 
-    const modalRef = useRef();
     const params = useParams();
     const id = (params && params.id) || null;
 
@@ -40,18 +29,18 @@ const CreateSubscription = ({ isWatching = false }) => {
         },
         {
             active: true,
-            label: isWatching ? 'Ver' : 'Editar',
+            label: isWatching ? 'Ver' : id ? 'Editar' : 'Nuevo',
         },
     ];
 
     const columns = [
         {
-            name: 'name',
-            text: 'Nombre',
+            name: 'description',
+            text: 'Producto',
             textCenter: true,
         },
         {
-            name: 'id',
+            name: 'quantity',
             text: 'Cantidad',
             component: (props) => (
                 <Input
@@ -60,9 +49,9 @@ const CreateSubscription = ({ isWatching = false }) => {
                     minValue={0}
                     placeholder='Cantidad'
                     type='number'
-                    value={form.subscriptionProducts[props.row.index]?.quantity}
+                    value={form.subscriptionProducts.find((p) => p.id === props.row.id)?.quantity}
                     onChange={(value) =>
-                        handleInputChange(value, 'subscriptionProducts', props.row.index)
+                        handleInputChange(value, 'subscriptionProducts', props.row.id)
                     }
                     {...props}
                 />
@@ -73,25 +62,43 @@ const CreateSubscription = ({ isWatching = false }) => {
 
     // Get form data
     useEffect(() => {
-        API.get('Subscription/GetFormData').then((r) => {
+        API.get('Product/GetComboProductTypes').then((r) => {
             setForm((prevForm) => ({
                 ...prevForm,
-                subscriptionProducts: formatProducts(r.data.products, isWatching),
+                subscriptionProducts: formatProducts(r.data.items, isWatching).map((p) => {
+                    const prevProduct = prevForm.subscriptionProducts.find(
+                        (prevProd) => prevProd.id === p.id,
+                    );
+                    if (prevProduct) {
+                        return {
+                            ...p,
+                            quantity: prevProduct.quantity,
+                        };
+                    }
+                    return p;
+                }),
             }));
         });
         if (id) {
             API.get('Subscription/GetOneById', { id }).then((r) => {
-                setForm((prevForm) => {
-                    const newSubscriptionProducts = prevForm.subscriptionProducts.map((x) => {
-                        const product = r.data.subscriptionProducts.find((p) => p.id === x.id);
-                        if (product) return { ...x, quantity: product.quantity };
-                        return { ...x };
-                    });
-                    return {
-                        ...r.data,
-                        subscriptionProducts: [...newSubscriptionProducts],
-                    };
-                });
+                setForm((prevForm) => ({
+                    ...r.data,
+                    subscriptionProducts:
+                        prevForm.subscriptionProducts.length === 0
+                            ? r.data.subscriptionProducts
+                            : prevForm.subscriptionProducts.map((prevProd) => {
+                                  const newProduct = r.data.subscriptionProducts.find(
+                                      (newProd) => newProd.id === prevProd.id,
+                                  );
+                                  if (newProduct) {
+                                      return {
+                                          ...prevProd,
+                                          quantity: newProduct.quantity,
+                                      };
+                                  }
+                                  return prevProd;
+                              }),
+                }));
                 setLoading(false);
             });
         }
@@ -133,8 +140,8 @@ const CreateSubscription = ({ isWatching = false }) => {
             });
     };
 
-    const handleInputChange = (value, field, rowIdx) => {
-        if (!rowIdx && rowIdx != 0) {
+    const handleInputChange = (value, field, rowId) => {
+        if (!rowId) {
             setForm((prevForm) => {
                 return {
                     ...prevForm,
@@ -143,11 +150,10 @@ const CreateSubscription = ({ isWatching = false }) => {
             });
         } else {
             setForm((prevForm) => {
-                const updatedFields = [...prevForm[field]];
-                updatedFields[rowIdx] = {
-                    ...updatedFields[rowIdx],
-                    quantity: parseInt(value),
-                };
+                const updatedFields = prevForm[field].map((x) => {
+                    if (x.id === rowId) return { ...x, quantity: parseInt(value) };
+                    return x;
+                });
                 return {
                     ...prevForm,
                     [field]: updatedFields,
@@ -163,67 +169,70 @@ const CreateSubscription = ({ isWatching = false }) => {
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Abonos' />
-            <ChangePasswordModal ref={modalRef} />
-            <Col xs={12} className='row mx-auto px-2'>
-                <Col xs={6}>
-                    <Card
-                        title='Datos del abono'
-                        body={
-                            loading ? (
-                                <Spinner />
-                            ) : (
-                                <Row className='align-items-center'>
-                                    <Col xs={12} md={6} className='pe-3 mb-3'>
-                                        <Label required>Nombre del abono</Label>
-                                        <Input
-                                            disabled={isWatching}
-                                            placeholder='Nombre'
-                                            value={form.name}
-                                            onChange={(value) => handleInputChange(value, 'name')}
-                                        />
-                                    </Col>
-                                    <Col xs={12} md={6} className='pe-3 mb-3'>
-                                        <Label required>Precio</Label>
-                                        <Input
-                                            disabled={isWatching}
-                                            numeric
-                                            isFloat
-                                            minValue={0}
-                                            placeholder='Precio'
-                                            type='number'
-                                            value={form.price}
-                                            onChange={(value) => handleInputChange(value, 'price')}
-                                        />
-                                    </Col>
-                                </Row>
-                            )
-                        }
-                        footer={
-                            <div className='d-flex justify-content-end'>
-                                <Button
-                                    variant='secondary'
-                                    className='me-2'
-                                    onClick={() => navigate('/abonos/list')}
-                                >
-                                    Volver
-                                </Button>
-                                {!isWatching && (
-                                    <Button onClick={handleSubmit} disabled={submiting}>
-                                        {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
+            <Col xs={12} className='container'>
+                <Row>
+                    <Col xs={6}>
+                        <Card
+                            title='Datos del abono'
+                            body={
+                                loading ? (
+                                    <Spinner />
+                                ) : (
+                                    <Row className='align-items-center'>
+                                        <Col xs={12} md={6} className='pe-3 mb-3'>
+                                            <Label required>Nombre del abono</Label>
+                                            <Input
+                                                disabled={isWatching}
+                                                placeholder='Nombre'
+                                                value={form.name}
+                                                onChange={(value) =>
+                                                    handleInputChange(value, 'name')
+                                                }
+                                            />
+                                        </Col>
+                                        <Col xs={12} md={6} className='pe-3 mb-3'>
+                                            <Label required>Precio</Label>
+                                            <Input
+                                                disabled={isWatching}
+                                                numeric
+                                                isFloat
+                                                minValue={0}
+                                                placeholder='Precio'
+                                                type='number'
+                                                value={form.price}
+                                                onChange={(value) =>
+                                                    handleInputChange(value, 'price')
+                                                }
+                                            />
+                                        </Col>
+                                    </Row>
+                                )
+                            }
+                            footer={
+                                <div className='d-flex justify-content-end'>
+                                    <Button
+                                        variant='secondary'
+                                        className='me-2'
+                                        onClick={() => navigate('/abonos/list')}
+                                    >
+                                        Volver
                                     </Button>
-                                )}
-                            </div>
-                        }
-                    ></Card>
-                </Col>
-                <Col xs={6}>
-                    <Card
-                        title='Asociar productos'
-                        body={
-                            loading ? (
-                                <Spinner />
-                            ) : (
-                                <>
+                                    {!isWatching && (
+                                        <Button onClick={handleSubmit} disabled={submiting}>
+                                            {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
+                                        </Button>
+                                    )}
+                                </div>
+                            }
+                        ></Card>
+                    </Col>
+                    <Col xs={6}>
+                        <Card
+                            title='Asociar productos'
+                            body={
+                                loading ? (
+                                    <Spinner />
+                                ) : (
                                     <Row className='align-items-center'>
                                         <Col xs={12}>
                                             <Table
@@ -232,11 +241,11 @@ const CreateSubscription = ({ isWatching = false }) => {
                                             ></Table>
                                         </Col>
                                     </Row>
-                                </>
-                            )
-                        }
-                    ></Card>
-                </Col>
+                                )
+                            }
+                        ></Card>
+                    </Col>
+                </Row>
             </Col>
         </>
     );

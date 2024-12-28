@@ -25,6 +25,7 @@ import ChangePasswordModal from './shared/ChangePasswordModal/ChangePasswordModa
 import DeleteConfirmationModal from './shared/DeleteConfirmationModal/DeleteConfirmationModal';
 import TableSort from './shared/TableSort/TableSort';
 import UserDropdown from './shared/UserDropdown/UserDropdown';
+import DeliveryDayDropdown from './shared/DeliveryDayDropdown/DeliveryDayDropdown';
 
 export {
     BreadCrumb,
@@ -55,4 +56,5 @@ export {
     DeleteConfirmationModal,
     TableSort,
     UserDropdown,
+    DeliveryDayDropdown,
 };

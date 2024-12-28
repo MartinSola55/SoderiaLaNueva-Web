@@ -10,23 +10,30 @@ export const formatOptions = (options) => {
 export const formatRoles = (roles) => {
     return roles.map((role) => ({
         value: role.id,
-        label: role.name,
+        label: role.description,
     }));
 };
 
 export const formatTypes = (types) => {
     return types.map((t) => ({
         value: t.id,
-        label: t.type,
+        label: t.description,
     }));
 };
 
-export const formatProducts = (prod,disabled) => {
-    return prod.map((p,idx) => ({
+export const formatClients = (clients) => {
+    return clients.map((c) => ({
+        id: c.clientId,
+        name: c.name,
+        address: c.address,
+    }));
+};
+
+export const formatProducts = (prod, disabled = false) => {
+    return prod?.map((p) => ({
         id: p.id,
-        name: p.name,
-        quantity: 0,
-        index: idx,
+        description: p.description,
+        quantity: p.quantity || 0,
         disabled
     }));
 };
@@ -46,6 +53,26 @@ export const formatCurrency = (value) => {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     })}`
+};
+
+export const formatDeliveryDay = (value) => {
+    if (value === null)
+        return '';
+
+    switch (value) {
+        case 1:
+            return 'Lunes';
+        case 2:
+            return 'Martes';
+        case 3:
+            return 'Miercoles';
+        case 4:
+            return 'Jueves';
+        case 5:
+            return 'Viernes';
+        default:
+            return 'Desconocido';
+    }
 };
 
 export const formatRole = (role) => {

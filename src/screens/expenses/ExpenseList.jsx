@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
 import { buildGenericGetAllRq, Dates, formatCurrency } from '../../app/Helpers';
-import TableFilters from '../../components/shared/FormFilters/FormFilters';
+import TableFilters from '../../components/shared/TableFilters/TableFilters';
 import ExpenseModal from './ExpenseModal';
 import ActionButtonsExpense from './ActionButtonsExpenses/ActionButtonsExpense';
 

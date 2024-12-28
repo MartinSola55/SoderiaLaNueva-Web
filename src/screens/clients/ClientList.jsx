@@ -14,62 +14,65 @@ import API from '../../app/API';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { buildGenericGetAllRq, Dates, formatCurrency } from '../../app/Helpers';
-import TableFilters from '../../components/shared/TableFilters/TableFilters';
+import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from '../../app/Helpers';
 
 const breadcrumbItems = [
     {
         active: true,
-        label: 'Transferencias',
+        label: 'Clientes',
     },
 ];
 
-const TransferList = () => {
+const ClientList = () => {
     const columns = [
         {
-            name: 'Clientname',
-            text: 'Cliente',
+            name: 'name',
+            text: 'Nombre',
             textCenter: true,
         },
         {
-            name: 'dealerName',
-            text: 'Repartidor',
+            name: 'address',
+            text: 'Dirección',
             textCenter: true,
         },
         {
-            name: 'amount',
-            text: 'Monto',
+            name: 'phone',
+            text: 'Teléfono',
             textCenter: true,
         },
         {
-            name: 'createdAt',
-            text: 'Fecha realizada',
+            name: 'debt',
+            text: 'Deuda',
+            textCenter: true,
+        },
+        {
+            name: 'deliveryDay',
+            text: 'Reparto',
             textCenter: true,
         },
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='transferencia' {...props} />,
+            component: (props) => <ActionButtons entity='cliente' {...props} />,
             className: 'text-center',
         },
     ];
 
-    const sortTransferItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
+    const sortClientItems = [
+        { value: 'name-asc', label: 'Nombre - Asc.' },
+        { value: 'name-desc', label: 'Nombre - Desc.' },
+        { value: 'createdAt-asc', label: 'Fecha de creación - Asc.' },
+        { value: 'createdAt-desc', label: 'Fecha de creación - Desc.' },
     ];
 
     const navigate = useNavigate();
 
-    // States
     const [rows, setRows] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
-    const [dateRange, setDateRange] = useState({ from: Dates.getToday(), to: Dates.getToday() });
 
-    // Handlers
     const handleFilterRows = (value) => {
         setFilter(value.toLowerCase());
     };
@@ -82,11 +85,6 @@ const TransferList = () => {
         setSort({ column, direction });
     };
 
-    const handleResetFilters = () => {
-        setDateRange(null);
-    };
-
-    // Effects
     useEffect(() => {
         if (!App.isAdmin()) {
             return navigate('/notAllowed');
@@ -96,21 +94,22 @@ const TransferList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(sort, currentPage);
 
-        API.post('Transfer/GetAll', rq).then((r) => {
+        API.post('Client/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
-                r.data.transfers.map((transfer) => {
+                r.data.clients.map((client) => {
                     return {
-                        id: transfer.id,
-                        clientName: transfer.clientName,
-                        amount: formatCurrency(transfer.amount),
-                        dealerName: transfer.dealerName,
-                        createdAt: transfer.createdAt,
-                        endpoint: 'Transfer',
+                        id: client.id,
+                        name: client.name,
+                        address: client.address,
+                        phone: client.phone,
+                        debt: formatCurrency(client.debt),
+                        deliveryDay: formatDeliveryDay(client.deliveryDay),
+                        endpoint: 'Client',
                     };
                 }),
             );
-            if (r.data.transfers.length === 0) {
+            if (r.data.clients.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
         });
@@ -122,30 +121,25 @@ const TransferList = () => {
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Transferencias' />
+            <BreadCrumb items={breadcrumbItems} title='Clientes' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
-                        title='Transferencias'
+                        title='Clientes'
                         body={
                             <>
                                 <Row>
                                     <Col xs={12} sm={6} lg={3} className='mb-3'>
                                         <TableSort
-                                            items={sortTransferItems}
+                                            items={sortClientItems}
                                             onChange={handleSortChange}
                                         />
                                     </Col>
-                                    <TableFilters
-                                        dateRange={dateRange}
-                                        onRangeChange={setDateRange}
-                                        onReset={handleResetFilters}
-                                    />
                                     <Col xs={12} className='pe-3 mb-3'>
                                         <Input
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre de cliente o repartidor'
+                                            helpText='Nombre'
                                             value={filter}
                                             onChange={handleFilterRows}
                                         />
@@ -154,11 +148,7 @@ const TransferList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={columns}
-                                    rows={rows.filter(
-                                        (r) =>
-                                            r.clientName.toLowerCase().includes(filter) ||
-                                            r.dealerName.toLowerCase().includes(filter),
-                                    )}
+                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter))}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
@@ -169,11 +159,8 @@ const TransferList = () => {
                         }
                         footer={
                             <div className='d-flex justify-content-end'>
-                                <Button
-                                    onClick={() => navigate('/transferencias/new')}
-                                    variant='primary'
-                                >
-                                    Nueva transferencia
+                                <Button onClick={() => navigate('/clientes/new')} variant='primary'>
+                                    Nuevo Cliente
                                 </Button>
                             </div>
                         }
@@ -184,4 +171,4 @@ const TransferList = () => {
     );
 };
 
-export default TransferList;
+export default ClientList;

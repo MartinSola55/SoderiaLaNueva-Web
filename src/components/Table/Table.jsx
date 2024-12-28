@@ -76,7 +76,7 @@ const Table = ({
                                         return (
                                             <td
                                                 key={j}
-                                                className={`${col.className} ${isClickable}`}
+                                                className={`${col.className || ''} ${isClickable}`}
                                                 onClick={(e) =>
                                                     handleColClick(e, col.clickableColumn)
                                                 }

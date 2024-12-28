@@ -18,4 +18,27 @@ export class InitialFormStates {
         price: '',
         subscriptionProducts: [],
     };
+
+    static Client = {
+        name: '',
+        address: '',
+        phone: '',
+        observations: '',
+        dealerId: null,
+        deliveryDay: null,
+        hasInvoice: false,
+        invoiceType: null,
+        taxCondition: null,
+        cuit: '',
+        products: []
+    };
+
+    static StaticRoute = {
+        dealerId : null, 
+        deliveryDay: 1, 
+    }
+
+    static Route = {
+        clients: [], 
+    }
 }

@@ -6,6 +6,11 @@ import ExpensesList from '../screens/expenses/ExpenseList.jsx';
 import TransferList from '../screens/transfers/TransferList.jsx';
 import SubscriptionList from '../screens/subscriptions/SubscriptionList.jsx';
 import CreateSubscription from '../screens/subscriptions/CreateSubscription.jsx';
+import CreateClient from '../screens/clients/CreateClient.jsx';
+import ClientList from '../screens/clients/ClientList.jsx';
+import RouteList from '../screens/routes/RouteList.jsx';
+import CreateRoute from '../screens/routes/CreateRoute.jsx';
+import EditRoute from '../screens/routes/EditRoute.jsx';
 
 // Lazy loading de componentes
 const Login = lazy(() => import('../screens/public/Login.jsx'));
@@ -147,6 +152,78 @@ export const AppRoutes = () => (
                         element={
                             <DefaultLayout>
                                 <CreateSubscription />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Clients */}
+                <Route path='/clientes' element={<AdminRoute />}>
+                    <Route
+                        path='/clientes/list'
+                        element={
+                            <DefaultLayout>
+                                <ClientList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/clientes/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateClient isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/clientes/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateClient isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/clientes/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateClient />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Routes */}
+                <Route path='/planillas' element={<AdminRoute />}>
+                    <Route
+                        path='/planillas/list'
+                        element={
+                            <DefaultLayout>
+                                <RouteList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/planillas/:id'
+                        element={
+                            <DefaultLayout>
+                                <EditRoute isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/planillas/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <EditRoute isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/planillas/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateRoute />
                             </DefaultLayout>
                         }
                     />
