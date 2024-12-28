@@ -38,6 +38,14 @@ export const formatProducts = (prod, disabled = false) => {
     }));
 };
 
+export const formatSubscriptions = (subscripstions, disabled = false) => {
+    return subscripstions?.map((s) => ({
+        id: s.id,
+        description: s.description,
+        disabled
+    }));
+};
+
 export const formatOptionsBoolean = (options) => {
     return options.map((option) => ({
         value: option.value,

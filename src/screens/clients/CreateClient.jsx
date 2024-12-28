@@ -20,12 +20,12 @@ import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
-import { formatOptions, formatProducts } from '../../app/Helpers';
+import { formatOptions, formatProducts, formatSubscriptions } from '../../app/Helpers';
 import { Roles } from '../../constants/Roles';
 
 const initialForm = InitialFormStates.Client;
 
-const CreateClient = ({ isWatching = false }) => {
+const CreateClient = ({ isWatching = false, isEditing = false }) => {
     const navigate = useNavigate();
 
     const params = useParams();
@@ -36,6 +36,8 @@ const CreateClient = ({ isWatching = false }) => {
     const [loading, setLoading] = useState(id ? true : false);
     const [invoiceTypes, setInvoiceTypes] = useState([]);
     const [taxConditions, setTaxConditions] = useState([]);
+    const [subscriptions, setSubscriptions] = useState([]);
+    const [products, setProducts] = useState([]);
 
     const breadcrumbItems = [
         {
@@ -49,7 +51,7 @@ const CreateClient = ({ isWatching = false }) => {
         },
     ];
 
-    const columns = [
+    const productsColumns = [
         {
             name: 'description',
             text: 'Producto',
@@ -66,9 +68,47 @@ const CreateClient = ({ isWatching = false }) => {
                     placeholder='Cantidad'
                     type='number'
                     value={form.products.find((p) => p.id === props.row.id)?.quantity}
-                    onChange={(value) => handleInputChange(value, 'products', props.row.id)}
+                    onChange={(value) =>
+                        handleInputChange(
+                            form.products.map((p) => {
+                                if (p.id === props.row.id)
+                                    return {
+                                        ...p,
+                                        quantity: value,
+                                    };
+                                return p;
+                            }),
+                            'products',
+                        )
+                    }
                     {...props}
                 />
+            ),
+            className: 'text-center',
+        },
+    ];
+    const subscriptionsColumns = [
+        {
+            name: 'description',
+            text: 'Abono',
+            textCenter: true,
+        },
+        {
+            name: 'asociate',
+            text: 'Asociar',
+            component: (props) => (
+                <CheckBox
+                    onChange={(value) => {
+                        handleInputChange(
+                            value
+                                ? [...form.subscriptions, props.row.id]
+                                : form.subscriptions.filter((s) => s !== props.row.id),
+                            'subscriptions',
+                        );
+                    }}
+                    checked={props.row.asociated}
+                    {...props}
+                ></CheckBox>
             ),
             className: 'text-center',
         },
@@ -81,55 +121,32 @@ const CreateClient = ({ isWatching = false }) => {
             setTaxConditions(formatOptions(r.data.taxConditions));
         });
         API.get('Product/GetComboProducts').then((r) => {
-            setForm((prevForm) => ({
-                ...prevForm,
-                products: formatProducts(r.data.items, isWatching).map((prod) => {
-                    const prevProduct = prevForm.products.find(
-                        (prevProd) => prevProd.id === prod.id,
-                    );
-                    if (prevProduct) {
-                        return {
-                            ...prod,
-                            quantity: prevProduct.quantity,
-                        };
-                    }
-                    return prod;
-                }),
-            }));
+            setProducts(formatProducts(r.data.items, isWatching));
         });
         if (id) {
             API.get('Client/GetOneById', { id }).then((r) => {
-                setForm((prevForm) => ({
+                setForm(() => ({
                     ...r.data,
-                    products:
-                        prevForm.products.length === 0
-                            ? r.data.products
-                            : prevForm.products.map((prevProd) => {
-                                  const newProduct = r.data.products.find(
-                                      (newProd) => newProd.id === prevProd.id,
-                                  );
-                                  if (newProduct) {
-                                      return {
-                                          ...prevProd,
-                                          quantity: newProduct.quantity,
-                                      };
-                                  }
-                                  return prevProd;
-                              }),
                 }));
                 setLoading(false);
             });
         }
-    }, [id, isWatching]);
+        if (isWatching || isEditing) {
+            API.get('Subscription/GetComboSubscriptions').then((r) => {
+                setSubscriptions(formatSubscriptions(r.data.items, isWatching));
+            });
+        }
+    }, [id, isEditing, isWatching]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (url) => {
         if (submiting) return;
 
         if (
-            !form.name ||
-            !form.address ||
-            !form.phone ||
-            (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))
+            !url &&
+            (!form.name ||
+                !form.address ||
+                !form.phone ||
+                (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit)))
         ) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
@@ -137,31 +154,48 @@ const CreateClient = ({ isWatching = false }) => {
 
         setSubmiting(true);
 
-        const rq = {
-            name: form.name,
-            address: form.address,
-            phone: form.phone,
-            observations: form.observations,
-            dealerId: form.dealerId,
-            deliveryDay: form.deliveryDay,
-            hasInvoice: form.hasInvoice,
-            invoiceType: form.invoiceType,
-            taxCondition: form.taxCondition,
-            cuit: form.cuit,
-            products: form.products.map((x) => ({
-                productId: x.id,
-                quantity: x.quantity,
-            })),
-        };
+        let rq;
 
-        if (id) {
-            rq.id = id;
+        if (!url) {
+            rq = {
+                name: form.name,
+                address: form.address,
+                phone: form.phone,
+                observations: form.observations,
+                dealerId: form.dealerId,
+                deliveryDay: form.deliveryDay,
+                hasInvoice: form.hasInvoice,
+                invoiceType: form.invoiceType,
+                taxCondition: form.taxCondition,
+                cuit: form.cuit,
+                products: form.products.map((x) => ({
+                    productId: x.id,
+                    quantity: x.quantity,
+                })),
+
+                if(id) {
+                    rq.id = id;
+                },
+            };
+        } else if (url === 'UpdateClientProducts') {
+            rq = {
+                clientId: id,
+                products: form.products.map((x) => ({
+                    productId: x.id,
+                    quantity: x.quantity,
+                })),
+            };
+        } else if (url === 'UpdateClientSubscriptions') {
+            rq = {
+                clientId: id,
+                subscriptionIds: form.subscriptions,
+            };
         }
 
-        API.post(`Client/${id ? 'Update' : 'Create'}`, rq)
+        API.post(`Client/${url || (id ? 'UpdateClientData' : 'Create')}`, rq)
             .then((r) => {
                 Toast.success(r.message);
-                navigate('/clientes/list');
+                if (!url) navigate('/clientes/list');
             })
             .catch((r) => {
                 Toast.error(r.error.message);
@@ -171,26 +205,39 @@ const CreateClient = ({ isWatching = false }) => {
             });
     };
 
-    const handleInputChange = (value, field, rowId) => {
-        if (!rowId)
-            setForm((prevForm) => {
+    const handleInputChange = (value, field) => {
+        setForm((prevForm) => {
+            return {
+                ...prevForm,
+                [field]: value,
+            };
+        });
+    };
+
+    const getSubscriptionRows = () => {
+        return subscriptions.map((s) => {
+            const formSubscription = form.subscriptions.find(
+                (id) => parseInt(id) === parseInt(s.id),
+            );
+            if (formSubscription)
                 return {
-                    ...prevForm,
-                    [field]: value,
+                    ...s,
+                    asociated: true,
                 };
-            });
-        else {
-            setForm((prevForm) => {
-                const updatedFields = prevForm[field].map((x) => {
-                    if (x.id === rowId) return { ...x, quantity: parseInt(value) };
-                    return x;
-                });
+            return s;
+        });
+    };
+
+    const getProductRows = () => {
+        return products.map((s) => {
+            const formProduct = form.products.find((fp) => parseInt(fp.id) === parseInt(s.id));
+            if (formProduct)
                 return {
-                    ...prevForm,
-                    [field]: updatedFields,
+                    ...s,
+                    quantity: formProduct.quantity,
                 };
-            });
-        }
+            return s;
+        });
     };
 
     if (!App.isAdmin()) {
@@ -286,6 +333,7 @@ const CreateClient = ({ isWatching = false }) => {
                                                     label='¿Quiere factura?'
                                                     name='hasInvoice'
                                                     value={form.hasInvoice}
+                                                    checked={form.hasInvoice}
                                                     onChange={(value) =>
                                                         handleInputChange(value, 'hasInvoice')
                                                     }
@@ -362,35 +410,75 @@ const CreateClient = ({ isWatching = false }) => {
                             }
                         ></Card>
                     </Col>
+                    {(isEditing || isWatching) && (
+                        <Col sm={6}>
+                            <Card
+                                title={isWatching ? 'Productos asociados' : 'Asociar productos'}
+                                body={
+                                    loading ? (
+                                        <Spinner />
+                                    ) : (
+                                        <Row className='align-items-center'>
+                                            <Col xs={12}>
+                                                <Table
+                                                    rows={getProductRows()}
+                                                    columns={productsColumns}
+                                                ></Table>
+                                            </Col>
+                                        </Row>
+                                    )
+                                }
+                                footer={
+                                    <div className='d-flex justify-content-end'>
+                                        {!isWatching && (
+                                            <Button
+                                                onClick={() => handleSubmit('UpdateClientProducts')}
+                                                disabled={submiting}
+                                            >
+                                                {submiting ? (
+                                                    <Loader />
+                                                ) : id ? (
+                                                    'Actualizar'
+                                                ) : (
+                                                    'Crear'
+                                                )}
+                                            </Button>
+                                        )}
+                                    </div>
+                                }
+                            ></Card>
+                        </Col>
+                    )}
                     <Col sm={6}>
                         <Card
-                            title='Asociar productos'
+                            title={isWatching ? 'Abonos asociados' : 'Asociar abonos'}
                             body={
                                 loading ? (
                                     <Spinner />
                                 ) : (
                                     <Row className='align-items-center'>
                                         <Col xs={12}>
-                                            <Table rows={form.products} columns={columns}></Table>
+                                            <Table
+                                                rows={getSubscriptionRows()}
+                                                columns={subscriptionsColumns}
+                                            ></Table>
                                         </Col>
                                     </Row>
                                 )
                             }
-                        ></Card>
-                    </Col>
-                    <Col sm={6}>
-                        <Card
-                            title='Asociar abonos'
-                            body={
-                                loading ? (
-                                    <Spinner />
-                                ) : (
-                                    <Row className='align-items-center'>
-                                        <Col xs={12}>
-                                            <Table rows={form.products} columns={columns}></Table>
-                                        </Col>
-                                    </Row>
-                                )
+                            footer={
+                                <div className='d-flex justify-content-end'>
+                                    {!isWatching && (
+                                        <Button
+                                            onClick={() =>
+                                                handleSubmit('UpdateClientSubscriptions')
+                                            }
+                                            disabled={submiting}
+                                        >
+                                            {submiting ? <Loader /> : 'Actualizar'}
+                                        </Button>
+                                    )}
+                                </div>
                             }
                         ></Card>
                     </Col>

@@ -120,7 +120,7 @@ const ExpenseList = () => {
             });
     };
 
-    const handleOpenExpense = (id, title) => {
+    const handleOpenExpense = (id, isWatching) => {
         const row = rows.find((r) => r.id === id);
         const expense = {
             dealerId: row.dealerId,
@@ -131,7 +131,8 @@ const ExpenseList = () => {
             (v) => handleSubmit(v, id),
             () => {},
             expense,
-            title,
+            isWatching ? 'Ver' : 'Editar',
+            isWatching,
         );
     };
 
@@ -176,6 +177,7 @@ const ExpenseList = () => {
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Gastos' />
+            <ExpenseModal disabled={submiting} ref={expenseRef} />
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -227,13 +229,13 @@ const ExpenseList = () => {
                                             () => {},
                                             null,
                                             'Agregar',
+                                            false,
                                         );
                                     }}
                                     variant='primary'
                                 >
                                     Nuevo gasto
                                 </Button>
-                                <ExpenseModal disabled={submiting} ref={expenseRef} />
                             </div>
                         }
                     ></Card>

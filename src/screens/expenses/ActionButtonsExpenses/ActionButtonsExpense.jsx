@@ -21,11 +21,11 @@ const ActionButtonsExpense = ({
     const modalRef = useRef();
 
     const handleWatch = () => {
-        onEdit(id, 'Ver');
+        onEdit(id, true);
     };
 
     const handleEdit = () => {
-        onEdit(id, 'Editar');
+        onEdit(id, false);
     };
 
     const handleDelete = () => {

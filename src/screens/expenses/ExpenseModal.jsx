@@ -12,6 +12,7 @@ const ExpenseModal = forwardRef(({ disabled }, ref) => {
     const [callbacks, setCallbacks] = useState(null);
     const [expense, setExpense] = useState(initialExpense);
     const [title, setTitle] = useState(initialExpense);
+    const [isWatching, setIsWatching] = useState(false);
 
     useImperativeHandle(ref, () => ({
         open,
@@ -19,7 +20,7 @@ const ExpenseModal = forwardRef(({ disabled }, ref) => {
         confirm,
     }));
 
-    const open = (onConfirm, onClose, expense, title) => {
+    const open = (onConfirm, onClose, expense, title, isWatching) => {
         setCallbacks({
             onConfirm,
             onClose,
@@ -27,6 +28,7 @@ const ExpenseModal = forwardRef(({ disabled }, ref) => {
         setIsVisible(true);
         setExpense(expense || initialExpense);
         setTitle(title);
+        setIsWatching(isWatching);
     };
 
     const close = () => {
@@ -51,8 +53,6 @@ const ExpenseModal = forwardRef(({ disabled }, ref) => {
     };
 
     if (!isVisible) return null;
-
-    const isWatching = title == 'Ver';
 
     return (
         <Modal

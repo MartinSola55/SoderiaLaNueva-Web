@@ -20,7 +20,6 @@ const Table = ({
     const handlePageChange = (page) => {
         onPageChange(page);
     };
-
     const handleCellClick = (e) => {
         e.stopPropagation();
         onCellClick(e);

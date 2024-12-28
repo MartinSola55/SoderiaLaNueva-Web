@@ -30,7 +30,8 @@ export class InitialFormStates {
         invoiceType: null,
         taxCondition: null,
         cuit: '',
-        products: []
+        products: [],
+        subscriptions: [],
     };
 
     static StaticRoute = {
