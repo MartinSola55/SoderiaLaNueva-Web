@@ -135,7 +135,7 @@ const TransferList = () => {
                         body={
                             <>
                                 <Row>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
+                                    <Col xs={12} md={6} className='mb-3'>
                                         <TableSort
                                             items={sortTransferItems}
                                             onChange={handleSortChange}
@@ -146,7 +146,7 @@ const TransferList = () => {
                                         onRangeChange={setDateRange}
                                         onReset={handleResetFilters}
                                     />
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} md={6} className='pe-3 mb-3'>
                                         <Input
                                             borderless
                                             placeholder='Buscar'

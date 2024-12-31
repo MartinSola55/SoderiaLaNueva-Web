@@ -17,6 +17,7 @@ const CreateUser = lazy(() => import('../screens/users/CreateUser.jsx'));
 const UserList = lazy(() => import('../screens/users/UserList.jsx'));
 const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx'));
 const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
+const CreateTransfer = lazy(() => import('../screens/transfers/CreateTransfer.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 
@@ -218,7 +219,7 @@ export const AppRoutes = () => (
                         path='/transferencias/new'
                         element={
                             <DefaultLayout>
-                                <CreateProduct />
+                                <CreateTransfer />
                             </DefaultLayout>
                         }
                     />

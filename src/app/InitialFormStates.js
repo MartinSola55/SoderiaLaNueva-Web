@@ -18,4 +18,8 @@ export class InitialFormStates {
         price: '',
         subscriptionProducts: [],
     };
+
+    static Transfer = {
+        amount: 0,
+    }
 }

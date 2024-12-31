@@ -15,7 +15,7 @@ const TableFilters = ({ dateRange = null, onRangeChange = () => {}, onReset = ()
 
     return (
         <>
-            <Col xs={12} sm={6} lg={3} className='mb-3 d-flex flex-row'>
+            <Col xs={12} md={6} className='mb-3 d-flex flex-row'>
                 <DateRangePicker
                     value={dateRange ? [dateRange.from, dateRange.to] : null}
                     placeholder='Filtrar por fechas'

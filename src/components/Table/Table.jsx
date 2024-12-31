@@ -26,10 +26,10 @@ const Table = ({
         onCellClick(e);
     };
 
-    const handleRowClick = (e) => {
+    const handleRowClick = (row) => {
         if (!clickable) return;
 
-        onRowClick(e, e.target.closest('tr').getAttribute('data-href'));
+        onRowClick(row);
     };
 
     const handleColClick = (e, canClick) => {
@@ -65,7 +65,7 @@ const Table = ({
                                 style={row.style}
                                 data-href={row.href}
                                 className={`${clickable ? 'clickable-row' : ''} ${row.isSelected ? 'selected-row' : ''}`}
-                                onClick={handleRowClick}
+                                onClick={() => handleRowClick(row)}
                             >
                                 {columns &&
                                     columns.map((col, j) => {
