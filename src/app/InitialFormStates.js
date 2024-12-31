@@ -6,4 +6,20 @@ export class InitialFormStates {
         phoneNumber: '',
         role: null,
     };
+
+    static Expense = { 
+        dealerId: '',
+        description: '',
+        amount: 0 
+    };
+
+    static Subscription = {
+        name: '',
+        price: '',
+        subscriptionProducts: [],
+    };
+
+    static Transfer = {
+        amount: 0,
+    }
 }

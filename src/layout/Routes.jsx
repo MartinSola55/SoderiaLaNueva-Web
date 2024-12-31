@@ -2,6 +2,10 @@ import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { lazy, Suspense } from 'react';
 import App from '../app/App.js';
 import { Spinner } from '../components/index.jsx';
+import ExpensesList from '../screens/expenses/ExpenseList.jsx';
+import TransferList from '../screens/transfers/TransferList.jsx';
+import SubscriptionList from '../screens/subscriptions/SubscriptionList.jsx';
+import CreateSubscription from '../screens/subscriptions/CreateSubscription.jsx';
 
 // Lazy loading de componentes
 const Login = lazy(() => import('../screens/public/Login.jsx'));
@@ -13,14 +17,23 @@ const CreateUser = lazy(() => import('../screens/users/CreateUser.jsx'));
 const UserList = lazy(() => import('../screens/users/UserList.jsx'));
 const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx'));
 const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
-
+const CreateTransfer = lazy(() => import('../screens/transfers/CreateTransfer.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to='/notAllowed' />);
 
 export const AppRoutes = () => (
-    <Suspense fallback={<div className='d-flex justify-content-center align-items-center' style={{ minHeight: '100vh', backgroundColor: '#eef5f9' }}><Spinner></Spinner></div>}>
+    <Suspense
+        fallback={
+            <div
+                className='d-flex justify-content-center align-items-center'
+                style={{ minHeight: '100vh', backgroundColor: '#eef5f9' }}
+            >
+                <Spinner></Spinner>
+            </div>
+        }
+    >
         <Routes>
             <Route path='/' element={<PrivateRoute />}>
                 <Route
@@ -33,7 +46,7 @@ export const AppRoutes = () => (
                 />
 
                 {/* Users */}
-                <Route path='/usuarios' element={<AdminRoute />} >
+                <Route path='/usuarios' element={<AdminRoute />}>
                     <Route
                         path='/usuarios/list'
                         element={
@@ -69,7 +82,7 @@ export const AppRoutes = () => (
                 </Route>
 
                 {/* Products */}
-                <Route path='/productos' element={<AdminRoute />} >
+                <Route path='/productos' element={<AdminRoute />}>
                     <Route
                         path='/productos/list'
                         element={
@@ -99,6 +112,114 @@ export const AppRoutes = () => (
                         element={
                             <DefaultLayout>
                                 <CreateProduct />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Subscriptions */}
+                <Route path='/abonos' element={<AdminRoute />}>
+                    <Route
+                        path='/abonos/list'
+                        element={
+                            <DefaultLayout>
+                                <SubscriptionList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/abonos/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateSubscription isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/abonos/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateSubscription isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/abonos/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateSubscription />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Gastos */}
+                <Route path='/gastos' element={<AdminRoute />}>
+                    <Route
+                        path='/gastos/list'
+                        element={
+                            <DefaultLayout>
+                                <ExpensesList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/gastos/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/gastos/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/gastos/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Transferencias */}
+                <Route path='/transferencias' element={<AdminRoute />}>
+                    <Route
+                        path='/transferencias/list'
+                        element={
+                            <DefaultLayout>
+                                <TransferList />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/transferencias/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct isWatching />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/transferencias/edit/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateProduct isEditing />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/transferencias/new'
+                        element={
+                            <DefaultLayout>
+                                <CreateTransfer />
                             </DefaultLayout>
                         }
                     />

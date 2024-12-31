@@ -11,57 +11,52 @@ import {
 } from '../../components';
 import { useEffect, useState } from 'react';
 import API from '../../app/API';
-import { Roles } from '../../constants/Roles';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { buildGenericGetAllRq } from '../../app/Helpers';
+import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
+import { SubscriptionProduct } from './SubscriptionProduct';
 
 const breadcrumbItems = [
     {
         active: true,
-        label: 'Usuarios',
+        label: 'Abonos',
     },
 ];
 
-const UserList = () => {
+const SubscriptionList = () => {
     const columns = [
         {
-            name: 'fullName',
-            text: 'Nombre y apellido',
+            name: 'name',
+            text: 'Nombre',
             textCenter: true,
         },
         {
-            name: 'email',
-            text: 'Email',
+            name: 'price',
+            text: 'Precio',
             textCenter: true,
         },
         {
-            name: 'phoneNumber',
-            text: 'Numero de teléfono',
-            textCenter: true,
-        },
-        {
-            name: 'role',
-            text: 'Rol',
-            textCenter: true,
-        },
-        {
-            name: 'createdAt',
-            text: 'Fecha de ingreso',
+            name: 'products',
+            text: 'Productos',
+            component: (props) => (
+                <SubscriptionProduct products={props.row.subscriptionProductItems} />
+            ),
             textCenter: true,
         },
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='usuario' {...props} />,
+            component: (props) => <ActionButtons entity='abono' {...props} />,
             className: 'text-center',
         },
     ];
 
-    const sortUserItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
+    const sortProductItems = [
+        { value: 'price-asc', label: 'Precio - Asc.' },
+        { value: 'price-desc', label: 'Precio - Desc.' },
+        { value: 'name-asc', label: 'Nombre - Asc.' },
+        { value: 'name-desc', label: 'Nombre - Desc.' },
     ];
 
     const navigate = useNavigate();
@@ -93,24 +88,20 @@ const UserList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(sort, currentPage);
 
-        rq.roles = [Roles.Admin, Roles.Dealer];
-
-        API.post('User/GetAll', rq).then((r) => {
+        API.post('Subscription/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
-                r.data.users.map((user) => {
+                r.data.subscriptions.map((subscription) => {
                     return {
-                        id: user.id,
-                        email: user.email,
-                        fullName: user.fullName,
-                        endpoint: 'User',
-                        createdAt: user.createdAt,
-                        role: user.role,
-                        phoneNumber: user.phoneNumber,
+                        id: subscription.id,
+                        name: subscription.name,
+                        price: formatCurrency(subscription.price),
+                        subscriptionProductItems: subscription.subscriptionProductItems,
+                        endpoint: 'Subscription',
                     };
                 }),
             );
-            if (r.data.users.length === 0) {
+            if (r.data.subscriptions.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
         });
@@ -122,17 +113,17 @@ const UserList = () => {
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Usuarios' />
+            <BreadCrumb items={breadcrumbItems} title='Abonos' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
-                        title='Usuarios'
+                        title='Abonos'
                         body={
                             <>
                                 <Row>
                                     <Col xs={12} sm={6} lg={3} className='mb-3'>
                                         <TableSort
-                                            items={sortUserItems}
+                                            items={sortProductItems}
                                             onChange={handleSortChange}
                                         />
                                     </Col>
@@ -140,7 +131,7 @@ const UserList = () => {
                                         <Input
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre de usuario o email'
+                                            helpText='Nombre'
                                             value={filter}
                                             onChange={handleFilterRows}
                                         />
@@ -149,11 +140,7 @@ const UserList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={columns}
-                                    rows={rows.filter(
-                                        (r) =>
-                                            r.fullName.toLowerCase().includes(filter) ||
-                                            r.email.toLowerCase().includes(filter),
-                                    )}
+                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter))}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
@@ -164,8 +151,8 @@ const UserList = () => {
                         }
                         footer={
                             <div className='d-flex justify-content-end'>
-                                <Button onClick={() => navigate('/usuarios/new')} variant='primary'>
-                                    Nuevo usuario
+                                <Button onClick={() => navigate('/abonos/new')} variant='primary'>
+                                    Nuevo abono
                                 </Button>
                             </div>
                         }
@@ -176,4 +163,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default SubscriptionList;

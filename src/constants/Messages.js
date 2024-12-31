@@ -10,5 +10,6 @@ export class Messages {
     static Validation = {
         requiredFields: 'Por favor, complete todos los campos obligatorios.',
         passwordCheck: 'La contraseña debe ser la misma en ambos campos',
+        amountGreaterThanZero: 'El monto debe ser superior a cero.',
     };
 }

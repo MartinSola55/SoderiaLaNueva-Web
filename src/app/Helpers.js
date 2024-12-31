@@ -21,6 +21,16 @@ export const formatTypes = (types) => {
     }));
 };
 
+export const formatProducts = (prod,disabled) => {
+    return prod.map((p,idx) => ({
+        id: p.id,
+        name: p.name,
+        quantity: 0,
+        index: idx,
+        disabled
+    }));
+};
+
 export const formatOptionsBoolean = (options) => {
     return options.map((option) => ({
         value: option.value,
@@ -53,6 +63,23 @@ export const formatRole = (role) => {
         default:
             return 'Desconocido';
     }
+};
+
+export const buildGenericGetAllRq = (sort, currentPage, dateRange) => {
+    const rq = {
+        page: currentPage,
+    };
+
+    if (sort && sort.column) {
+        rq.columnSort = sort.column;
+        rq.sortDirection = sort.direction;
+    }
+    if (dateRange && dateRange.from && dateRange.to) {
+        rq.dateFrom = Dates.formatDate(dateRange.from);
+        rq.dateTo = Dates.formatDate(dateRange.to);
+    }
+
+    return rq;
 };
 
 export const validateInt = (value) => {

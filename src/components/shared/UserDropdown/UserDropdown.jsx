@@ -9,8 +9,8 @@ const UserDropdown = ({
     disabled = false,
     placeholder = 'Seleccione un usuario',
     isMulti = false,
-    role = null,
-    onChange = () => { },
+    roles = [],
+    onChange = () => {},
 }) => {
     const [items, setItems] = useState(null);
 
@@ -18,16 +18,15 @@ const UserDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.post('user/GetAll', { role }).then((r) => {
+        API.post('user/GetAll', { roles }).then((r) => {
             setItems(
                 r.data.users.map((user) => ({
                     value: user.id,
                     label: `${user.fullName} - ${user.role}`,
-                }))
+                })),
             );
         });
-    }, [role, items]);
-
+    }, [roles, items]);
 
     const handleChange = (options) => {
         const value = isMulti ? options : options.value;
@@ -55,7 +54,7 @@ const MemoDropdown = memo(UserDropdown, (prevProps, nextProps) => {
         nextProps.required === prevProps.required &&
         nextProps.placeholder === prevProps.placeholder &&
         nextProps.isMulti === prevProps.isMulti &&
-        JSON.stringify(nextProps.role) === JSON.stringify(prevProps.role)
+        JSON.stringify(nextProps.roles) === JSON.stringify(prevProps.roles)
     );
 });
 
