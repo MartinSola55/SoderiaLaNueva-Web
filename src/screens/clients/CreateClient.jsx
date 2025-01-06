@@ -39,6 +39,26 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
     const [subscriptions, setSubscriptions] = useState([]);
     const [products, setProducts] = useState([]);
 
+    const subscriptionsRows = subscriptions.map((s) => {
+        const formSubscription = form.subscriptions.find((id) => parseInt(id) === parseInt(s.id));
+        if (formSubscription)
+            return {
+                ...s,
+                asociated: true,
+            };
+        return s;
+    });
+
+    const productRows = products.map((p) => {
+        const formProduct = form.products.find((fp) => parseInt(fp.id) === parseInt(p.id));
+        if (formProduct)
+            return {
+                ...p,
+                quantity: formProduct.quantity,
+            };
+        return p;
+    });
+
     const breadcrumbItems = [
         {
             active: false,
@@ -67,10 +87,10 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                     minValue={0}
                     placeholder='Cantidad'
                     type='number'
-                    value={form.products.find((p) => p.id === props.row.id)?.quantity}
+                    value={props.row.quantity}
                     onChange={(value) =>
                         handleInputChange(
-                            form.products.map((p) => {
+                            productRows.map((p) => {
                                 if (p.id === props.row.id)
                                     return {
                                         ...p,
@@ -87,6 +107,7 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
             className: 'text-center',
         },
     ];
+
     const subscriptionsColumns = [
         {
             name: 'description',
@@ -113,6 +134,41 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
             className: 'text-center',
         },
     ];
+    const salesHistoryColumns = [
+        {
+            name: 'date',
+            text: 'Fecha',
+            textCenter: true,
+        },
+        {
+            name: 'type',
+            text: 'Tipo',
+            textCenter: true,
+        },
+    ];
+
+    const productHistoryColumns = [
+        {
+            name: 'name',
+            text: 'Nombre',
+            textCenter: true,
+        },
+        {
+            name: 'type',
+            text: 'Tipo',
+            textCenter: true,
+        },
+        {
+            name: 'quantity',
+            text: 'Cantidad',
+            textCenter: true,
+        },
+        {
+            name: 'date',
+            text: 'Fecha',
+            textCenter: true,
+        },
+    ];
 
     // Get form data
     useEffect(() => {
@@ -122,6 +178,12 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
         });
         API.get('Product/GetComboProducts').then((r) => {
             setProducts(formatProducts(r.data.items, isWatching));
+            if (!id) {
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    products: formatProducts(r.data.items),
+                }));
+            }
         });
         if (id) {
             API.get('Client/GetOneById', { id }).then((r) => {
@@ -130,13 +192,11 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                 }));
                 setLoading(false);
             });
-        }
-        if (isWatching || isEditing) {
             API.get('Subscription/GetComboSubscriptions').then((r) => {
                 setSubscriptions(formatSubscriptions(r.data.items, isWatching));
             });
         }
-    }, [id, isEditing, isWatching]);
+    }, [id, isWatching]);
 
     const handleSubmit = async (url) => {
         if (submiting) return;
@@ -211,32 +271,6 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                 ...prevForm,
                 [field]: value,
             };
-        });
-    };
-
-    const getSubscriptionRows = () => {
-        return subscriptions.map((s) => {
-            const formSubscription = form.subscriptions.find(
-                (id) => parseInt(id) === parseInt(s.id),
-            );
-            if (formSubscription)
-                return {
-                    ...s,
-                    asociated: true,
-                };
-            return s;
-        });
-    };
-
-    const getProductRows = () => {
-        return products.map((s) => {
-            const formProduct = form.products.find((fp) => parseInt(fp.id) === parseInt(s.id));
-            if (formProduct)
-                return {
-                    ...s,
-                    quantity: formProduct.quantity,
-                };
-            return s;
         });
     };
 
@@ -412,46 +446,42 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                     </Col>
                     {(isEditing || isWatching) && (
                         <Col sm={6}>
-                            <Card
-                                title={isWatching ? 'Productos asociados' : 'Asociar productos'}
-                                body={
-                                    loading ? (
-                                        <Spinner />
-                                    ) : (
-                                        <Row className='align-items-center'>
-                                            <Col xs={12}>
-                                                <Table
-                                                    rows={getProductRows()}
-                                                    columns={productsColumns}
-                                                ></Table>
-                                            </Col>
-                                        </Row>
-                                    )
-                                }
-                                footer={
-                                    <div className='d-flex justify-content-end'>
-                                        {!isWatching && (
-                                            <Button
-                                                onClick={() => handleSubmit('UpdateClientProducts')}
-                                                disabled={submiting}
-                                            >
-                                                {submiting ? (
-                                                    <Loader />
-                                                ) : id ? (
-                                                    'Actualizar'
-                                                ) : (
-                                                    'Crear'
-                                                )}
-                                            </Button>
-                                        )}
-                                    </div>
-                                }
-                            ></Card>
+                            <Row>
+                                <Col xs={12}>
+                                    <Card
+                                        title={'Historial de bajadas y transferencias'}
+                                        body={
+                                            <Table
+                                                rows={form.salesHistory}
+                                                columns={salesHistoryColumns}
+                                            ></Table>
+                                        }
+                                    ></Card>
+                                </Col>
+                                <Col xs={12}>
+                                    <Card
+                                        title={'Historial de envases'}
+                                        body={
+                                            <Table
+                                                rows={form.productHistory}
+                                                columns={productHistoryColumns}
+                                            ></Table>
+                                        }
+                                    ></Card>
+                                </Col>
+                                {/* <Col xs={12}>
+                                   
+                                    <Table
+                                        rows={form.productHistory}
+                                        columns={productHistoryColumns}
+                                    ></Table>
+                                </Col> */}
+                            </Row>
                         </Col>
                     )}
                     <Col sm={6}>
                         <Card
-                            title={isWatching ? 'Abonos asociados' : 'Asociar abonos'}
+                            title={isWatching ? 'Productos asociados' : 'Asociar productos'}
                             body={
                                 loading ? (
                                     <Spinner />
@@ -459,8 +489,8 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                                     <Row className='align-items-center'>
                                         <Col xs={12}>
                                             <Table
-                                                rows={getSubscriptionRows()}
-                                                columns={subscriptionsColumns}
+                                                rows={productRows}
+                                                columns={productsColumns}
                                             ></Table>
                                         </Col>
                                     </Row>
@@ -470,18 +500,51 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                                 <div className='d-flex justify-content-end'>
                                     {!isWatching && (
                                         <Button
-                                            onClick={() =>
-                                                handleSubmit('UpdateClientSubscriptions')
-                                            }
+                                            onClick={() => handleSubmit('UpdateClientProducts')}
                                             disabled={submiting}
                                         >
-                                            {submiting ? <Loader /> : 'Actualizar'}
+                                            {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
                                         </Button>
                                     )}
                                 </div>
                             }
                         ></Card>
                     </Col>
+                    {(isEditing || isWatching) && (
+                        <Col sm={6}>
+                            <Card
+                                title={isWatching ? 'Abonos asociados' : 'Asociar abonos'}
+                                body={
+                                    loading ? (
+                                        <Spinner />
+                                    ) : (
+                                        <Row className='align-items-center'>
+                                            <Col xs={12}>
+                                                <Table
+                                                    rows={subscriptionsRows}
+                                                    columns={subscriptionsColumns}
+                                                ></Table>
+                                            </Col>
+                                        </Row>
+                                    )
+                                }
+                                footer={
+                                    <div className='d-flex justify-content-end'>
+                                        {!isWatching && (
+                                            <Button
+                                                onClick={() =>
+                                                    handleSubmit('UpdateClientSubscriptions')
+                                                }
+                                                disabled={submiting}
+                                            >
+                                                {submiting ? <Loader /> : 'Actualizar'}
+                                            </Button>
+                                        )}
+                                    </div>
+                                }
+                            ></Card>
+                        </Col>
+                    )}
                 </Row>
             </Col>
         </>

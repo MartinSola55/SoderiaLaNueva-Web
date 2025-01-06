@@ -4,10 +4,10 @@ import {
     Button,
     Card,
     ChangePasswordModal,
-    Dropdown,
     Input,
     Label,
     Loader,
+    RolesDropdown,
     Spinner,
 } from '../../components';
 import { useEffect, useRef, useState } from 'react';
@@ -16,7 +16,7 @@ import API from '../../app/API';
 import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
-import { Dates, formatRoles } from '../../app/Helpers';
+import { Dates } from '../../app/Helpers';
 import App from '../../app/App';
 
 const initialForm = InitialFormStates.User;
@@ -31,7 +31,6 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
     const [form, setForm] = useState(initialForm);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
-    const [roles, setRoles] = useState([]);
 
     const breadcrumbItems = [
         {
@@ -50,11 +49,6 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 
     // Get form data
     useEffect(() => {
-        if (!viewProfileDetails) {
-            API.get('User/GetComboRoles').then((r) => {
-                setRoles(formatRoles(r.data.items));
-            });
-        }
         if (id) {
             API.get('User/GetOneById', { id }).then((r) => {
                 setForm(() => ({
@@ -164,14 +158,13 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                         </Col>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
                                             <Label required>Rol</Label>
-                                            <Dropdown
+                                            <RolesDropdown
                                                 disabled={isWatching || viewProfileDetails}
                                                 placeholder='Seleccione un rol'
                                                 required
-                                                items={roles}
                                                 value={form.role}
-                                                onChange={(option) =>
-                                                    handleInputChange(option.value, 'role')
+                                                onChange={(value) =>
+                                                    handleInputChange(value, 'role')
                                                 }
                                             />
                                         </Col>

@@ -99,10 +99,7 @@ const ClientList = () => {
             setRows(
                 r.data.clients.map((client) => {
                     return {
-                        id: client.id,
-                        name: client.name,
-                        address: client.address,
-                        phone: client.phone,
+                        ...client,
                         debt: formatCurrency(client.debt),
                         deliveryDay: formatDeliveryDay(client.deliveryDay),
                         endpoint: 'Client',

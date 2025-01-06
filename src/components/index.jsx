@@ -26,6 +26,8 @@ import DeleteConfirmationModal from './shared/DeleteConfirmationModal/DeleteConf
 import TableSort from './shared/TableSort/TableSort';
 import UserDropdown from './shared/UserDropdown/UserDropdown';
 import DeliveryDayDropdown from './shared/DeliveryDayDropdown/DeliveryDayDropdown';
+import ProductTypesDropdown from './shared/ProductTypesDropdown/ProductTypesDropdown';
+import RolesDropdown from './shared/RolesDropdown/RolesDropdown';
 
 export {
     BreadCrumb,
@@ -57,4 +59,6 @@ export {
     TableSort,
     UserDropdown,
     DeliveryDayDropdown,
+    ProductTypesDropdown,
+    RolesDropdown,
 };

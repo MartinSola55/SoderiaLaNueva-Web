@@ -7,17 +7,18 @@ export const formatOptions = (options) => {
     }));
 };
 
-export const formatRoles = (roles) => {
-    return roles.map((role) => ({
-        value: role.id,
-        label: role.description,
+export const formatComboItems  = (items) => {
+    return items.map((item) => ({
+        value: item.id,
+        label: item.description,
     }));
 };
 
-export const formatTypes = (types) => {
-    return types.map((t) => ({
-        value: t.id,
-        label: t.description,
+export const formatSubscriptions = (subscripstions, disabled = false) => {
+    return subscripstions?.map((s) => ({
+        id: s.id,
+        description: s.description,
+        disabled
     }));
 };
 
@@ -34,14 +35,6 @@ export const formatProducts = (prod, disabled = false) => {
         id: p.id,
         description: p.description,
         quantity: p.quantity || 0,
-        disabled
-    }));
-};
-
-export const formatSubscriptions = (subscripstions, disabled = false) => {
-    return subscripstions?.map((s) => ({
-        id: s.id,
-        description: s.description,
         disabled
     }));
 };

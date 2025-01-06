@@ -3,10 +3,10 @@ import {
     BreadCrumb,
     Button,
     Card,
-    Dropdown,
     Input,
     Label,
     Loader,
+    ProductTypesDropdown,
     Spinner,
 } from '../../components';
 import { useEffect, useState } from 'react';
@@ -16,7 +16,6 @@ import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
-import { formatTypes } from '../../app/Helpers';
 
 const initialForm = InitialFormStates.User;
 
@@ -29,7 +28,6 @@ const CreateProduct = ({ isWatching = false }) => {
     const [form, setForm] = useState(initialForm);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
-    const [types, setTypes] = useState([]);
 
     const breadcrumbItems = [
         {
@@ -45,9 +43,6 @@ const CreateProduct = ({ isWatching = false }) => {
 
     // Get form data
     useEffect(() => {
-        API.get('Product/GetComboProductTypes').then((r) => {
-            setTypes(formatTypes(r.data.items));
-        });
         if (id) {
             API.get('Product/GetOneById', { id }).then((r) => {
                 setForm(() => ({
@@ -144,14 +139,13 @@ const CreateProduct = ({ isWatching = false }) => {
                                         </Col>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
                                             <Label required>Tipo</Label>
-                                            <Dropdown
+                                            <ProductTypesDropdown
                                                 disabled={isWatching}
                                                 placeholder='Seleccione un tipo'
                                                 required
-                                                items={types}
                                                 value={form.typeId}
-                                                onChange={(option) =>
-                                                    handleInputChange(option.value, 'typeId')
+                                                onChange={(value) =>
+                                                    handleInputChange(value, 'typeId')
                                                 }
                                             />
                                         </Col>

@@ -20,6 +20,19 @@ const CreateSubscription = ({ isWatching = false }) => {
     const [form, setForm] = useState(initialForm);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
+    const [productTypes, setProductTypes] = useState([]);
+
+    const productTypeRows = productTypes.map((py) => {
+        const formProduct = form.subscriptionProducts.find(
+            (sp) => parseInt(sp.id) === parseInt(py.id),
+        );
+        if (formProduct)
+            return {
+                ...py,
+                quantity: formProduct.quantity,
+            };
+        return py;
+    });
 
     const breadcrumbItems = [
         {
@@ -49,9 +62,19 @@ const CreateSubscription = ({ isWatching = false }) => {
                     minValue={0}
                     placeholder='Cantidad'
                     type='number'
-                    value={form.subscriptionProducts.find((p) => p.id === props.row.id)?.quantity}
+                    value={props.row.quantity}
                     onChange={(value) =>
-                        handleInputChange(value, 'subscriptionProducts', props.row.id)
+                        handleInputChange(
+                            productTypeRows.map((sp) => {
+                                if (sp.id === props.row.id)
+                                    return {
+                                        ...sp,
+                                        quantity: value,
+                                    };
+                                return sp;
+                            }),
+                            'subscriptionProducts',
+                        )
                     }
                     {...props}
                 />
@@ -63,41 +86,18 @@ const CreateSubscription = ({ isWatching = false }) => {
     // Get form data
     useEffect(() => {
         API.get('Product/GetComboProductTypes').then((r) => {
-            setForm((prevForm) => ({
-                ...prevForm,
-                subscriptionProducts: formatProducts(r.data.items, isWatching).map((p) => {
-                    const prevProduct = prevForm.subscriptionProducts.find(
-                        (prevProd) => prevProd.id === p.id,
-                    );
-                    if (prevProduct) {
-                        return {
-                            ...p,
-                            quantity: prevProduct.quantity,
-                        };
-                    }
-                    return p;
-                }),
-            }));
+            setProductTypes(formatProducts(r.data.items, isWatching));
+            if (!id) {
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    subscriptionProducts: formatProducts(r.data.items),
+                }));
+            }
         });
         if (id) {
             API.get('Subscription/GetOneById', { id }).then((r) => {
-                setForm((prevForm) => ({
+                setForm(() => ({
                     ...r.data,
-                    subscriptionProducts:
-                        prevForm.subscriptionProducts.length === 0
-                            ? r.data.subscriptionProducts
-                            : prevForm.subscriptionProducts.map((prevProd) => {
-                                  const newProduct = r.data.subscriptionProducts.find(
-                                      (newProd) => newProd.id === prevProd.id,
-                                  );
-                                  if (newProduct) {
-                                      return {
-                                          ...prevProd,
-                                          quantity: newProduct.quantity,
-                                      };
-                                  }
-                                  return prevProd;
-                              }),
                 }));
                 setLoading(false);
             });
@@ -140,26 +140,13 @@ const CreateSubscription = ({ isWatching = false }) => {
             });
     };
 
-    const handleInputChange = (value, field, rowId) => {
-        if (!rowId) {
-            setForm((prevForm) => {
-                return {
-                    ...prevForm,
-                    [field]: value,
-                };
-            });
-        } else {
-            setForm((prevForm) => {
-                const updatedFields = prevForm[field].map((x) => {
-                    if (x.id === rowId) return { ...x, quantity: parseInt(value) };
-                    return x;
-                });
-                return {
-                    ...prevForm,
-                    [field]: updatedFields,
-                };
-            });
-        }
+    const handleInputChange = (value, field) => {
+        setForm((prevForm) => {
+            return {
+                ...prevForm,
+                [field]: value,
+            };
+        });
     };
 
     if (!App.isAdmin()) {
@@ -235,10 +222,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                                 ) : (
                                     <Row className='align-items-center'>
                                         <Col xs={12}>
-                                            <Table
-                                                rows={form.subscriptionProducts}
-                                                columns={columns}
-                                            ></Table>
+                                            <Table rows={productTypeRows} columns={columns}></Table>
                                         </Col>
                                     </Row>
                                 )
