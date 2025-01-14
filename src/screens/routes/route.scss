@@ -1,0 +1,50 @@
+.btn-last-products {
+    padding: 5px;
+    border: 0;
+    width: '45px';
+    box-shadow: none; 
+    border-radius: 50% !important;
+    transition: box-shadow 0.3s ease; 
+}
+
+.btn-last-products:hover {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) ; 
+}
+
+.timeline {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+.timeline-line {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background-color: #ddd;
+  z-index: 1;
+}
+  
+.timeline-icon {
+  position: relative;
+  z-index: 2;
+  background-color: #6c757d;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+  
+.route-info-card-icon {
+  @media (min-width: 1200px) and (max-width: 1325px) {
+    width: 47px !important;
+    height: 47px !important;
+  }
+
+} 

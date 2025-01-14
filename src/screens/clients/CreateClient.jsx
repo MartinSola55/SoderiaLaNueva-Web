@@ -78,7 +78,7 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
             textCenter: true,
         },
         {
-            name: 'quiantity',
+            name: 'quantity',
             text: 'Cantidad',
             component: (props) => (
                 <Input
@@ -198,7 +198,7 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
         }
     }, [id, isWatching]);
 
-    const handleSubmit = async (url) => {
+    const handleSubmit = async (url = '') => {
         if (submiting) return;
 
         if (
@@ -232,11 +232,10 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                     productId: x.id,
                     quantity: x.quantity,
                 })),
-
-                if(id) {
-                    rq.id = id;
-                },
             };
+            if (id) {
+                rq.id = id;
+            }
         } else if (url === 'UpdateClientProducts') {
             rq = {
                 clientId: id,
@@ -354,11 +353,8 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                                                     disabled={isWatching}
                                                     placeholder='Seleccione un día de reparto'
                                                     value={form.deliveryDay}
-                                                    onChange={(option) =>
-                                                        handleInputChange(
-                                                            option.value,
-                                                            'deliveryDay',
-                                                        )
+                                                    onChange={(value) =>
+                                                        handleInputChange(value, 'deliveryDay')
                                                     }
                                                 />
                                             </Col>
@@ -366,6 +362,7 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                                                 <CheckBox
                                                     label='¿Quiere factura?'
                                                     name='hasInvoice'
+                                                    disabled={isWatching}
                                                     value={form.hasInvoice}
                                                     checked={form.hasInvoice}
                                                     onChange={(value) =>
@@ -436,7 +433,10 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                                         Volver
                                     </Button>
                                     {!isWatching && (
-                                        <Button onClick={handleSubmit} disabled={submiting}>
+                                        <Button
+                                            onClick={() => handleSubmit('')}
+                                            disabled={submiting}
+                                        >
                                             {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
                                         </Button>
                                     )}
@@ -498,12 +498,12 @@ const CreateClient = ({ isWatching = false, isEditing = false }) => {
                             }
                             footer={
                                 <div className='d-flex justify-content-end'>
-                                    {!isWatching && (
+                                    {!isWatching && id && (
                                         <Button
                                             onClick={() => handleSubmit('UpdateClientProducts')}
                                             disabled={submiting}
                                         >
-                                            {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
+                                            {submiting ? <Loader /> : 'Actualizar'}
                                         </Button>
                                     )}
                                 </div>

@@ -9,7 +9,7 @@ import App from '../../app/App';
 import { formatClients, formatDeliveryDay } from '../../app/Helpers';
 import { faArrowLeft, faRemove } from '@fortawesome/free-solid-svg-icons';
 
-const initialForm = InitialFormStates.Route;
+const initialForm = InitialFormStates.RouteClients;
 
 const EditRoute = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -53,10 +53,12 @@ const EditRoute = ({ isWatching = false }) => {
             text: 'Quitar',
             component: (props) => (
                 <Button
-                    className='bg-danger p-0 border-0'
                     icon={faRemove}
-                    onClick={() => handleChangeRow(props.row, true)}
                     disabled={isWatching}
+                    className='bg-danger p-0 border-0'
+                    style={{ minWidth: '35px' }}
+                    iconStyle={{ marginLeft: '0px' }}
+                    onClick={() => handleChangeRow(props.row, true)}
                 ></Button>
             ),
             className: 'text-center',
@@ -69,9 +71,11 @@ const EditRoute = ({ isWatching = false }) => {
             text: 'Seleccionar',
             component: (props) => (
                 <Button
-                    onClick={() => handleChangeRow(props.row, false)}
-                    className='p-0'
                     icon={faArrowLeft}
+                    className='p-0'
+                    style={{ minWidth: '35px' }}
+                    iconStyle={{ marginLeft: '0px' }}
+                    onClick={() => handleChangeRow(props.row, false)}
                 ></Button>
             ),
             className: 'text-center',
@@ -175,8 +179,7 @@ const EditRoute = ({ isWatching = false }) => {
                     {!isWatching && (
                         <>
                             <h3>
-                                Agregar cliente al reparto del {formatDeliveryDay(form.deliveryDay)}{' '}
-                                de {form.dealer}
+                                {`Agregar cliente al reparto del ${formatDeliveryDay(form.deliveryDay)} de ${form.dealer}`}
                             </h3>
                             <hr />
                         </>

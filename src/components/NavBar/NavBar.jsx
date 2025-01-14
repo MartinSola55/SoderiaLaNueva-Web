@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBank,
     faBoxOpen,
+    faClipboard,
     faHouse,
     faMoneyBill,
     faSheetPlastic,
@@ -13,7 +14,6 @@ import { Link } from 'react-router-dom';
 import App from '../../app/App';
 
 import './navbar.scss';
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 
 const NavBar = () => {
     return (
@@ -56,7 +56,7 @@ const NavBar = () => {
                         <li className='mt-3'>
                             <Tooltip text='Planillas' placement='right'>
                                 <Link to='/planillas/list'>
-                                    <FontAwesomeIcon icon={faPaperPlane} />
+                                    <FontAwesomeIcon icon={faClipboard} />
                                 </Link>
                             </Tooltip>
                         </li>

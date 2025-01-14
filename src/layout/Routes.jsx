@@ -11,6 +11,9 @@ import ClientList from '../screens/clients/ClientList.jsx';
 import RouteList from '../screens/routes/RouteList.jsx';
 import CreateRoute from '../screens/routes/CreateRoute.jsx';
 import EditRoute from '../screens/routes/EditRoute.jsx';
+import RouteDetails from '../screens/routes/StaticRouteDetails.jsx';
+import DynamicRouteDetails from '../screens/routes/DynamicRouteDetails.jsx';
+import CreateCart from '../screens/carts/CreateCart.jsx';
 
 // Lazy loading de componentes
 const Login = lazy(() => import('../screens/public/Login.jsx'));
@@ -203,11 +206,28 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
-                    <Route
+                    {/* // TODO */}
+                    {/* <Route
                         path='/planillas/:id'
                         element={
                             <DefaultLayout>
                                 <EditRoute isWatching />
+                            </DefaultLayout>
+                        }
+                    /> */}
+                    <Route
+                        path='/planillas/:id'
+                        element={
+                            <DefaultLayout>
+                                <RouteDetails />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/planillas/abierta/:id'
+                        element={
+                            <DefaultLayout>
+                                <DynamicRouteDetails />
                             </DefaultLayout>
                         }
                     />
@@ -224,6 +244,18 @@ export const AppRoutes = () => (
                         element={
                             <DefaultLayout>
                                 <CreateRoute />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Carts */}
+                <Route path='/bajadas' element={<AdminRoute />}>
+                    <Route
+                        path='/bajadas/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateCart isEditing />
                             </DefaultLayout>
                         }
                     />

@@ -3,12 +3,12 @@ import { Dropdown } from '../..';
 import API from '../../../app/API';
 import { formatComboItems } from '../../../app/Helpers';
 
-const ProductTypesDropdown = ({
+const PaymentMethodsDropdown = ({
     value = null,
     label = null,
     required = false,
     disabled = false,
-    placeholder = 'Seleccione un tipo de producto',
+    placeholder = 'Seleccione un método de pago',
     isMulti = false,
     onChange = () => {},
 }) => {
@@ -18,7 +18,7 @@ const ProductTypesDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('Product/GetComboProductTypes').then((r) => {
+        API.get('Cart/GetPaymentStatusesCombo').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);
@@ -42,7 +42,7 @@ const ProductTypesDropdown = ({
     );
 };
 
-const MemoDropdown = memo(ProductTypesDropdown, (prevProps, nextProps) => {
+const MemoDropdown = memo(PaymentMethodsDropdown, (prevProps, nextProps) => {
     return (
         nextProps.value === prevProps.value &&
         nextProps.label === prevProps.label &&

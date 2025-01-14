@@ -47,14 +47,14 @@ const RouteList = () => {
     const [rows, setRows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
-    const [day, setDay] = useState(1);
+    const [dayFilter, setDayFilter] = useState(1);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
-    const handleDayChange = (v) => {
-        setDay(v);
+    const handleDayFilterChange = (v) => {
+        setDayFilter(v);
     };
 
     useEffect(() => {
@@ -65,7 +65,7 @@ const RouteList = () => {
 
     useEffect(() => {
         const rq = {
-            deliveryDay: day,
+            deliveryDay: dayFilter,
         };
 
         API.get('Route/GetAllStaticRoutes', rq).then((r) => {
@@ -84,7 +84,7 @@ const RouteList = () => {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, day]);
+    }, [currentPage, dayFilter]);
 
     const updateDeletedRow = (id) => {
         setRows((prevRow) => prevRow.filter((row) => row.id !== id));
@@ -104,8 +104,8 @@ const RouteList = () => {
                                         <Label>Día</Label>
                                         <DeliveryDayDropdown
                                             placeholder='Dia'
-                                            value={day}
-                                            onChange={(v) => handleDayChange(v)}
+                                            value={dayFilter}
+                                            onChange={(v) => handleDayFilterChange(v)}
                                         />
                                     </Col>
                                 </Row>

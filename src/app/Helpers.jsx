@@ -7,9 +7,9 @@ export const formatOptions = (options) => {
     }));
 };
 
-export const formatComboItems  = (items) => {
+export const formatComboItems = (items) => {
     return items.map((item) => ({
-        value: item.id,
+        value: parseInt(item.id),
         label: item.description,
     }));
 };
@@ -18,7 +18,7 @@ export const formatSubscriptions = (subscripstions, disabled = false) => {
     return subscripstions?.map((s) => ({
         id: s.id,
         description: s.description,
-        disabled
+        disabled,
     }));
 };
 
@@ -35,7 +35,25 @@ export const formatProducts = (prod, disabled = false) => {
         id: p.id,
         description: p.description,
         quantity: p.quantity || 0,
-        disabled
+        disabled,
+    }));
+};
+export const formatCartProducts = (prod, cartId) => {
+    return prod?.map((p) => ({
+        id: p.productId,
+        description: p.name + ' - ' + formatCurrency(p.price),
+        quantity: p.quantity || 0,
+        price: parseFloat(p.price),
+        cartId
+    }));
+};
+
+export const formatCartSubscriptionProducts = (subsProd, cartId) => {
+    return subsProd?.map((sp) => ({
+        id: sp.typeId,
+        description: `${sp.name} - Disponible: ${sp.available}`,
+        quantity: sp.quantity || 0,
+        cartId
     }));
 };
 
@@ -47,18 +65,26 @@ export const formatOptionsBoolean = (options) => {
 };
 
 export const formatCurrency = (value) => {
-    if (value === null)
-        return '';
+    if (value === null) return '';
 
     return `$${value.toLocaleString('es-AR', {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    })}`
+        maximumFractionDigits: 2,
+    })}`;
+};
+
+export const formatDebt = (value) => {
+    if (parseFloat(value) === 0) return <span>Sin deuda</span>;
+
+    return (
+        <span className={value > 0 ? 'text-success' : 'text-danger'}>
+            {`${value > 0 ? 'A favor' : 'Deuda'}: $${value}`}
+        </span>
+    );
 };
 
 export const formatDeliveryDay = (value) => {
-    if (value === null)
-        return '';
+    if (value === null) return '';
 
     switch (value) {
         case 1:
@@ -158,4 +184,4 @@ export class Dates {
         newDate.setHours(0, 0, 0, 0);
         return newDate.toISOString();
     };
-};
+}

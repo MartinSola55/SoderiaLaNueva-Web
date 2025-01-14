@@ -35,11 +35,34 @@ export class InitialFormStates {
     };
 
     static StaticRoute = {
-        dealerId : null, 
+        dealerId: null, 
         deliveryDay: 1, 
     }
 
-    static Route = {
+    static RouteDetails = {
+        id: null,
+        dealer: null, 
+        deliveryDay: null, 
+        carts: [],
+    }
+
+    static RouteClients = {
         clients: [], 
+    }
+
+    static CartFilters = {
+        cartStatus: [],
+        productType: [],
+        cartTransfersType: [],
+        cartPaymentStatus: [],
+    }
+
+    static Cart = {
+        id: null,
+        deliveryDay: null,
+        dealer: null,
+        client: null,
+        products: [],
+        paymentMethods: []
     }
 }

@@ -28,6 +28,7 @@ import UserDropdown from './shared/UserDropdown/UserDropdown';
 import DeliveryDayDropdown from './shared/DeliveryDayDropdown/DeliveryDayDropdown';
 import ProductTypesDropdown from './shared/ProductTypesDropdown/ProductTypesDropdown';
 import RolesDropdown from './shared/RolesDropdown/RolesDropdown';
+import PaymentMethodsDropdown from './shared/PaymentMethodsDropdown/PaymentMethodsDropdown';
 
 export {
     BreadCrumb,
@@ -61,4 +62,5 @@ export {
     DeliveryDayDropdown,
     ProductTypesDropdown,
     RolesDropdown,
+    PaymentMethodsDropdown
 };
