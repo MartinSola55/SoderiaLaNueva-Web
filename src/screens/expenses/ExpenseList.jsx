@@ -58,7 +58,7 @@ const ExpenseList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
-    const [dateRange, setDateRange] = useState({ from: Dates.getToday(), to: Dates.getToday() });
+    const [dateRange, setDateRange] = useState({ from: null, to: null });
     const [submiting, setSubmiting] = useState(false);
 
     // Refs
@@ -129,7 +129,7 @@ const ExpenseList = () => {
         };
         expenseRef.current.open(
             (v) => handleSubmit(v, id),
-            () => {},
+            () => { },
             expense,
             isWatching ? 'Ver' : 'Editar',
             isWatching,
@@ -226,7 +226,7 @@ const ExpenseList = () => {
                                     onClick={() => {
                                         expenseRef.current.open(
                                             (v) => handleSubmit(v, null),
-                                            () => {},
+                                            () => { },
                                             null,
                                             'Agregar',
                                             false,

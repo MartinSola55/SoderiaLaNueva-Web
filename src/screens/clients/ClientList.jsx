@@ -1,27 +1,10 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    Input,
-    Table,
-    TableSort,
-    Toast,
-} from '../../components';
+import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '../../components';
 import { useEffect, useState } from 'react';
-import API from '../../app/API';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
+import { getBreadcrumbItems, getClients } from './Clients.helpers';
 import App from '../../app/App';
-import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from '../../app/Helpers';
-
-const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Clientes',
-    },
-];
 
 const ClientList = () => {
     const columns = [
@@ -53,7 +36,7 @@ const ClientList = () => {
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='cliente' {...props} />,
+            component: (props) => <ActionButtons entity='cliente' showEdit={false} {...props} />,
             className: 'text-center',
         },
     ];
@@ -67,12 +50,25 @@ const ClientList = () => {
 
     const navigate = useNavigate();
 
+    // State
     const [rows, setRows] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
 
+    // Effects
+    useEffect(() => {
+        getClients(sort, currentPage, ({ clients, totalCount }) => {
+            setTotalCount(totalCount);
+            setRows(clients);
+            if (clients.length === 0) {
+                Toast.warning(Messages.Error.noRows);
+            }
+        });
+    }, [currentPage, sort]);
+
+    // Handlers
     const handleFilterRows = (value) => {
         setFilter(value.toLowerCase());
     };
@@ -85,42 +81,18 @@ const ClientList = () => {
         setSort({ column, direction });
     };
 
-    useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
-
-    useEffect(() => {
-        const rq = buildGenericGetAllRq(sort, currentPage);
-
-        API.post('Client/GetAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.clients.map((client) => {
-                    return {
-                        ...client,
-                        debt: formatCurrency(client.debt),
-                        deliveryDay: client.dealerName
-                            ? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`
-                            : ' - ',
-                        endpoint: 'Client',
-                    };
-                }),
-            );
-            if (r.data.clients.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, sort]);
-
     const updateDeletedRow = (id) => {
         setRows((prevRow) => prevRow.filter((row) => row.id !== id));
     };
 
+    // Render
+    if (!App.isAdmin()) {
+        return navigate('/notAllowed');
+    }
+
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Clientes' />
+            <BreadCrumb items={getBreadcrumbItems()} title='Clientes' />
             <div>
                 <Col xs={11} className='container'>
                     <Card

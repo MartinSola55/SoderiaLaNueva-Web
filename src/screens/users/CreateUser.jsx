@@ -1,15 +1,5 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    BreadCrumb,
-    Button,
-    Card,
-    ChangePasswordModal,
-    Input,
-    Label,
-    Loader,
-    RolesDropdown,
-    Spinner,
-} from '../../components';
+import { BreadCrumb, Button, Card, ChangePasswordModal, Input, Label, Loader, RolesDropdown, Spinner, } from '../../components';
 import { useEffect, useRef, useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
@@ -163,9 +153,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                                 placeholder='Seleccione un rol'
                                                 required
                                                 value={form.role}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'role')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'role')}
                                             />
                                         </Col>
                                     </Row>

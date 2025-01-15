@@ -6,7 +6,7 @@ import ExpensesList from '../screens/expenses/ExpenseList.jsx';
 import TransferList from '../screens/transfers/TransferList.jsx';
 import SubscriptionList from '../screens/subscriptions/SubscriptionList.jsx';
 import CreateSubscription from '../screens/subscriptions/CreateSubscription.jsx';
-import CreateClient from '../screens/clients/CreateClient.jsx';
+import CreateClient from '../screens/clients/create/CreateClient.jsx';
 import ClientList from '../screens/clients/ClientList.jsx';
 import RouteList from '../screens/routes/RouteList.jsx';
 import CreateRoute from '../screens/routes/CreateRoute.jsx';
@@ -14,6 +14,7 @@ import EditRoute from '../screens/routes/EditRoute.jsx';
 import RouteDetails from '../screens/routes/StaticRouteDetails.jsx';
 import DynamicRouteDetails from '../screens/routes/DynamicRouteDetails.jsx';
 import CreateCart from '../screens/carts/CreateCart.jsx';
+import ClientDetails from '../screens/clients/details/ClientDetails.jsx';
 
 // Lazy loading de componentes
 const Login = lazy(() => import('../screens/public/Login.jsx'));
@@ -174,15 +175,7 @@ export const AppRoutes = () => (
                         path='/clientes/:id'
                         element={
                             <DefaultLayout>
-                                <CreateClient isWatching />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
-                        path='/clientes/edit/:id'
-                        element={
-                            <DefaultLayout>
-                                <CreateClient isEditing />
+                                <ClientDetails />
                             </DefaultLayout>
                         }
                     />

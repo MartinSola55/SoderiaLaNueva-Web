@@ -12,6 +12,7 @@ import "./ActionButtons.scss";
 const ActionButtons = ({
     row = {},
     canDelete = App.isAdmin(),
+    showEdit = true,
     entity = "entidad",
     female = false,
     onUpdate = () => { }
@@ -52,7 +53,7 @@ const ActionButtons = ({
                             onClick={handleWatch}
                         />
                     </Tooltip>
-                    {!(row.isOpen !== undefined && row.isOpen) && (
+                    {!(row.isOpen !== undefined && row.isOpen) && showEdit && (
                         <Tooltip text="Editar" placement="top">
                             <FontAwesomeIcon
                                 className="action-button"

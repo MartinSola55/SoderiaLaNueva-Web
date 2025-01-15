@@ -1,13 +1,5 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    BreadCrumb,
-    Card,
-    Dropdown,
-    Input,
-    PaymentMethodsDropdown,
-    Spinner,
-    Table,
-} from '../../components';
+import { BreadCrumb, Card, Input, PaymentMethodsDropdown, Spinner, Table } from '../../components';
 import { useEffect, useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
@@ -15,11 +7,10 @@ import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
-import { formatComboItems } from '../../app/Helpers';
 
 const initialForm = InitialFormStates.Cart;
 
-const CreateCart = ({ isWatching = false, isEditing = false }) => {
+const CreateCart = ({ isWatching = false }) => {
     const navigate = useNavigate();
 
     const params = useParams();
@@ -206,9 +197,6 @@ const CreateCart = ({ isWatching = false, isEditing = false }) => {
         return navigate('/notAllowed');
     }
 
-    console.log(form)
-
-
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Bajadas' />
@@ -229,7 +217,7 @@ const CreateCart = ({ isWatching = false, isEditing = false }) => {
                                 ) : (
                                     <Table
                                         columns={soldColumns}
-                                        rows={form.products} 
+                                        rows={form.products}
                                     />
                                 )
                             }
@@ -244,7 +232,7 @@ const CreateCart = ({ isWatching = false, isEditing = false }) => {
                                 ) : (
                                     <Table
                                         columns={returnedColumns}
-                                        rows={form.products} 
+                                        rows={form.products}
                                     />
                                 )
                             }
@@ -258,7 +246,7 @@ const CreateCart = ({ isWatching = false, isEditing = false }) => {
                                     <Spinner />
                                 ) : (
                                     <>
-                                        <PaymentMethodsDropdown 
+                                        <PaymentMethodsDropdown
                                             placeholder='Método de pago'
                                             value={form.paymentMethods}
                                         />
@@ -269,7 +257,7 @@ const CreateCart = ({ isWatching = false, isEditing = false }) => {
                                             placeholder='Cantidad'
                                             type='number'
                                             className='mt-3'
-                                            // value={props.row.quantity} 
+                                        // value={props.row.quantity} 
                                         />
                                     </>
                                 )

@@ -9,7 +9,7 @@ export const formatOptions = (options) => {
 
 export const formatComboItems = (items) => {
     return items.map((item) => ({
-        value: parseInt(item.id),
+        value: item.id,
         label: item.description,
     }));
 };

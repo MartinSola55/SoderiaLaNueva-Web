@@ -1,7 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, Input, Label, Loader, UserDropdown } from '../../components';
-import { Roles } from '../../constants/Roles';
+import { Button, DealerDropdown, Input, Label, Loader } from '../../components';
 import { InitialFormStates } from '../../app/InitialFormStates';
 
 const initialExpense = InitialFormStates.Expense;
@@ -69,12 +68,10 @@ const ExpenseModal = forwardRef(({ disabled }, ref) => {
                 <Row>
                     <Col xs={12} className='mb-3'>
                         <Label required>Repartidor</Label>
-                        <UserDropdown
+                        <DealerDropdown
                             disabled={isWatching}
                             value={expense.dealerId}
                             required
-                            roles={[Roles.Dealer]}
-                            placeholder='Seleccione repartidor'
                             onChange={(v) => handleChange(v, 'dealerId')}
                         />
                     </Col>
