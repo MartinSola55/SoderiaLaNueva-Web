@@ -1,15 +1,16 @@
 import { memo, useEffect, useState } from 'react';
 import { Dropdown } from '../..';
+import { formatComboItems } from '../../../app/Helpers';
 import API from '../../../app/API';
 
-const UserDropdown = ({
+const ProductsDropdown = ({
     value = null,
     label = null,
     required = false,
     disabled = false,
-    placeholder = 'Seleccione un usuario',
+    placeholder = 'Seleccione un producto',
     isMulti = false,
-    role = null,
+    roles = [],
     onChange = () => { },
 }) => {
     const [items, setItems] = useState(null);
@@ -18,16 +19,10 @@ const UserDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.post('user/GetAll', { role }).then((r) => {
-            setItems(
-                r.data.users.map((user) => ({
-                    value: user.id,
-                    label: `${user.fullName} - ${user.role}`,
-                }))
-            );
+        API.get('product/getComboProducts').then((r) => {
+            setItems(formatComboItems(r.data.items));
         });
-    }, [role, items]);
-
+    }, [roles, items]);
 
     const handleChange = (options) => {
         const value = isMulti ? options : options.value;
@@ -41,21 +36,20 @@ const UserDropdown = ({
             required={required}
             isMulti={isMulti}
             disabled={disabled}
-            items={items ? items : []}
+            items={items ?? []}
             value={value}
             onChange={(option) => handleChange(option)}
         />
     );
 };
 
-const MemoDropdown = memo(UserDropdown, (prevProps, nextProps) => {
+const MemoDropdown = memo(ProductsDropdown, (prevProps, nextProps) => {
     return (
         nextProps.value === prevProps.value &&
         nextProps.label === prevProps.label &&
         nextProps.required === prevProps.required &&
         nextProps.placeholder === prevProps.placeholder &&
-        nextProps.isMulti === prevProps.isMulti &&
-        JSON.stringify(nextProps.role) === JSON.stringify(prevProps.role)
+        nextProps.isMulti === prevProps.isMulti
     );
 });
 

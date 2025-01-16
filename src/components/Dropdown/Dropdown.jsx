@@ -29,7 +29,7 @@ const Dropdown = forwardRef(({
     items,
     name = null,
     className = null,
-    value = null,
+    value = isMulti ? [] : null,
     required = false,
     disabled = false,
     placeholder = 'Seleccione una opción',
@@ -61,8 +61,6 @@ const Dropdown = forwardRef(({
         const selectedValue = isMulti ? items && items.filter((x) => value.includes(x.value)) || [] : items && items.find((x) => x.value === value) || null;
         setSelectedValue(selectedValue);
     }, [isMulti, items, value]);
-
-
 
     return (
         <div className={`dropdown-container ${helpText ? 'padding-end' : ''}`}>

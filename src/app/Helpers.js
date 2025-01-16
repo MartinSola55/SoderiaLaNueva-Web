@@ -7,17 +7,53 @@ export const formatOptions = (options) => {
     }));
 };
 
-export const formatRoles = (roles) => {
-    return roles.map((role) => ({
-        value: role.id,
-        label: role.name,
+export const formatComboItems = (items) => {
+    return items.map((item) => ({
+        value: item.stringId ? item.stringId : item.id,
+        label: item.description,
     }));
 };
 
-export const formatTypes = (types) => {
-    return types.map((t) => ({
-        value: t.id,
-        label: t.type,
+export const formatSubscriptions = (subscripstions, disabled = false) => {
+    return subscripstions?.map((s) => ({
+        id: s.id,
+        description: s.description,
+        disabled,
+    }));
+};
+
+export const formatClients = (clients) => {
+    return clients.map((c) => ({
+        id: c.clientId,
+        name: c.name,
+        address: c.address,
+    }));
+};
+
+export const formatProducts = (prod, disabled = false) => {
+    return prod?.map((p) => ({
+        id: p.id,
+        description: p.description,
+        quantity: p.quantity || 0,
+        disabled,
+    }));
+};
+export const formatCartProducts = (prod, cartId) => {
+    return prod?.map((p) => ({
+        id: p.productId,
+        description: p.name + ' - ' + formatCurrency(p.price),
+        quantity: p.quantity || 0,
+        price: parseFloat(p.price),
+        cartId
+    }));
+};
+
+export const formatCartSubscriptionProducts = (subsProd, cartId) => {
+    return subsProd?.map((sp) => ({
+        id: sp.typeId,
+        description: `${sp.name} - Disponible: ${sp.available}`,
+        quantity: sp.quantity || 0,
+        cartId
     }));
 };
 
@@ -29,13 +65,46 @@ export const formatOptionsBoolean = (options) => {
 };
 
 export const formatCurrency = (value) => {
-    if (value === null)
-        return '';
+    if (value === null) return '';
 
     return `$${value.toLocaleString('es-AR', {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    })}`
+        maximumFractionDigits: 2,
+    })}`;
+};
+
+export const formatDebt = (value) => {
+    if (parseFloat(value) === 0)
+        return 'Sin deuda';
+
+    return `${value > 0 ? 'A favor' : 'Deuda'}: $${value}`;
+};
+
+export const buildDealerRouteName = (dealerName, day) => {
+    return `${dealerName || 'Sin repartidor'} - ${formatDeliveryDay(day)}`;
+};
+
+export const formatDeliveryDay = (value) => {
+    switch (value) {
+        case 1:
+            return 'Lunes';
+        case 2:
+            return 'Martes';
+        case 3:
+            return 'Miercoles';
+        case 4:
+            return 'Jueves';
+        case 5:
+            return 'Viernes';
+        default:
+            return 'Sin día';
+    }
+};
+
+// 1 for Monday, 2 for Tuesday, 3 for Wednesday, 4 for Thursday and 5 for Friday
+export const getDayIndex = () => {
+    const date = new Date();
+    return date.getDay() === 0 ? 5 : date.getDay();
 };
 
 export const formatRole = (role) => {
@@ -53,6 +122,23 @@ export const formatRole = (role) => {
         default:
             return 'Desconocido';
     }
+};
+
+export const buildGenericGetAllRq = (sort, currentPage, dateRange) => {
+    const rq = {
+        page: currentPage,
+    };
+
+    if (sort && sort.column) {
+        rq.columnSort = sort.column;
+        rq.sortDirection = sort.direction;
+    }
+    if (dateRange && dateRange.from && dateRange.to) {
+        rq.dateFrom = Dates.formatDate(dateRange.from);
+        rq.dateTo = Dates.formatDate(dateRange.to);
+    }
+
+    return rq;
 };
 
 export const validateInt = (value) => {
@@ -103,4 +189,4 @@ export class Dates {
         newDate.setHours(0, 0, 0, 0);
         return newDate.toISOString();
     };
-};
+}

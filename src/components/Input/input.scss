@@ -1,4 +1,18 @@
 .input-container {
+
+    .input-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    svg {
+        position: absolute;
+        left: 5px;
+    }
+
     textarea {
         resize: none !important;
     }
@@ -6,7 +20,7 @@
     input {
         &.input-borderless {
             border: none;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 2px solid #ccc;
             border-radius: 0;
             box-shadow: none;
 
@@ -22,6 +36,9 @@
             border-color: red;
         }
 
+        &.with-icon {
+            padding-left: 30px;
+        }
     }
 
     .input-display {

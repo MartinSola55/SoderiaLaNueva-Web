@@ -8,6 +8,7 @@ import './button.scss';
 // eslint-disable-next-line
 const Button = forwardRef(({
     style,
+    iconStyle,
     type = 'button',
     variant = 'primary',
     onClick = () => { },
@@ -38,7 +39,13 @@ const Button = forwardRef(({
         >
             {children}
             {icon && (
-                <FontAwesomeIcon icon={icon} style={{ marginLeft: '5px' }} />
+                <FontAwesomeIcon
+                    icon={icon}
+                    style={{
+                        ...iconStyle,
+                        marginLeft: (iconStyle && iconStyle.marginLeft) || '5px',
+                    }}
+                />
             )}
         </BS.Button>
     );

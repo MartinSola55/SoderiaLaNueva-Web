@@ -1,61 +1,38 @@
-import { Col, Row } from "react-bootstrap";
-import { BreadCrumb, Button, Card, ChangePasswordModal, Dropdown, Input, Label, Loader, Spinner } from "../../components";
-import { useEffect, useRef, useState } from "react";
-import Toast from "../../components/Toast/Toast";
-import API from "../../app/API";
-import { Messages } from "../../constants/Messages";
-import { InitialFormStates } from "../../app/InitialFormStates";
-import { useNavigate, useParams } from "react-router";
-import App from "../../app/App";
-import { formatTypes } from "../../app/Helpers";
-
-const initialForm = InitialFormStates.User;
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { Col, Row } from 'react-bootstrap';
+import { BreadCrumb, Button, Card, Input, Label, Loader, ProductTypesDropdown, Spinner } from '../../components';
+import { Messages } from '../../constants/Messages';
+import { InitialFormStates } from '../../app/InitialFormStates';
+import { getBreadcrumbItems, saveProduct } from './Products.helpers';
+import Toast from '../../components/Toast/Toast';
+import API from '../../app/API';
+import App from '../../app/App';
 
 const CreateProduct = ({ isWatching = false }) => {
     const navigate = useNavigate();
 
-    const modalRef = useRef();
     const params = useParams();
-    const id = (params && params.id) || null;
+    const id = params.id;
 
-    const [form, setForm] = useState(initialForm);
+    // State
+    const [form, setForm] = useState(InitialFormStates.Product);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
-    const [types, setTypes] = useState([]);
 
-    const breadcrumbItems = [
-        {
-            active: false,
-            url: '/productos/list',
-            label: 'Productos',
-        },
-        {
-            active: true,
-            label: isWatching ? 'Ver' : 'Editar'
-        }
-    ];
-
-    // Get form data
+    // Effects
     useEffect(() => {
-        API.get('Product/GetFormData')
-            .then((r) => {
-                setTypes(formatTypes(r.data.productTypes));
-            });
         if (id) {
-            API.get('Product/GetOneById', { id })
-                .then((r) => {
-                    setForm(() => ({
-                        ...r.data,
-                    }));
-                    setLoading(false);
-                })
+            API.get('product/getOneById', { id }).then((r) => {
+                setForm(r.data);
+                setLoading(false);
+            });
         }
     }, [id]);
 
-
+    // Handlers
     const handleSubmit = async () => {
-        if (submiting)
-            return;
+        if (submiting) return;
 
         if (!form.name || !form.price || !form.typeId) {
             Toast.warning(Messages.Validation.requiredFields);
@@ -63,94 +40,77 @@ const CreateProduct = ({ isWatching = false }) => {
         }
 
         setSubmiting(true);
-
-        const rq = {
-            name: form.name,
-            price: form.price,
-            typeId: form.typeId,
-        }
-
-        if (id) {
-            rq.id = id;
-        }
-
-        API.post(`Product/${id ? 'Update' : 'Create'}`, rq)
-            .then((r) => {
-                Toast.success(r.message);
-                navigate('/productos/list');
-            })
-            .catch((r) => {
-                Toast.error(r.error.message);
-            })
-            .finally(() => {
-                setSubmiting(false);
-            });
+        saveProduct(form, id,
+            () => { navigate('/productos/list') },
+            () => { setSubmiting(false) }
+        );
     };
 
     const handleInputChange = (value, field) => {
         setForm((prevForm) => {
-            return ({
+            return {
                 ...prevForm,
                 [field]: value,
-            });
+            };
         });
     };
 
+    // Render
     if (!App.isAdmin()) {
         return navigate('/notAllowed');
     }
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title="Productos" />
-            <ChangePasswordModal ref={modalRef} />
+            <BreadCrumb items={getBreadcrumbItems(id ? 'Editar' : 'Nuevo')} title='Productos' />
             <div>
-                <Col xs={11} className="container">
+                <Col xs={11} className='container'>
                     <Card
-                        title="Producto"
-                        body={(
-                            loading ? <Spinner /> : (
-                                <>
-                                    <Row className="align-items-center">
-                                        <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label required>Nombre del producto</Label>
-                                            <Input
-                                                disabled={isWatching}
-                                                placeholder="Nombre"
-                                                value={form.name}
-                                                onChange={(value) => handleInputChange(value, 'name')}
-                                            />
-                                        </Col>
-                                        <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label required>Precio</Label>
-                                            <Input
-                                                disabled={isWatching}
-                                                numeric
-                                                isFloat
-                                                placeholder="Precio"
-                                                type="number"
-                                                value={form.price}
-                                                onChange={(value) => handleInputChange(value, 'price')}
-                                            />
-                                        </Col>
-                                        <Col xs={12} md={4} className="pe-3 mb-3">
-                                            <Label required>Tipo</Label>
-                                            <Dropdown
-                                                disabled={isWatching}
-                                                placeholder="Seleccione un tipo"
-                                                required
-                                                items={types}
-                                                value={form.typeId}
-                                                onChange={(option) => handleInputChange(option.value, 'typeId')}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </>
-                            )
-                        )}
+                        title='Producto'
+                        body={loading ? <Spinner /> :
+                            <>
+                                <Row className='align-items-center'>
+                                    <Col xs={12} md={4} className='pe-3 mb-3'>
+                                        <Label required>Nombre del producto</Label>
+                                        <Input
+                                            disabled={isWatching}
+                                            placeholder='Nombre'
+                                            value={form.name}
+                                            onChange={(value) => handleInputChange(value, 'name')}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={4} className='pe-3 mb-3'>
+                                        <Label required>Precio</Label>
+                                        <Input
+                                            disabled={isWatching}
+                                            numeric
+                                            isFloat
+                                            placeholder='Precio'
+                                            type='number'
+                                            value={form.price}
+                                            onChange={(value) => handleInputChange(value, 'price')}
+                                        />
+                                    </Col>
+                                    <Col xs={12} md={4} className='pe-3 mb-3'>
+                                        <Label required>Tipo</Label>
+                                        <ProductTypesDropdown
+                                            disabled={isWatching}
+                                            placeholder='Seleccione un tipo'
+                                            required
+                                            value={form.typeId}
+                                            onChange={(value) => handleInputChange(value, 'typeId')}
+                                        />
+                                    </Col>
+                                </Row>
+                            </>
+                        }
                         footer={
-                            <div className="d-flex justify-content-end">
-                                <Button variant="secondary" className="me-2" onClick={() => navigate('/productos/list')}>
+                            <div className='d-flex justify-content-end'>
+                                <Button
+                                    variant='secondary'
+                                    className='me-2'
+                                    onClick={() => navigate('/productos/list')}
+                                >
                                     Volver
                                 </Button>
                                 {!isWatching && (
@@ -160,9 +120,8 @@ const CreateProduct = ({ isWatching = false }) => {
                                 )}
                             </div>
                         }
-                    >
-                    </Card>
-                </Col >
+                    />
+                </Col>
             </div>
         </>
     );

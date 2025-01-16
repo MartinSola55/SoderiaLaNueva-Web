@@ -1,11 +1,21 @@
 import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast, } from '../../components';
+import {
+    ActionButtons,
+    BreadCrumb,
+    Button,
+    Card,
+    Input,
+    Table,
+    TableSort,
+    Toast,
+} from '../../components';
 import { useEffect, useState } from 'react';
 import API from '../../app/API';
 import { Roles } from '../../constants/Roles';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
+import { buildGenericGetAllRq } from '../../app/Helpers';
 
 const breadcrumbItems = [
     {
@@ -44,7 +54,7 @@ const UserList = () => {
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity="usuario" {...props} />,
+            component: (props) => <ActionButtons entity='usuario' {...props} />,
             className: 'text-center',
         },
     ];
@@ -78,22 +88,12 @@ const UserList = () => {
         if (!App.isAdmin()) {
             return navigate('/notAllowed');
         }
-
     }, [navigate]);
 
     useEffect(() => {
-        const rq = {
-            page: currentPage,
-            roles: [Roles.Admin, Roles.Dealer],
-        };
+        const rq = buildGenericGetAllRq(sort, currentPage);
 
-        if (sort && sort.column) {
-            rq.columnSort = sort.column;
-            rq.sortDirection = sort.direction;
-        } else {
-            rq.columnSort = 'createdAt';
-            rq.sortDirection = 'desc';
-        }
+        rq.roles = [Roles.Admin, Roles.Dealer];
 
         API.post('User/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
@@ -136,8 +136,9 @@ const UserList = () => {
                                             onChange={handleSortChange}
                                         />
                                     </Col>
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
+                                            showIcon
                                             borderless
                                             placeholder='Buscar'
                                             helpText='Nombre de usuario o email'
@@ -169,7 +170,7 @@ const UserList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>
