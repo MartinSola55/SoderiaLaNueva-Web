@@ -4,7 +4,7 @@ import { Button } from '../..';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
 
-const TableFilters = ({ dateRange = null, onRangeChange = () => {}, onReset = () => {} }) => {
+const TableFilters = ({ dateRange = null, onRangeChange = () => { }, onReset = () => { } }) => {
     const handleRangeChange = (value) => {
         if (!value || !value[0] || !value[1]) {
             onRangeChange({ from: null, to: null });

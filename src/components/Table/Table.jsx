@@ -1,6 +1,7 @@
 import * as BS from 'react-bootstrap';
 import classNames from 'classnames';
 import Pagination from '../Pagination/Pagination';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './table.scss';
 
@@ -11,6 +12,9 @@ const Table = ({
     emptyTableMessage = '',
     clickable = false,
     pagination = false,
+    bordered = true,
+    striped = true,
+    hover = true,
     totalCount = 0,
     currentPage = 1,
     onRowClick = () => { },
@@ -38,9 +42,17 @@ const Table = ({
         onRowClick(e, e.target.closest('tr').getAttribute('data-href'));
     };
 
+    const tableClassNames = classNames(
+        'table',
+        bordered && 'table-bordered',
+        striped && 'table-striped',
+        hover && 'table-hover',
+        className
+    );
+
     return (
         <div className={`table-responsive px-1`}>
-            <BS.Table className={`table-bordered table-striped table-hover  ${className} `}>
+            <BS.Table className={tableClassNames}>
                 <thead>
                     <tr>
                         {columns &&
@@ -52,7 +64,7 @@ const Table = ({
                                         col.className,
                                     )}
                                 >
-                                    <strong>{col.text}</strong>
+                                    {col.bold ? <strong>{col.text}</strong> : col.text}
                                 </th>
                             ))}
                     </tr>
@@ -71,6 +83,13 @@ const Table = ({
                                     const isClickable = col.clickableColumn
                                         ? 'clickable-row'
                                         : '';
+
+                                    if (col.name === 'icon')
+                                        return (
+                                            <td key={j} className={classNames(col.className, { [isClickable]: isClickable })}>
+                                                <span className='table-icon-container'><FontAwesomeIcon icon={col.icon} /></span>
+                                            </td>
+                                        );
 
                                     return (
                                         <td
@@ -91,7 +110,7 @@ const Table = ({
                                                             <li key={k}>{item}</li>
                                                         ))}
                                                     </ul>
-                                                    : row[col.name]
+                                                    : col.boldRow ? <h6 className='mb-0'>{row[col.name]}</h6> : row[col.name]
                                             ) : <col.component
                                                 row={row}
                                                 disabled={row.disabled}
