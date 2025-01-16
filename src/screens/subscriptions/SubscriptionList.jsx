@@ -98,7 +98,6 @@ const SubscriptionList = () => {
                                             showIcon
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre'
                                             value={subsFilter}
                                             onChange={handleFilterSubs}
                                         />
@@ -125,7 +124,7 @@ const SubscriptionList = () => {
                         }
                     />
                     <Card
-                        header={<h4>Productos asociados a clientes</h4>}
+                        header={<h4>Abonos asociados a clientes</h4>}
                         body={
                             <>
                                 <Row>

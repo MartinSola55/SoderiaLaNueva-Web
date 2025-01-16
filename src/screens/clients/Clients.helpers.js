@@ -5,7 +5,7 @@ import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "../../a
 export const getBreadcrumbItems = (label) => {
     const items = [
         {
-            active: false,
+            active: label ? false : true,
             url: '/clientes/list',
             label: 'Clientes',
         }

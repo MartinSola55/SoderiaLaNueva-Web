@@ -4,48 +4,18 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import { getBreadcrumbItems, getClients } from './Clients.helpers';
+import { clientColumns, sortClientItems } from './Clients.data';
 import App from '../../app/App';
 
 const ClientList = () => {
     const columns = [
-        {
-            name: 'name',
-            text: 'Nombre',
-            textCenter: true,
-        },
-        {
-            name: 'address',
-            text: 'Dirección',
-            textCenter: true,
-        },
-        {
-            name: 'phone',
-            text: 'Teléfono',
-            textCenter: true,
-        },
-        {
-            name: 'debt',
-            text: 'Deuda',
-            textCenter: true,
-        },
-        {
-            name: 'deliveryDay',
-            text: 'Reparto',
-            textCenter: true,
-        },
+        ...clientColumns,
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='cliente' showEdit={false} {...props} />,
             className: 'text-center',
+            component: (props) => <ActionButtons entity='cliente' showEdit={false} {...props} />,
         },
-    ];
-
-    const sortClientItems = [
-        { value: 'name-asc', label: 'Nombre - Asc.' },
-        { value: 'name-desc', label: 'Nombre - Desc.' },
-        { value: 'createdAt-asc', label: 'Fecha de creación - Asc.' },
-        { value: 'createdAt-desc', label: 'Fecha de creación - Desc.' },
     ];
 
     const navigate = useNavigate();
@@ -70,7 +40,7 @@ const ClientList = () => {
 
     // Handlers
     const handleFilterRows = (value) => {
-        setFilter(value.toLowerCase());
+        setFilter(value);
     };
 
     const handlePageChange = (page) => {
@@ -106,11 +76,11 @@ const ClientList = () => {
                                             onChange={handleSortChange}
                                         />
                                     </Col>
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
+                                            showIcon
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre'
                                             value={filter}
                                             onChange={handleFilterRows}
                                         />
@@ -119,7 +89,7 @@ const ClientList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={columns}
-                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter))}
+                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter.toLowerCase()))}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}

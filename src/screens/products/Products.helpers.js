@@ -1,10 +1,11 @@
 import API from "../../app/API";
 import { buildDealerRouteName, buildGenericGetAllRq, formatCurrency } from "../../app/Helpers";
+import { Toast } from "../../components";
 
 export const getBreadcrumbItems = (label) => {
     const items = [
         {
-            active: false,
+            active: label ? false : true,
             url: '/productos/list',
             label: 'Productos',
         }
@@ -46,4 +47,26 @@ export const getClientProducts = (productId, onSuccess) => {
         });
         onSuccess(clients);
     });
+};
+
+export const saveProduct = (form, id, onSuccess, onError) => {
+    const rq = {
+        name: form.name,
+        price: form.price,
+        typeId: form.typeId,
+    };
+
+    if (id) {
+        rq.id = id;
+    }
+
+    API.post(`product/${id ? 'update' : 'create'}`, rq)
+        .then((r) => {
+            Toast.success(r.message);
+            onSuccess();
+        })
+        .catch((r) => {
+            Toast.error(r.error.message);
+            onError();
+        })
 };

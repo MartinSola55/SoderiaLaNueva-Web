@@ -1,19 +1,10 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    DeliveryDayDropdown,
-    Label,
-    Table,
-    Toast,
-} from '../../components';
+import { ActionButtons, BreadCrumb, Button, Card, DeliveryDayDropdown, Label, Table } from '../../components';
 import { useEffect, useState } from 'react';
-import API from '../../app/API';
 import { useNavigate } from 'react-router';
-import { Messages } from '../../constants/Messages';
+import { getDayIndex } from '../../app/Helpers';
 import App from '../../app/App';
+import API from '../../app/API';
 
 const breadcrumbItems = [
     {
@@ -47,7 +38,7 @@ const RouteList = () => {
     const [rows, setRows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
-    const [dayFilter, setDayFilter] = useState(1);
+    const [dayFilter, setDayFilter] = useState(getDayIndex());
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -68,7 +59,7 @@ const RouteList = () => {
             deliveryDay: dayFilter,
         };
 
-        API.get('Route/GetAllStaticRoutes', rq).then((r) => {
+        API.get('route/getAllStaticRoutes', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.routes.map((route) => {
@@ -80,9 +71,6 @@ const RouteList = () => {
                     };
                 }),
             );
-            if (r.data.routes.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
         });
     }, [currentPage, dayFilter]);
 
@@ -113,6 +101,7 @@ const RouteList = () => {
                                     className='mb-5'
                                     columns={columns}
                                     rows={rows}
+                                    emptyTableMessage='No se encontraron planillas para el día seleccionado'
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}

@@ -23,7 +23,7 @@ const DeleteConfirmationModal = forwardRef(({ disabled, item, message, onConfirm
     };
 
     const handleConfirm = () => {
-        API.post(`${endpoint}/Delete`, { id })
+        API.post(`${endpoint}/delete`, { id })
             .then((r) => {
                 Toast.success(r.message);
                 handleClose();

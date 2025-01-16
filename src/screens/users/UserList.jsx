@@ -136,8 +136,9 @@ const UserList = () => {
                                             onChange={handleSortChange}
                                         />
                                     </Col>
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
+                                            showIcon
                                             borderless
                                             placeholder='Buscar'
                                             helpText='Nombre de usuario o email'

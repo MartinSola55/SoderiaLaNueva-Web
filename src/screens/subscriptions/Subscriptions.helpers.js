@@ -5,7 +5,7 @@ import { Toast } from "../../components";
 export const getBreadcrumbItems = (label) => {
     const items = [
         {
-            active: false,
+            active: label ? false : true,
             url: '/abonos/list',
             label: 'Abonos',
         }

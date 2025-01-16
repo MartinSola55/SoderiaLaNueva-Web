@@ -9,7 +9,7 @@ export const formatOptions = (options) => {
 
 export const formatComboItems = (items) => {
     return items.map((item) => ({
-        value: item.id,
+        value: item.stringId ? item.stringId : item.id,
         label: item.description,
     }));
 };
@@ -99,6 +99,12 @@ export const formatDeliveryDay = (value) => {
         default:
             return 'Sin día';
     }
+};
+
+// 1 for Monday, 2 for Tuesday, 3 for Wednesday, 4 for Thursday and 5 for Friday
+export const getDayIndex = () => {
+    const date = new Date();
+    return date.getDay() === 0 ? 5 : date.getDay();
 };
 
 export const formatRole = (role) => {

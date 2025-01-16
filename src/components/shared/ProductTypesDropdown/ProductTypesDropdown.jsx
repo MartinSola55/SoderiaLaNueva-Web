@@ -10,7 +10,7 @@ const ProductTypesDropdown = ({
     disabled = false,
     placeholder = 'Seleccione un tipo de producto',
     isMulti = false,
-    onChange = () => {},
+    onChange = () => { },
 }) => {
     const [items, setItems] = useState(null);
 
@@ -18,7 +18,7 @@ const ProductTypesDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('Product/GetComboProductTypes').then((r) => {
+        API.get('product/getComboProductTypes').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);

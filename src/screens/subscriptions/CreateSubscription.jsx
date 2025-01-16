@@ -31,7 +31,7 @@ const CreateSubscription = ({ isWatching = false }) => {
     // State
     const [form, setForm] = useState(InitialFormStates.Subscription);
     const [submiting, setSubmiting] = useState(false);
-    const [loading, setLoading] = useState(id ? true : false);
+    const [loading, setLoading] = useState(true);
 
     // Effects
     useEffect(() => {
