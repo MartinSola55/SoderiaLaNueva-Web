@@ -221,7 +221,7 @@ const CreateCart = ({ isWatching = false }) => {
                                     />
                                 )
                             }
-                        ></Card>
+                        />
                     </Col>
                     <Col sm={6}>
                         <Card
@@ -236,7 +236,7 @@ const CreateCart = ({ isWatching = false }) => {
                                     />
                                 )
                             }
-                        ></Card>
+                        />
                     </Col>
                     <Col sm={6}>
                         <Card
@@ -262,7 +262,7 @@ const CreateCart = ({ isWatching = false }) => {
                                     </>
                                 )
                             }
-                        ></Card>
+                        />
                     </Col>
                 </Row>
             </Col>

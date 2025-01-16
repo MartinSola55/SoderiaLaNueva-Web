@@ -74,18 +74,17 @@ export const formatCurrency = (value) => {
 };
 
 export const formatDebt = (value) => {
-    if (parseFloat(value) === 0) return <span>Sin deuda</span>;
+    if (parseFloat(value) === 0)
+        return 'Sin deuda';
 
-    return (
-        <span className={value > 0 ? 'text-success' : 'text-danger'}>
-            {`${value > 0 ? 'A favor' : 'Deuda'}: $${value}`}
-        </span>
-    );
+    return `${value > 0 ? 'A favor' : 'Deuda'}: $${value}`;
+};
+
+export const buildDealerRouteName = (dealerName, day) => {
+    return `${dealerName || 'Sin repartidor'} - ${formatDeliveryDay(day)}`;
 };
 
 export const formatDeliveryDay = (value) => {
-    if (value === null) return '';
-
     switch (value) {
         case 1:
             return 'Lunes';
@@ -98,7 +97,7 @@ export const formatDeliveryDay = (value) => {
         case 5:
             return 'Viernes';
         default:
-            return 'Desconocido';
+            return 'Sin día';
     }
 };
 

@@ -122,7 +122,7 @@ const CreateRoute = () => {
         handleInputChange(value.id, 'dealerId');
         modalRef.current?.open(
             (form) => handleSubmit(form),
-            () => {},
+            () => { },
             (v, n) => {
                 handleInputChange(v, n);
             },
@@ -180,7 +180,7 @@ const CreateRoute = () => {
                                 />
                             </>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>

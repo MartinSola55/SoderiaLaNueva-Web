@@ -1,119 +1,85 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    Input,
-    Table,
-    TableSort,
-    Toast,
-} from '../../components';
+import { ActionButtons, BreadCrumb, Button, Card, Input, SubscriptionsDropdown, Table, TableSort, Toast } from '../../components';
 import { useEffect, useState } from 'react';
-import API from '../../app/API';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
-import { SubscriptionProduct } from './SubscriptionProduct';
-
-const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Abonos',
-    },
-];
+import { clientCols, sortProductItems, subscriptionCols } from './Subscriptions.data';
+import { getAllSubscriptions, getBreadcrumbItems, getClientSubscriptions } from './Subscriptions.helpers';
 
 const SubscriptionList = () => {
-    const columns = [
-        {
-            name: 'name',
-            text: 'Nombre',
-            textCenter: true,
-        },
-        {
-            name: 'price',
-            text: 'Precio',
-            textCenter: true,
-        },
-        {
-            name: 'products',
-            text: 'Productos',
-            component: (props) => (
-                <SubscriptionProduct products={props.row.subscriptionProductItems} />
-            ),
-            textCenter: true,
-        },
+    const allSubsCols = [
+        ...subscriptionCols,
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='abono' {...props} />,
             className: 'text-center',
+            component: (props) => <ActionButtons entity='abono' {...props} />,
         },
-    ];
-
-    const sortProductItems = [
-        { value: 'price-asc', label: 'Precio - Asc.' },
-        { value: 'price-desc', label: 'Precio - Desc.' },
-        { value: 'name-asc', label: 'Nombre - Asc.' },
-        { value: 'name-desc', label: 'Nombre - Desc.' },
     ];
 
     const navigate = useNavigate();
 
-    const [rows, setRows] = useState([]);
-    const [filter, setFilter] = useState('');
+    // States
+    const [subscriptions, setSubscriptions] = useState([]);
+    const [clients, setClients] = useState([]);
+    const [subsFilter, setSubsFilter] = useState('');
+    const [clientFilter, setClientFilter] = useState('');
+    const [selectedSubs, setSelectedSubs] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
 
-    const handleFilterRows = (value) => {
-        setFilter(value.toLowerCase());
+    // Effects
+    useEffect(() => {
+        getAllSubscriptions(sort, currentPage, ({ subscriptions, totalCount }) => {
+            setTotalCount(totalCount);
+            setSubscriptions(subscriptions);
+
+            if (subscriptions.length === 0) {
+                Toast.warning(Messages.Error.noRows);
+            }
+        });
+    }, [currentPage, sort]);
+
+    useEffect(() => {
+        if (!selectedSubs)
+            return;
+
+        getClientSubscriptions(selectedSubs, (clients) => {
+            setClients(clients);
+        });
+    }, [selectedSubs]);
+
+    // Handlers
+    const handleFilterSubs = (value) => {
+        setSubsFilter(value);
     };
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
+    const handleFilterClients = (value) => {
+        setClientFilter(value);
     };
 
     const handleSortChange = ({ column, direction }) => {
         setSort({ column, direction });
     };
 
-    useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
-
-    useEffect(() => {
-        const rq = buildGenericGetAllRq(sort, currentPage);
-
-        API.post('Subscription/GetAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.subscriptions.map((subscription) => {
-                    return {
-                        id: subscription.id,
-                        name: subscription.name,
-                        price: formatCurrency(subscription.price),
-                        subscriptionProductItems: subscription.subscriptionProductItems,
-                        endpoint: 'Subscription',
-                    };
-                }),
-            );
-            if (r.data.subscriptions.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, sort]);
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     const updateDeletedRow = (id) => {
-        setRows((prevRow) => prevRow.filter((row) => row.id !== id));
+        setSubscriptions((prevRow) => prevRow.filter((row) => row.id !== id));
     };
+
+    // Render
+    if (!App.isAdmin()) {
+        return navigate('/notAllowed');
+    }
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Abonos' />
+            <BreadCrumb items={getBreadcrumbItems()} title='Abonos' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -127,20 +93,21 @@ const SubscriptionList = () => {
                                             onChange={handleSortChange}
                                         />
                                     </Col>
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
+                                            showIcon
                                             borderless
                                             placeholder='Buscar'
                                             helpText='Nombre'
-                                            value={filter}
-                                            onChange={handleFilterRows}
+                                            value={subsFilter}
+                                            onChange={handleFilterSubs}
                                         />
                                     </Col>
                                 </Row>
                                 <Table
                                     className='mb-5'
-                                    columns={columns}
-                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter))}
+                                    columns={allSubsCols}
+                                    rows={subscriptions.filter((r) => r.name.toLowerCase().includes(subsFilter.toLowerCase()))}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
@@ -156,7 +123,42 @@ const SubscriptionList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
+                    <Card
+                        header={<h4>Productos asociados a clientes</h4>}
+                        body={
+                            <>
+                                <Row>
+                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
+                                        <SubscriptionsDropdown
+                                            value={selectedSubs}
+                                            onChange={setSelectedSubs}
+                                        />
+                                    </Col>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
+                                        <Input
+                                            showIcon
+                                            borderless
+                                            placeholder='Nombre del cliente'
+                                            value={clientFilter}
+                                            onChange={handleFilterClients}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Table
+                                    className='mb-5'
+                                    columns={clientCols}
+                                    rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter))}
+                                    emptyTableMessage={selectedSubs && 'No se encontraron clientes asociados a este abono'}
+                                    pagination={true}
+                                    currentPage={currentPage}
+                                    totalCount={totalCount}
+                                    onPageChange={handlePageChange}
+                                    onUpdate={updateDeletedRow}
+                                />
+                            </>
+                        }
+                    />
                 </Col>
             </div>
         </>

@@ -237,7 +237,7 @@ const EditRoute = ({ isWatching = false }) => {
                                         )}
                                     </div>
                                 }
-                            ></Card>
+                            />
                         </Col>
                         <Col sm={6}>
                             <Card
@@ -274,7 +274,7 @@ const EditRoute = ({ isWatching = false }) => {
                                         </Row>
                                     )
                                 }
-                            ></Card>
+                            />
                         </Col>
                     </Row>
                 </Col>

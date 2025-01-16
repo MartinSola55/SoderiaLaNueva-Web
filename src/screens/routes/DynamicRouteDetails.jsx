@@ -1,36 +1,12 @@
-import {  Dropdown as DropdownBS, Col, Row } from 'react-bootstrap';
-import {
-    BreadCrumb,
-    Button,
-    Card,
-    Dropdown,
-    Input,
-    ProductTypesDropdown,
-    Spinner,
-    Table,
-    Toast,
-} from '../../components';
+import { Dropdown as DropdownBS, Col, Row } from 'react-bootstrap';
+import { BreadCrumb, Button, Card, Dropdown, Input, ProductTypesDropdown, Spinner, Table, Toast } from '../../components';
 import { useEffect, useRef, useState } from 'react';
 import API from '../../app/API';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
 import { InitialFormStates } from '../../app/InitialFormStates';
-import {
-    formatCartProducts,
-    formatCartSubscriptionProducts,
-    formatComboItems,
-    formatDebt,
-    formatDeliveryDay,
-    formatOptions,
-} from '../../app/Helpers';
-import {
-    faCheck,
-    faClock,
-    faDollarSign,
-    faHouse,
-    faPhone,
-    faShoppingBag,
-} from '@fortawesome/free-solid-svg-icons';
+import { formatCartProducts, formatCartSubscriptionProducts, formatComboItems, formatDebt, formatDeliveryDay, formatOptions } from '../../app/Helpers';
+import { faCheck, faClock, faDollarSign, faHouse, faPhone, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import LastProductsModal from './LastProductsModal';
 import SimpleCard from '../../components/SimpleCard/SimpleCard';
 import RouteInfoCard from './RouteInfoCard';
@@ -38,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import LastProductsButton from './LastProductsButton';
 import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
 import { CartStatuses } from '../../constants/Cart';
+
 import './route.scss';
 
 const breadcrumbItems = [
@@ -94,7 +71,7 @@ const DynamicRouteDetails = () => {
     const [cartProductRows, setCartProductRows] = useState([]);
     const [cartSubscriptionProductRows, setCartSubscriptionProductRows] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
-    
+
     const cartProductColumns = (pending) => [
         {
             name: pending ? 'description' : 'name',
@@ -102,7 +79,7 @@ const DynamicRouteDetails = () => {
             textCenter: true,
         },
         {
-            name:  pending ? 'quantity' : 'soldQuantity',
+            name: pending ? 'quantity' : 'soldQuantity',
             text: pending ? 'Bajó' : 'Cantidad',
             component: (props) => (
                 <Input
@@ -118,14 +95,14 @@ const DynamicRouteDetails = () => {
                                 if (cart.id === props.row.cartId) {
                                     const updatedProducts = cart.products.map((p) => {
                                         if (p.id === props.row.id) {
-                                        
+
                                             return {
                                                 ...p,
                                                 quantity: parseInt(value, 10),
                                             };
                                         }
                                         return p;
-                                    });    
+                                    });
                                     return {
                                         ...cart,
                                         products: updatedProducts,
@@ -175,7 +152,7 @@ const DynamicRouteDetails = () => {
             textCenter: true,
         },
         {
-            name: pending ? 'quantity' : 'subscriptionQuantity', 
+            name: pending ? 'quantity' : 'subscriptionQuantity',
             text: pending ? 'Bajó' : 'Cantidad',
             component: (props) => (
                 <Input
@@ -191,14 +168,14 @@ const DynamicRouteDetails = () => {
                                 if (cart.id === props.row.cartId) {
                                     const updatedSubscriptionProducts = cart.subscriptionProducts.map((sp) => {
                                         if (sp.id === props.row.id) {
-                                        
+
                                             return {
                                                 ...sp,
                                                 quantity: parseInt(value, 10),
                                             };
                                         }
                                         return sp;
-                                    });    
+                                    });
                                     return {
                                         ...cart,
                                         subscriptionProducts: updatedSubscriptionProducts,
@@ -245,7 +222,7 @@ const DynamicRouteDetails = () => {
         }
     }
 
-    const getProductStock = (productId)=> {
+    const getProductStock = (productId) => {
         let finalStock = 0;
         form.carts.forEach((cart) => {
             cart.client.products.forEach((prod) => {
@@ -270,26 +247,26 @@ const DynamicRouteDetails = () => {
         return total + form.transfersAmount
     }
 
-    const getSoldProductsRows = () =>{
+    const getSoldProductsRows = () => {
         return form.carts
-        .flatMap(cart => cart.products) 
-        .reduce((acc, product) => {
-          const existing = acc.find(item => item.productId === product.productId);
-          if (existing) {
-            existing.soldQuantity += product.soldQuantity;
-            existing.returnedQuantity += product.returnedQuantity;
-          } else {
-            
-            acc.push({
-                productId: product.productId,
-                stock: getProductStock(product.productId),
-                name: product.name,
-                soldQuantity: product.soldQuantity,
-                returnedQuantity: product.returnedQuantity,
-            });
-          }
-          return acc;
-        }, []); 
+            .flatMap(cart => cart.products)
+            .reduce((acc, product) => {
+                const existing = acc.find(item => item.productId === product.productId);
+                if (existing) {
+                    existing.soldQuantity += product.soldQuantity;
+                    existing.returnedQuantity += product.returnedQuantity;
+                } else {
+
+                    acc.push({
+                        productId: product.productId,
+                        stock: getProductStock(product.productId),
+                        name: product.name,
+                        soldQuantity: product.soldQuantity,
+                        returnedQuantity: product.returnedQuantity,
+                    });
+                }
+                return acc;
+            }, []);
     }
 
     // Refs
@@ -328,14 +305,14 @@ const DynamicRouteDetails = () => {
                     id: cart.id,
                     subscriptionProducts: formatCartSubscriptionProducts(Object.values(
                         cart.client.subscriptionProducts.reduce((acc, item) => {
-                          if (!acc[item.typeId]) {
-                            acc[item.typeId] = { ...item };
-                          } else {
-                            acc[item.typeId].available += item.available;
-                          }
-                          return acc;
+                            if (!acc[item.typeId]) {
+                                acc[item.typeId] = { ...item };
+                            } else {
+                                acc[item.typeId].available += item.available;
+                            }
+                            return acc;
                         }, {})
-                      ), cart.id)
+                    ), cart.id)
                 }));
             });
             setLoading(false);
@@ -345,25 +322,25 @@ const DynamicRouteDetails = () => {
 
     //  Handlers
     const handleOpenLastProducts = (lastProducts) => {
-        lastProductsRef.current?.open(() => {}, lastProducts);
+        lastProductsRef.current?.open(() => { }, lastProducts);
     };
 
-    const handleOpenUpdateCartStatus = (value, cartId, message =  '') => {
+    const handleOpenUpdateCartStatus = (value, cartId, message = '') => {
         actionConfirmationRef.current?.open(
-            { 
+            {
                 id: cartId,
                 status: value
-             },
+            },
             'Cart/UpdateStatus',
             `¿Está seguro que el cliente ${message}?`,
             null,
             () => {
                 setForm(prevForm => ({
                     ...prevForm,
-                    carts: prevForm.carts.map(cart => 
-                        cart.id === cartId 
-                        ? { ...cart, status: value }
-                        : cart
+                    carts: prevForm.carts.map(cart =>
+                        cart.id === cartId
+                            ? { ...cart, status: value }
+                            : cart
                     ),
                 }));
             });
@@ -371,19 +348,19 @@ const DynamicRouteDetails = () => {
 
     const handleOpenRestoreCartStatus = (cartId) => {
         actionConfirmationRef.current?.open(
-            { 
+            {
                 id: cartId,
-             },
+            },
             'Cart/RestoreStatus',
             `Esta acción no se puede revertir`,
             '¿Seguro deseas restablecer el estado de la bajada?',
             () => {
                 setForm(prevForm => ({
                     ...prevForm,
-                    carts: prevForm.carts.map(cart => 
-                        cart.id === cartId 
-                        ? { ...cart, status: CartStatuses.Pending }
-                        : cart
+                    carts: prevForm.carts.map(cart =>
+                        cart.id === cartId
+                            ? { ...cart, status: CartStatuses.Pending }
+                            : cart
                     ),
                 }));
             });
@@ -430,16 +407,16 @@ const DynamicRouteDetails = () => {
                 }
             ]
         };
-        
+
         API.post('Cart/Confirm', rq)
             .then((r) => {
                 Toast.success(r.message);
                 setForm(prevForm => ({
                     ...prevForm,
-                    carts: prevForm.carts.map(cart => 
-                        cart.id === r.data.id 
-                        ? { ...cart, status: CartStatuses.Confirmed }
-                        : cart
+                    carts: prevForm.carts.map(cart =>
+                        cart.id === r.data.id
+                            ? { ...cart, status: CartStatuses.Confirmed }
+                            : cart
                     ),
                 }));
             })
@@ -645,17 +622,17 @@ const DynamicRouteDetails = () => {
                                                                     />
                                                                     {
                                                                         !getIsSkippedCart(cart.status) && (
-                                                                        <DropdownBS className='ms-auto'>
-                                                                            <DropdownBS.Toggle as={Button} variant="primary" id="dropdown-basic">
-                                                                                Acción
-                                                                            </DropdownBS.Toggle>
+                                                                            <DropdownBS className='ms-auto'>
+                                                                                <DropdownBS.Toggle as={Button} variant="primary" id="dropdown-basic">
+                                                                                    Acción
+                                                                                </DropdownBS.Toggle>
 
-                                                                            <DropdownBS.Menu align="top">
-                                                                                <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.Absent, cart.id,'estaba ausente')}>{CartStatuses.Absent}</DropdownBS.Item>
-                                                                                <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.DidNotNeed, cart.id,'no necesitaba')}>{CartStatuses.DidNotNeed}</DropdownBS.Item>
-                                                                                <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus( CartStatuses.Holiday, cart.id,'estaba de vacaciones')}>{CartStatuses.Holiday}</DropdownBS.Item>
-                                                                            </DropdownBS.Menu>
-                                                                        </DropdownBS>
+                                                                                <DropdownBS.Menu align="top">
+                                                                                    <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.Absent, cart.id, 'estaba ausente')}>{CartStatuses.Absent}</DropdownBS.Item>
+                                                                                    <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.DidNotNeed, cart.id, 'no necesitaba')}>{CartStatuses.DidNotNeed}</DropdownBS.Item>
+                                                                                    <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.Holiday, cart.id, 'estaba de vacaciones')}>{CartStatuses.Holiday}</DropdownBS.Item>
+                                                                                </DropdownBS.Menu>
+                                                                            </DropdownBS>
                                                                         )
                                                                     }
                                                                 </Col>
@@ -674,7 +651,7 @@ const DynamicRouteDetails = () => {
                                                                                         rows={cart.products.length ? cart.products : cartSubscriptionProductRows.find((cr) => cr.id === cart.id)?.subscriptionProducts}
                                                                                     />
                                                                                 </Col>
-                                                                            ) 
+                                                                            )
                                                                         }
                                                                         <Col xs={12} md={cart.client.subscriptionProducts.length ? 4 : 6}>
                                                                             <h4>Bajada</h4>
@@ -703,14 +680,14 @@ const DynamicRouteDetails = () => {
                                                                             cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
                                                                                 <>
                                                                                     <Col xs={12} md={cart.client.subscriptionProducts.length ? 4 : 6}>
-                                                                                    <h4>Devoluciones</h4>
+                                                                                        <h4>Devoluciones</h4>
                                                                                         <Table
                                                                                             className='mt-1'
                                                                                             columns={cartReturdesProductColumns}
                                                                                             rows={cart.products}
                                                                                         />
                                                                                     </Col>
-                                                                                    <hr/>
+                                                                                    <hr />
                                                                                     <Col xs={12}>
                                                                                         {cart.paymentMethods.map((pm, idx) => {
                                                                                             return <ul key={idx}>
@@ -722,7 +699,7 @@ const DynamicRouteDetails = () => {
                                                                                             </ul>
                                                                                         })}
                                                                                     </Col>
-                                                                                    <hr/>
+                                                                                    <hr />
                                                                                 </>
                                                                             )
                                                                         }
@@ -735,35 +712,35 @@ const DynamicRouteDetails = () => {
                                                                         !getIsSkippedCart(cart.status) ? (
                                                                             cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() ? (
                                                                                 <Button
-                                                                                    onClick={() => handleSubmit({id: cart.id})}
+                                                                                    onClick={() => handleSubmit({ id: cart.id })}
                                                                                 >
                                                                                     Confirmar bajada
                                                                                 </Button>
                                                                             )
+                                                                                : (
+                                                                                    <>
+                                                                                        <Button
+                                                                                            onClick={() => navigate(`/bajadas/${cart.id}`)}
+                                                                                            className='bg-danger border-0 me-3'
+                                                                                        >
+                                                                                            Eliminar
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            onClick={() => navigate(`/bajadas/${cart.id}`)}
+                                                                                        >
+                                                                                            Ediar bajada
+                                                                                        </Button>
+                                                                                    </>
+                                                                                )
+                                                                        )
                                                                             : (
-                                                                                <>
-                                                                                    <Button
-                                                                                        onClick={() => navigate(`/bajadas/${cart.id}`)}
-                                                                                        className='bg-danger border-0 me-3'
-                                                                                    >
-                                                                                        Eliminar
-                                                                                    </Button>
-                                                                                    <Button
-                                                                                        onClick={() => navigate(`/bajadas/${cart.id}`)}
-                                                                                    >
-                                                                                        Ediar bajada
-                                                                                    </Button>
-                                                                                </>
+                                                                                <Button
+                                                                                    className='bg-danger border-0'
+                                                                                    onClick={() => handleOpenRestoreCartStatus(cart.id)}
+                                                                                >
+                                                                                    Cancelar estado
+                                                                                </Button>
                                                                             )
-                                                                        )
-                                                                        : (
-                                                                            <Button
-                                                                                className='bg-danger border-0'
-                                                                                onClick={() => handleOpenRestoreCartStatus(cart.id)}
-                                                                            >
-                                                                                Cancelar estado
-                                                                            </Button>
-                                                                        )
                                                                     }
                                                                 </Col>
                                                             </Row>
@@ -787,7 +764,7 @@ const DynamicRouteDetails = () => {
                             </Button>
                         </div>
                     }
-                ></Card>
+                />
             </Col>
         </>
     );

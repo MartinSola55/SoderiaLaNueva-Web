@@ -238,7 +238,7 @@ const ExpenseList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>

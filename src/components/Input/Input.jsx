@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import InfoButton from '../InfoButton/InfoButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import './input.scss';
 
@@ -16,6 +18,7 @@ const Input = forwardRef(({
     extraHelpStyle = {},
     extraHelpPlacement = undefined,
     borderless = false,
+    showIcon = false,
     isFloat = false,
     isPhone = false,
     required = false,
@@ -59,7 +62,7 @@ const Input = forwardRef(({
         if (maxLength && value.length > maxLength) {
             value = value.substring(0, maxLength);
         }
-        if (isNumeric && (isNaN(value) || !(value === '-' && minValue < 0))) {
+        if (isNumeric && isNaN(value)) {
             return;
         }
         if (isNumeric && value !== '' && !isNaN(value)) {
@@ -115,7 +118,7 @@ const Input = forwardRef(({
         placeholder,
         step: isFloat ? 0.01 : 1,
         disabled: disabled ? 'disabled' : undefined,
-        className: classNames('form-control', borderless && 'input-borderless', className),
+        className: classNames('form-control', borderless && 'input-borderless', showIcon && 'with-icon', className),
         onChange: handleChange,
         onFocus: handleFocus,
         onClick: onClick,
@@ -128,7 +131,10 @@ const Input = forwardRef(({
     if (tag === 'input') {
         return (
             <span className='input-container'>
-                <input {...inputProps} ref={inputRef} onKeyDown={handleKeyDown} />
+                <span className='input-wrapper'>
+                    <input {...inputProps} ref={inputRef} onKeyDown={handleKeyDown} />
+                    {showIcon && <FontAwesomeIcon icon={faSearch} color='#ccc' />}
+                </span>
                 {helpText && (
                     <small className={classNames('input-text', required && 'required')}>
                         {helpText}

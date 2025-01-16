@@ -1,50 +1,15 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    Input,
-    Table,
-    TableSort,
-    Toast,
-} from '../../components';
+import { ActionButtons, BreadCrumb, Button, Card, Input, ProductsDropdown, Table, TableSort, Toast } from '../../components';
 import { useEffect, useState } from 'react';
-import API from '../../app/API';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
-
-const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Productos',
-    },
-];
+import { clientCols, productCols, sortProductItems } from './Products.data';
+import { getAllProducts, getBreadcrumbItems, getClientProducts } from './Products.helpers';
 
 const ProductList = () => {
-    const columns = [
-        {
-            name: 'name',
-            text: 'Nombre',
-            textCenter: true,
-        },
-        {
-            name: 'price',
-            text: 'Precio',
-            textCenter: true,
-        },
-        {
-            name: 'type',
-            text: 'Tipo',
-            textCenter: true,
-        },
-        {
-            name: 'createdAt',
-            text: 'Fecha de creación',
-            textCenter: true,
-        },
+    const allProductCols = [
+        ...productCols,
         {
             name: 'actions',
             text: 'Acciones',
@@ -53,21 +18,46 @@ const ProductList = () => {
         },
     ];
 
-    const sortProductItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
-    ];
-
     const navigate = useNavigate();
 
-    const [rows, setRows] = useState([]);
-    const [filter, setFilter] = useState('');
+    // States
+    const [products, setProducts] = useState([]);
+    const [clients, setClients] = useState([]);
+    const [prodFilter, setProdFilter] = useState('');
+    const [clientFilter, setClientFilter] = useState('');
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
 
-    const handleFilterRows = (value) => {
-        setFilter(value.toLowerCase());
+    // Effects
+    useEffect(() => {
+        getAllProducts(sort, currentPage, ({ products, totalCount }) => {
+            setTotalCount(totalCount);
+            setProducts(products);
+
+            if (products.length === 0) {
+                Toast.warning(Messages.Error.noRows);
+            }
+        });
+    }, [currentPage, sort]);
+
+    useEffect(() => {
+        if (!selectedProduct)
+            return;
+
+        getClientProducts(selectedProduct, (clients) => {
+            setClients(clients);
+        });
+    }, [selectedProduct]);
+
+    // Handlers
+    const handleFilterProducts = (value) => {
+        setProdFilter(value);
+    };
+
+    const handleFilterClients = (value) => {
+        setClientFilter(value);
     };
 
     const handlePageChange = (page) => {
@@ -78,42 +68,18 @@ const ProductList = () => {
         setSort({ column, direction });
     };
 
-    useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
-
-    useEffect(() => {
-        const rq = buildGenericGetAllRq(sort, currentPage);
-
-        API.post('Product/GetAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.products.map((product) => {
-                    return {
-                        id: product.id,
-                        name: product.name,
-                        price: formatCurrency(product.price),
-                        type: product.type,
-                        createdAt: product.createdAt,
-                        endpoint: 'Product',
-                    };
-                }),
-            );
-            if (r.data.products.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, sort]);
-
     const updateDeletedRow = (id) => {
-        setRows((prevRow) => prevRow.filter((row) => row.id !== id));
+        setProducts((prevRow) => prevRow.filter((row) => row.id !== id));
     };
+
+    // Render
+    if (!App.isAdmin()) {
+        return navigate('/notAllowed');
+    }
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Productos' />
+            <BreadCrumb items={getBreadcrumbItems()} title='Productos' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -127,20 +93,20 @@ const ProductList = () => {
                                             onChange={handleSortChange}
                                         />
                                     </Col>
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
+                                            showIcon
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Nombre'
-                                            value={filter}
-                                            onChange={handleFilterRows}
+                                            value={prodFilter}
+                                            onChange={handleFilterProducts}
                                         />
                                     </Col>
                                 </Row>
                                 <Table
                                     className='mb-5'
-                                    columns={columns}
-                                    rows={rows.filter((r) => r.name.toLowerCase().includes(filter))}
+                                    columns={allProductCols}
+                                    rows={products.filter((x) => x.name.toLowerCase().includes(prodFilter.toLowerCase()))}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
@@ -159,7 +125,41 @@ const ProductList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
+                    <Card
+                        header={<h4>Productos asociados a clientes</h4>}
+                        body={
+                            <>
+                                <Row>
+                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
+                                        <ProductsDropdown
+                                            value={selectedProduct}
+                                            onChange={setSelectedProduct}
+                                        />
+                                    </Col>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
+                                        <Input
+                                            showIcon
+                                            borderless
+                                            placeholder='Nombre del cliente'
+                                            value={clientFilter}
+                                            onChange={handleFilterClients}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Table
+                                    className='mb-5'
+                                    columns={clientCols}
+                                    rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter))}
+                                    emptyTableMessage={selectedProduct && 'No se encontraron clientes asociados a este producto'}
+                                    currentPage={currentPage}
+                                    totalCount={totalCount}
+                                    onPageChange={handlePageChange}
+                                    onUpdate={updateDeletedRow}
+                                />
+                            </>
+                        }
+                    />
                 </Col>
             </div>
         </>

@@ -7,10 +7,10 @@ export class InitialFormStates {
         role: null,
     };
 
-    static Expense = { 
+    static Expense = {
         dealerId: '',
         description: '',
-        amount: 0 
+        amount: 0
     };
 
     static Subscription = {
@@ -35,27 +35,27 @@ export class InitialFormStates {
     };
 
     static StaticRoute = {
-        dealerId: null, 
-        deliveryDay: 1, 
-    }
+        dealerId: null,
+        deliveryDay: 1,
+    };
 
     static RouteDetails = {
         id: null,
-        dealer: null, 
-        deliveryDay: null, 
+        dealer: null,
+        deliveryDay: null,
         carts: [],
-    }
+    };
 
     static RouteClients = {
-        clients: [], 
-    }
+        clients: [],
+    };
 
     static CartFilters = {
         cartStatus: [],
         productType: [],
         cartTransfersType: [],
         cartPaymentStatus: [],
-    }
+    };
 
     static Cart = {
         id: null,
@@ -64,5 +64,11 @@ export class InitialFormStates {
         client: null,
         products: [],
         paymentMethods: []
+    };
+
+    static Product = {
+        name: '',
+        price: '',
+        typeId: null,
     }
 }

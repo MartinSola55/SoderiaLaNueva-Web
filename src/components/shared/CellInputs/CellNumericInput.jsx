@@ -9,6 +9,7 @@ const CellNumericInput = ({
         type='number'
         value={value}
         minValue={0}
+        maxValue={100}
         placeholder='Cantidad'
         onChange={onChange}
         {...props}

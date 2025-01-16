@@ -169,7 +169,7 @@ const UserList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>

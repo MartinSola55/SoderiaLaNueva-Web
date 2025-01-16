@@ -31,6 +31,8 @@ import RolesDropdown from './shared/RolesDropdown/RolesDropdown';
 import PaymentMethodsDropdown from './shared/PaymentMethodsDropdown/PaymentMethodsDropdown';
 import InvoiceTypesDropdown from './shared/InvoiceTypesDropdown/InvoiceTypesDropdown';
 import TaxConditionsDropdown from './shared/TaxConditionsDropdown/TaxConditionsDropdown';
+import ProductsDropdown from './shared/ProductsDropdown/ProductsDropdown';
+import SubscriptionsDropdown from './shared/SubscriptionsDropdown/SubscriptionsDropdown';
 import CellNumericInput from './shared/CellInputs/CellNumericInput';
 import CellCheck from './shared/CellInputs/CellCheck';
 
@@ -69,6 +71,8 @@ export {
     PaymentMethodsDropdown,
     InvoiceTypesDropdown,
     TaxConditionsDropdown,
+    ProductsDropdown,
+    SubscriptionsDropdown,
     CellNumericInput,
     CellCheck,
 };

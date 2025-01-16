@@ -9,7 +9,7 @@ const CellCheck = ({
         checked={checked}
         onChange={onChange}
         {...props}
-    ></CheckBox>
+    />
 };
 
 export default CellCheck;

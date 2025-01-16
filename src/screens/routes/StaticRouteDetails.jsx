@@ -58,7 +58,7 @@ const StaticRouteDetails = () => {
 
     //  Handlers
     const handleOpenLastProducts = (lastProducts) => {
-        lastProductsRef.current?.open(() => {}, lastProducts);
+        lastProductsRef.current?.open(() => { }, lastProducts);
     };
 
     const handleSubscriptionRenewals = () => {
@@ -67,7 +67,7 @@ const StaticRouteDetails = () => {
             'Subscription/RenewByRoute',
             'Esta acción no se puede revertir',
             '¿Seguro deseas renovar TODOS los abonos? Esto sólo incluye los clientes de esta planilla. Si un abono ya se renovó, no se volverá a renovar',
-            () => {},
+            () => { },
         );
     };
     const hanldeOpenNewRoute = () => {
@@ -178,7 +178,7 @@ const StaticRouteDetails = () => {
                             </Button>
                         </div>
                     }
-                ></Card>
+                />
             </Col>
         </>
     );

@@ -135,7 +135,7 @@ const ClientList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>

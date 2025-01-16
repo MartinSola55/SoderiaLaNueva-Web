@@ -177,7 +177,7 @@ const TransferList = () => {
                                 </Button>
                             </div>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>

@@ -38,7 +38,10 @@ const CreateClient = () => {
         }
 
         setSubmiting(true);
-        createClient(form, () => { navigate('/clientes/list') })
+        createClient(form,
+            () => { navigate('/clientes/list') },
+            () => { setSubmiting(false) }
+        );
     };
 
     const handleInputChange = (value, field) => {

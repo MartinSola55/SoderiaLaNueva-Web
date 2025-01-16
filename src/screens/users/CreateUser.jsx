@@ -209,7 +209,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                 </div>
                             )
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>

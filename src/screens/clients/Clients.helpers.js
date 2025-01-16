@@ -21,7 +21,7 @@ export const getBreadcrumbItems = (label) => {
     return items;
 };
 
-export const createClient = async (form, onSuccess) => {
+export const createClient = async (form, onSuccess, onError) => {
     const rq = {
         name: form.name,
         address: form.address,
@@ -46,6 +46,7 @@ export const createClient = async (form, onSuccess) => {
         })
         .catch((r) => {
             Toast.error(r.error.message);
+            onError();
         })
 };
 

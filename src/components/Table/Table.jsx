@@ -6,16 +6,17 @@ import './table.scss';
 
 const Table = ({
     columns,
-    rows,
+    rows = [],
     className = '',
+    emptyTableMessage = '',
     clickable = false,
     pagination = false,
     totalCount = 0,
     currentPage = 1,
-    onRowClick = () => {},
-    onCellClick = () => {},
-    onPageChange = () => {},
-    onUpdate = () => {},
+    onRowClick = () => { },
+    onCellClick = () => { },
+    onPageChange = () => { },
+    onUpdate = () => { },
 }) => {
     const handlePageChange = (page) => {
         onPageChange(page);
@@ -57,60 +58,51 @@ const Table = ({
                     </tr>
                 </thead>
                 <tbody className=''>
-                    {rows &&
-                        rows.map((row, i) => (
-                            <tr
-                                key={i}
-                                style={row.style}
-                                data-href={row.href}
-                                className={`${clickable ? 'clickable-row' : ''} ${row.isSelected ? 'selected-row' : ''}`}
-                                onClick={handleRowClick}
-                            >
-                                {columns &&
-                                    columns.map((col, j) => {
-                                        const isClickable = col.clickableColumn
-                                            ? 'clickable-row'
-                                            : '';
+                    {rows.length ? rows.map((row, i) => (
+                        <tr
+                            key={i}
+                            style={row.style}
+                            data-href={row.href}
+                            className={`${clickable ? 'clickable-row' : ''} ${row.isSelected ? 'selected-row' : ''}`}
+                            onClick={handleRowClick}
+                        >
+                            {columns &&
+                                columns.map((col, j) => {
+                                    const isClickable = col.clickableColumn
+                                        ? 'clickable-row'
+                                        : '';
 
-                                        return (
-                                            <td
-                                                key={j}
-                                                className={classNames(col.className, {
-                                                    [isClickable]: isClickable,
-                                                })}
-                                                onClick={(e) =>
-                                                    handleColClick(e, col.clickableColumn)
-                                                }
-                                            >
-                                                {!col.component ? (
-                                                    col.list ? (
-                                                        <ul
-                                                            className='mb-0'
-                                                            style={{
-                                                                maxHeight: '100px',
-                                                                overflowY: 'auto',
-                                                            }}
-                                                        >
-                                                            {row[col.name].map((item, k) => (
-                                                                <li key={k}>{item}</li>
-                                                            ))}
-                                                        </ul>
-                                                    ) : (
-                                                        row[col.name]
-                                                    )
-                                                ) : (
-                                                    <col.component
-                                                        row={row}
-                                                        disabled={row.disabled}
-                                                        onClick={handleCellClick}
-                                                        onUpdate={onUpdate}
-                                                    />
-                                                )}
-                                            </td>
-                                        );
-                                    })}
-                            </tr>
-                        ))}
+                                    return (
+                                        <td
+                                            key={j}
+                                            className={classNames(col.className, { [isClickable]: isClickable })}
+                                            onClick={(e) => handleColClick(e, col.clickableColumn)}
+                                        >
+                                            {!col.component ? (
+                                                col.list ?
+                                                    <ul
+                                                        className='mb-0'
+                                                        style={{
+                                                            maxHeight: '100px',
+                                                            overflowY: 'auto',
+                                                        }}
+                                                    >
+                                                        {row[col.name].map((item, k) => (
+                                                            <li key={k}>{item}</li>
+                                                        ))}
+                                                    </ul>
+                                                    : row[col.name]
+                                            ) : <col.component
+                                                row={row}
+                                                disabled={row.disabled}
+                                                onClick={handleCellClick}
+                                                onUpdate={onUpdate}
+                                            />}
+                                        </td>
+                                    );
+                                })}
+                        </tr>
+                    )) : emptyTableMessage && <tr><td colSpan={columns.length} className='text-start'>{emptyTableMessage}</td></tr>}
                 </tbody>
             </BS.Table>
             {pagination && rows && (

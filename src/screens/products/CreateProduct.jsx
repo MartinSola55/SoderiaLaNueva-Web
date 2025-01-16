@@ -1,23 +1,13 @@
-import { Col, Row } from 'react-bootstrap';
-import {
-    BreadCrumb,
-    Button,
-    Card,
-    Input,
-    Label,
-    Loader,
-    ProductTypesDropdown,
-    Spinner,
-} from '../../components';
 import { useEffect, useState } from 'react';
-import Toast from '../../components/Toast/Toast';
-import API from '../../app/API';
+import { useNavigate, useParams } from 'react-router';
+import { Col, Row } from 'react-bootstrap';
+import { BreadCrumb, Button, Card, Input, Label, Loader, ProductTypesDropdown, Spinner } from '../../components';
 import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
-import { useNavigate, useParams } from 'react-router';
+import { getBreadcrumbItems } from './Products.helpers';
+import Toast from '../../components/Toast/Toast';
+import API from '../../app/API';
 import App from '../../app/App';
-
-const initialForm = InitialFormStates.User;
 
 const CreateProduct = ({ isWatching = false }) => {
     const navigate = useNavigate();
@@ -25,29 +15,15 @@ const CreateProduct = ({ isWatching = false }) => {
     const params = useParams();
     const id = (params && params.id) || null;
 
-    const [form, setForm] = useState(initialForm);
+    const [form, setForm] = useState(InitialFormStates.Product);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
-
-    const breadcrumbItems = [
-        {
-            active: false,
-            url: '/productos/list',
-            label: 'Productos',
-        },
-        {
-            active: true,
-            label: isWatching ? 'Ver' : id ? 'Editar' : 'Nuevo',
-        },
-    ];
 
     // Get form data
     useEffect(() => {
         if (id) {
-            API.get('Product/GetOneById', { id }).then((r) => {
-                setForm(() => ({
-                    ...r.data,
-                }));
+            API.get('product/getOneById', { id }).then((r) => {
+                setForm(r.data);
                 setLoading(false);
             });
         }
@@ -101,7 +77,7 @@ const CreateProduct = ({ isWatching = false }) => {
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Productos' />
+            <BreadCrumb items={getBreadcrumbItems(id ? 'Editar' : 'Nuevo')} title='Productos' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -118,9 +94,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                                 disabled={isWatching}
                                                 placeholder='Nombre'
                                                 value={form.name}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'name')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'name')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
@@ -132,9 +106,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                                 placeholder='Precio'
                                                 type='number'
                                                 value={form.price}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'price')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'price')}
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
@@ -144,9 +116,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                                 placeholder='Seleccione un tipo'
                                                 required
                                                 value={form.typeId}
-                                                onChange={(value) =>
-                                                    handleInputChange(value, 'typeId')
-                                                }
+                                                onChange={(value) => handleInputChange(value, 'typeId')}
                                             />
                                         </Col>
                                     </Row>
@@ -169,7 +139,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                 )}
                             </div>
                         }
-                    ></Card>
+                    />
                 </Col>
             </div>
         </>
