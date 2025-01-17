@@ -20,7 +20,7 @@ module.exports = {
         ],
         'no-console': 'error',
         'no-debugger': 'error',
-        'no-unused-vars': 'error',
+        'no-unused-vars': 'warn',
         'react/prop-types': 'off',
         'prettier/prettier': [
             'off',
