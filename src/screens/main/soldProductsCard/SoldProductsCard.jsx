@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, DatePicker, Spinner, Table } from "../../../components";
 import { soldProductsCols } from "../Home.data";
+import { Dates } from "../../../app/Helpers";
 import API from "../../../app/API";
 
 import './SoldProductsCard.scss';
@@ -13,7 +14,7 @@ export const SoldProductsCard = () => {
     // Effects
     useEffect(() => {
         setLoading(true);
-        API.get('product/getSoldProductsByDate', { date: date.toISOString() }).then((r) => {
+        API.get('product/getSoldProductsByDate', { date: Dates.formatDate(date) }).then((r) => {
             setData(r.data.products);
             setLoading(false);
         });

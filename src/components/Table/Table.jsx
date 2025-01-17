@@ -69,7 +69,7 @@ const Table = ({
                             ))}
                     </tr>
                 </thead>
-                <tbody className=''>
+                <tbody>
                     {rows.length ? rows.map((row, i) => (
                         <tr
                             key={i}
@@ -78,50 +78,58 @@ const Table = ({
                             className={`${clickable ? 'clickable-row' : ''} ${row.isSelected ? 'selected-row' : ''}`}
                             onClick={handleRowClick}
                         >
-                            {columns &&
-                                columns.map((col, j) => {
-                                    const isClickable = col.clickableColumn
-                                        ? 'clickable-row'
-                                        : '';
+                            {columns && columns.map((col, j) => {
+                                const isClickable = col.clickableColumn
+                                    ? 'clickable-row'
+                                    : '';
 
-                                    if (col.name === 'icon')
-                                        return (
-                                            <td key={j} className={classNames(col.className, { [isClickable]: isClickable })}>
-                                                <span className='table-icon-container'><FontAwesomeIcon icon={col.icon} /></span>
-                                            </td>
-                                        );
-
+                                if (col.name === 'icon')
                                     return (
-                                        <td
-                                            key={j}
-                                            className={classNames(col.className, { [isClickable]: isClickable })}
-                                            onClick={(e) => handleColClick(e, col.clickableColumn)}
-                                        >
-                                            {!col.component ? (
-                                                col.list ?
-                                                    <ul
-                                                        className='mb-0'
-                                                        style={{
-                                                            maxHeight: '100px',
-                                                            overflowY: 'auto',
-                                                        }}
-                                                    >
-                                                        {row[col.name].map((item, k) => (
-                                                            <li key={k}>{item}</li>
-                                                        ))}
-                                                    </ul>
-                                                    : col.boldRow ? <h6 className='mb-0'>{row[col.name]}</h6> : row[col.name]
-                                            ) : <col.component
-                                                row={row}
-                                                disabled={row.disabled}
-                                                onClick={handleCellClick}
-                                                onUpdate={onUpdate}
-                                            />}
+                                        <td key={j} className={classNames(col.className, { [isClickable]: isClickable })}>
+                                            <span className='table-icon-container'><FontAwesomeIcon icon={col.icon} /></span>
                                         </td>
                                     );
-                                })}
+
+                                return (
+                                    <td
+                                        key={j}
+                                        className={classNames(col.className, { [isClickable]: isClickable })}
+                                        onClick={(e) => handleColClick(e, col.clickableColumn)}
+                                    >
+                                        {!col.component ? (
+                                            col.list ?
+                                                <ul
+                                                    className='mb-0'
+                                                    style={{
+                                                        maxHeight: '100px',
+                                                        overflowY: 'auto',
+                                                    }}
+                                                >
+                                                    {row[col.name].map((item, k) => (
+                                                        <li key={k}>{item}</li>
+                                                    ))}
+                                                </ul>
+                                                : col.boldRow
+                                                    ? <h6 className='mb-0'>{col.formatter ? col.formatter(row[col.name], row) : row[col.name]}</h6>
+                                                    : col.formatter
+                                                        ? col.formatter(row[col.name], row)
+                                                        : row[col.name]
+                                        ) : <col.component
+                                            row={row}
+                                            disabled={row.disabled}
+                                            onClick={handleCellClick}
+                                            onUpdate={onUpdate}
+                                        />}
+                                    </td>
+                                );
+                            })}
                         </tr>
-                    )) : emptyTableMessage && <tr><td colSpan={columns.length} className='text-start'>{emptyTableMessage}</td></tr>}
+                    )) : null}
+                    {emptyTableMessage &&
+                        <tr>
+                            <td colSpan={columns.length} className='text-start'>{emptyTableMessage}</td>
+                        </tr>
+                    }
                 </tbody>
             </BS.Table>
             {pagination && rows && (
