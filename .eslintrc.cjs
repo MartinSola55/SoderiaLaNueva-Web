@@ -18,9 +18,9 @@ module.exports = {
             'warn',
             { allowConstantExport: true },
         ],
-        'no-console': 'warn',
-        'no-debugger': 'warn',
-        'no-unused-vars': 'warn',
+        'no-console': 'error',
+        'no-debugger': 'error',
+        'no-unused-vars': 'error',
         'react/prop-types': 'off',
         'prettier/prettier': [
             'off',
