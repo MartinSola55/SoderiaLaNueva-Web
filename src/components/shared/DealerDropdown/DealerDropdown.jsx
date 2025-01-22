@@ -49,7 +49,8 @@ const MemoDropdown = memo(DealerDropdown, (prevProps, nextProps) => {
         nextProps.label === prevProps.label &&
         nextProps.required === prevProps.required &&
         nextProps.placeholder === prevProps.placeholder &&
-        nextProps.isMulti === prevProps.isMulti
+        nextProps.isMulti === prevProps.isMulti &&
+        nextProps.disabled === prevProps.disabled
     );
 });
 

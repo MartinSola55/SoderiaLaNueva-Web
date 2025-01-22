@@ -5,7 +5,7 @@ import { BreadCrumb } from '../../../components';
 import Toast from '../../../components/Toast/Toast';
 import { Messages } from '../../../constants/Messages';
 import { InitialFormStates } from '../../../app/InitialFormStates';
-import { createClient, getBreadcrumbItems, getProducts } from '../Clients.helpers';
+import { createClient, getBreadcrumbItems, getProducts, handleInputChange, handleProductsChange } from '../Clients.helpers';
 import { ClientInfo, ClientProductsTable } from '../cards';
 import App from '../../../app/App';
 
@@ -44,28 +44,6 @@ const CreateClient = () => {
         );
     };
 
-    const handleInputChange = (value, field) => {
-        setForm((prevForm) => {
-            return {
-                ...prevForm,
-                [field]: value,
-            };
-        });
-    };
-
-    const handleProductsChange = (props, value) => {
-        const products = form.products.map((x) => {
-            if (x.id === props.row.id)
-                return {
-                    ...x,
-                    quantity: value,
-                };
-            return x;
-        });
-
-        handleInputChange(products, 'products');
-    };
-
     // Render
     if (!App.isAdmin()) {
         return navigate('/notAllowed');
@@ -82,14 +60,14 @@ const CreateClient = () => {
                             loading={loading}
                             submiting={submiting}
                             onSubmit={handleSubmit}
-                            onInputChange={handleInputChange}
+                            onInputChange={(v, n) => handleInputChange(v, n, setForm)}
                         />
                     </Col>
                     <Col sm={6}>
                         <ClientProductsTable
                             products={form.products}
                             loading={loading}
-                            onProductsChange={handleProductsChange}
+                            onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
                         />
                     </Col>
                 </Row>

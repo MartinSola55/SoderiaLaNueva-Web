@@ -1,48 +1,43 @@
 import { Col, Row } from "react-bootstrap";
-import { Button, Card, CellNumericInput, Loader, Spinner, Table } from "../../../components";
+import { Button, Card, CellCheck, Loader, Spinner, Table } from "../../../components";
 import { useState } from "react";
 import { handleOnSubmit } from "../Clients.helpers";
 
-export const ClientProductsTable = ({
-    products,
+export const ClientSubscriptionProductsTable = ({
+    subscriptions,
     loading,
     isWatching,
-    onProductsChange,
-	onSubmit,
-	submiting
+    onSubscriptionsChange,
+	submiting = false,
+	onSubmit = () => {},
 }) => {
 	const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
 	
-    const productsColumns = [
+    const subscriptionsColumns = [
         {
             name: 'name',
-            text: 'Producto',
+            text: 'Abono',
             textCenter: true,
         },
         {
             name: 'quantity',
-            text: 'Stock',
+            text: 'Asociado',
             className: 'text-center',
-            component: (props) => {
-                if (interalIsWatching)
-                    return <span>{props.row.quantity !== '' ? props.row.quantity : '-'}</span>
-                else
-                    return <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => onProductsChange(props, v)} />
-            }
-        },
+            component: (props) => (<CellCheck {...props} disabled={interalIsWatching} checked={props.row.checked} onChange={(v) => onSubscriptionsChange(props, v)} />)
+		}
     ];
 
     return (
         <Card
-            title={interalIsWatching ? 'Productos asociados' : 'Asociar productos'}
+            title={interalIsWatching ? 'Abonos asociados' : 'Asociar abonos'}
             body={loading ? <Spinner /> :
                 <Row className='align-items-center'>
                     <Col xs={12}>
-                        <Table rows={products} columns={productsColumns} />
+                        <Table rows={subscriptions} columns={subscriptionsColumns} />
                     </Col>
                 </Row>
             }
-			footer={
+            footer={
                 <div className={`d-flex justify-content-${interalIsWatching ? 'end' : 'between'}`}>
 					{!interalIsWatching ? (
 						<>
