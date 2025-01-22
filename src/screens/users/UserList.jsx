@@ -1,5 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
 import {
+	ActionButtons,
     BreadCrumb,
     Button,
     Card,
@@ -22,6 +23,16 @@ const breadcrumbItems = [
         active: true,
         label: 'Usuarios',
     },
+];
+
+const userColumns = [
+	...columns,
+	{
+		name: 'actions',
+		text: 'Acciones',
+		component: (props) => < ActionButtons entity='usuario' {...props} />,
+		className: 'text-center',
+	},
 ];
 
 const UserList = () => {
@@ -110,7 +121,7 @@ const UserList = () => {
                                 </Row>
                                 <Table
                                     className='mb-5'
-                                    columns={columns}
+                                    columns={userColumns}
                                     rows={rows.filter(
                                         (r) =>
                                             r.fullName.toLowerCase().includes(filter) ||

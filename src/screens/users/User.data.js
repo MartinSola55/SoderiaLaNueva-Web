@@ -1,5 +1,3 @@
-import { ActionButtons } from "../../components";
-
 export const columns = [
 	{
 		name: 'fullName',
@@ -25,12 +23,6 @@ export const columns = [
 		name: 'createdAt',
 		text: 'Fecha de ingreso',
 		textCenter: true,
-	},
-	{
-		name: 'actions',
-		text: 'Acciones',
-		component: (props) => <ActionButtons entity='usuario' {...props} />,
-		className: 'text-center',
 	},
 ];
 

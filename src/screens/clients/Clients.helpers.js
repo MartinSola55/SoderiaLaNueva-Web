@@ -63,6 +63,7 @@ export const updateClient = async (form, onSuccess, onError) => {
         invoiceType: form.invoiceType,
         taxCondition: form.taxCondition,
         cuit: form.cuit,
+        debt: form.debt,
         products: form.products.map((x) => ({
             productId: x.id,
             quantity: x.quantity,

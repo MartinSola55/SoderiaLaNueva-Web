@@ -70,7 +70,7 @@ export const ClientInfo = ({
                                 onChange={(value) => onInputChange(value, 'deliveryDay')}
                             />
                         </Col>
-						{interalIsWatching && (
+						{isWatching && (
 							<Col xs={12} className='pe-3 mb-3'>
 								<Label>Deuda</Label>
 								<Input
