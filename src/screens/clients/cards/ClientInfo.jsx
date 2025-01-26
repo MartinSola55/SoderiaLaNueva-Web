@@ -126,13 +126,15 @@ export const ClientInfo = ({
                 </>
             }
             footer={
-                <div className='d-flex justify-content-between'>
+                <div className={`d-flex justify-content-${isWatching ? 'between' : 'end'}`}>
 					{!interalIsWatching ? (
 						<>
-							<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
-								Cancelar
-							</Button>
-							<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
+							{isWatching && (
+								<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+									Cancelar
+								</Button>
+							)}
+							<Button onClick={() => !isWatching ? onSubmit() : handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
 								{submiting ? <Loader /> : 'Guardar'}
 							</Button>
 						</>

@@ -1,29 +1,28 @@
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Card, Input, Table } from '../../components';
+import { BreadCrumb, Card, Input, Table } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
-import Toast from '../../components/Toast/Toast';
-import API from '../../app/API';
-import { Messages } from '../../constants/Messages';
-import { InitialFormStates } from '../../app/InitialFormStates';
+import Toast from '../../../components/Toast/Toast';
+import API from '../../../app/API';
+import { Messages } from '../../../constants/Messages';
+import { InitialFormStates } from '../../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
-import App from '../../app/App';
-import { buildGenericGetAllRq } from '../../app/Helpers';
-import { Roles } from '../../constants/Roles';
-import RouteModal from './RouteModal';
+import App from '../../../app/App';
+import RouteModal from '../modals/RouteModal';
+import { createColumns } from '../Routes.data';
+import { getAllDealers } from '../Routes.helpers';
 
 const initialForm = InitialFormStates.StaticRoute;
 
 const CreateRoute = () => {
-    const columns = [
+	const breadcrumbItems = [
         {
-            name: 'fullName',
-            text: 'Nombre y apellido',
-            textCenter: true,
+            active: false,
+            url: '/planillas/list',
+            label: 'Planillas',
         },
         {
-            name: 'email',
-            text: 'Email',
-            textCenter: true,
+            active: true,
+            label: 'Nuevo',
         },
     ];
 
@@ -40,39 +39,16 @@ const CreateRoute = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
 
-    const breadcrumbItems = [
-        {
-            active: false,
-            url: '/planillas/list',
-            label: 'Planillas',
-        },
-        {
-            active: true,
-            label: 'Nuevo',
-        },
-    ];
-
     // Get form data
     useEffect(() => {
-        const rq = buildGenericGetAllRq(null, currentPage);
+		getAllDealers(currentPage, ({ dealers, totalCount }) => {
+			setTotalCount(totalCount);
+			setRows(dealers);
 
-        rq.roles = [Roles.Dealer];
-
-        API.post('User/GetAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.users.map((user) => {
-                    return {
-                        email: user.email,
-                        fullName: user.fullName,
-                        href: JSON.stringify({ id: user.id, fullName: user.fullName }),
-                    };
-                }),
-            );
-            if (r.data.users.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
+			if (dealers.length === 0) {
+				Toast.warning(Messages.Error.noRows);
+			}
+		});
     }, [currentPage]);
 
     const handleSubmit = async (form) => {
@@ -165,12 +141,9 @@ const CreateRoute = () => {
                                 </Row>
                                 <Table
                                     className='mb-5'
-                                    columns={columns}
-                                    rows={rows.filter(
-                                        (r) =>
-                                            r.fullName.toLowerCase().includes(filter) ||
-                                            r.email.toLowerCase().includes(filter),
-                                    )}
+                                    columns={createColumns}
+                                    rows={rows.filter((r) => r.fullName.toLowerCase().includes(filter) || r.email.toLowerCase().includes(filter))}
+									emptyTableMessage={rows.length === 0 && 'No se encontraron repartidores'}
                                     clickable={true}
                                     pagination={true}
                                     currentPage={currentPage}

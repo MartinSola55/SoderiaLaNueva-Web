@@ -37,6 +37,11 @@ const CreateClient = () => {
             return;
         }
 
+		if (form.products.every(x => x.quantity === '')){
+			Toast.warning("El cliente debe tener al menos un producto asociado.");
+            return;
+		}
+
         setSubmiting(true);
         createClient(form,
             () => { navigate('/clientes/list') },
@@ -60,6 +65,7 @@ const CreateClient = () => {
                             loading={loading}
                             submiting={submiting}
                             onSubmit={handleSubmit}
+							isWatching={false}
                             onInputChange={(v, n) => handleInputChange(v, n, setForm)}
                         />
                     </Col>
@@ -67,6 +73,7 @@ const CreateClient = () => {
                         <ClientProductsTable
                             products={form.products}
                             loading={loading}
+							isWatching={false}
                             onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
                         />
                     </Col>

@@ -1,12 +1,14 @@
-import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Card, Input, PaymentMethodsDropdown, Spinner, Table } from '../../components';
+import { Button, Col, Row } from 'react-bootstrap';
+import { BreadCrumb, Card, CellNumericInput, Spinner, Table } from '../../components';
 import { useEffect, useState } from 'react';
 import Toast from '../../components/Toast/Toast';
 import API from '../../app/API';
-import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
+import { formatPaymentMethods } from '../../app/Helpers';
+import { getPaymentMethodRows, onPaymentMethodsChange, onQuantityChange } from './Cart.helpers.js';
+import { Loader } from 'rsuite';
 
 const initialForm = InitialFormStates.Cart;
 
@@ -19,6 +21,8 @@ const CreateCart = ({ isWatching = false }) => {
     const [form, setForm] = useState(initialForm);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
+    const [paymentMethods, setPaymentMethods] = useState([]);
+    const [subscriptionProductsRows, setSubscriptionProductsRows] = useState([]);
 
     const breadcrumbItems = [
         {
@@ -41,35 +45,12 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'soldQuantity',
             text: 'Cantidad',
-            component: (props) => (
-                <Input
-                    numeric
-                    isFloat
-                    minValue={0}
-                    placeholder='Cantidad'
-                    type='number'
-                    value={props.row.soldQuantity}
-                    onChange={(value) =>
-                        handleInputChange(
-                            form.products.map((p) => {
-                                if (p.id === props.row.id)
-                                    return {
-                                        ...p,
-                                        soldQuantity: value,
-                                    };
-                                return p;
-                            }),
-                            'products',
-                        )
-                    }
-                    {...props}
-                />
-            ),
+            component: (props) => (<CellNumericInput {...props} value={props.row.soldQuantity} onChange={(v) => onQuantityChange(props, v, form, handleInputChange, 'soldQuantity')}/>),
             textCenter: true,
         },
     ];
 
-    const returnedColumns = [
+	const returnedColumns = [
         {
             name: 'name',
             text: 'Producto',
@@ -78,33 +59,39 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'returnedQuantity',
             text: 'Cantidad',
-            component: (props) => (
-                <Input
-                    numeric
-                    isFloat
-                    minValue={0}
-                    placeholder='Cantidad'
-                    type='number'
-                    value={props.row.returnedQuantity}
-                    onChange={(value) =>
-                        handleInputChange(
-                            form.products.map((p) => {
-                                if (p.id === props.row.id)
-                                    return {
-                                        ...p,
-                                        returnedQuantity: value,
-                                    };
-                                return p;
-                            }),
-                            'products',
-                        )
-                    }
-                    {...props}
-                />
-            ),
+            component: (props) => (<CellNumericInput {...props} value={props.row.returnedQuantity} onChange={(v) => onQuantityChange(props, v, form, handleInputChange, 'returnedQuantity')}/>),
             textCenter: true,
         },
     ];
+
+	const subscriptionColumns = [
+        {
+            name: 'name',
+            text: 'Producto',
+            textCenter: true,
+        },
+        {
+            name: 'subscriptionQuantity',
+            text: 'Cantidad',
+            component: (props) => (<CellNumericInput {...props} value={props.row.subscriptionQuantity} onChange={(v) => onQuantityChange(props, v, form, handleInputChange, 'subscriptionQuantity')}/>),
+            textCenter: true,
+        },
+    ];
+
+    const paymentMethodsColumns = [
+        {
+            name: 'name',
+            text: 'Método',
+            textCenter: true,
+        },
+        {
+            name: 'amount',
+            text: 'Cantidad',
+            component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => onPaymentMethodsChange(props, v, form, handleInputChange)}/>),
+            textCenter: true,
+        },
+    ];
+
 
     // Get form data
     useEffect(() => {
@@ -113,68 +100,51 @@ const CreateCart = ({ isWatching = false }) => {
                 setForm(() => ({
                     ...r.data,
                 }));
+				setSubscriptionProductsRows(r.data.subscriptionProducts)
                 setLoading(false);
             });
         }
+        API.get('Cart/GetPaymentStatusesCombo').then((r) => {
+            setPaymentMethods(formatPaymentMethods(r.data.items));
+        });
     }, [id]);
 
-    const handleSubmit = async (url = '') => {
+    const handleSubmit = async () => {
         if (submiting) return;
 
-        if (
-            !url &&
-            (!form.name ||
-                !form.address ||
-                !form.phone ||
-                (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit)))
-        ) {
-            Toast.warning(Messages.Validation.requiredFields);
-            return;
-        }
+		if (form.products.some(x => (x.soldQuantity === '' && x.returnedQuantity !== '') || (x.returnedQuantity === '' && x.soldQuantity !== ''))) {
+			Toast.warning("Para eliminar un producto, ambos campos deben estar vacíos.");
+			return;
+		};
+		
+		setSubmiting(true);
 
-        setSubmiting(true);
+		let rq = {
+			products: form.products.filter(x => x.soldQuantity !== '' && x.returnedQuantity !== '').map((x) => ({
+				productTypeId: x.productTypeId,
+				soldQuantity: x.soldQuantity,
+				returnedQuantity: x.returnedQuantity,
+			})),
+			// TODO no entiendo
+			// subscriptionProducts: form.products.filter(x => x.subscriptionQuantity !== '').map((x) => ({
+			// 	productTypeId: x.id,
+			// 	quantity: x.subscriptionQuantity,
+			// })),
+			paymentMethods: form.paymentMethods.filter(x => x.amount !== '').map((x) => ({
+				paymentMethodId: x.paymentMethodId,
+				amount: x.amount,
+			})),
+		};
 
-        let rq;
+		if (id) {
+			rq.id = id;
+		}
 
-        if (!url) {
-            rq = {
-                name: form.name,
-                address: form.address,
-                phone: form.phone,
-                observations: form.observations,
-                dealerId: form.dealerId,
-                deliveryDay: form.deliveryDay,
-                hasInvoice: form.hasInvoice,
-                invoiceType: form.invoiceType,
-                taxCondition: form.taxCondition,
-                cuit: form.cuit,
-                products: form.products.map((x) => ({
-                    productId: x.id,
-                    quantity: x.quantity,
-                })),
-            };
-            if (id) {
-                rq.id = id;
-            }
-        } else if (url === 'UpdateClientProducts') {
-            rq = {
-                clientId: id,
-                products: form.products.map((x) => ({
-                    productId: x.id,
-                    quantity: x.quantity,
-                })),
-            };
-        } else if (url === 'UpdateClientSubscriptions') {
-            rq = {
-                clientId: id,
-                subscriptionIds: form.subscriptions,
-            };
-        }
-
-        API.post(`Client/${url || (id ? 'UpdateClientData' : 'Create')}`, rq)
+        API.post('Cart/Update', rq)
             .then((r) => {
                 Toast.success(r.message);
-                if (!url) navigate('/clientes/list');
+				// TODO, cual hacemos?? Que vaya para atras o se quede donde está
+                // navigate(`/planillas/abierta/${r.data?.routeId}`);
             })
             .catch((r) => {
                 Toast.error(r.error.message);
@@ -197,6 +167,17 @@ const CreateCart = ({ isWatching = false }) => {
         return navigate('/notAllowed');
     }
 
+	const getSubscriptionProductsRows = () => {
+		return form.subscriptionProducts?.map((sp) => {
+			const existingSubscriptionProduct = form.products.find(x => x.productTypeId === sp.typeId);
+			return {
+				productTypeId: sp.typeId,
+				name: `${sp.name} - Disponible: ${sp.available} `,
+				subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
+			};
+		})
+	};
+
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Bajadas' />
@@ -208,6 +189,21 @@ const CreateCart = ({ isWatching = false }) => {
                     <hr />
                 </>
                 <Row>
+                    <Col sm={6}>
+                        <Card
+                            title='Productos del abono'
+                            body={
+                                loading ? (
+                                    <Spinner />
+                                ) : (
+                                    <Table
+                                        columns={subscriptionColumns}
+                                        rows={getSubscriptionProductsRows()}
+                                    />
+                                )
+                            }
+                        />
+                    </Col>
                     <Col sm={6}>
                         <Card
                             title='Productos bajados'
@@ -246,25 +242,21 @@ const CreateCart = ({ isWatching = false }) => {
                                     <Spinner />
                                 ) : (
                                     <>
-                                        <PaymentMethodsDropdown
-                                            placeholder='Método de pago'
-                                            value={form.paymentMethods}
-                                        />
-                                        <Input
-                                            numeric
-                                            isFloat
-                                            minValue={0}
-                                            placeholder='Cantidad'
-                                            type='number'
-                                            className='mt-3'
-                                        // value={props.row.quantity} 
-                                        />
+										<Table
+											rows={getPaymentMethodRows(paymentMethods, form)}
+											columns={paymentMethodsColumns}
+										/>
                                     </>
                                 )
                             }
                         />
                     </Col>
                 </Row>
+				<Col className='text-end'>
+					<Button onClick={handleSubmit} disabled={submiting}>
+						{submiting ? <Loader /> : 'Actualizar' }
+					</Button>
+				</Col>
             </Col>
         </>
     );

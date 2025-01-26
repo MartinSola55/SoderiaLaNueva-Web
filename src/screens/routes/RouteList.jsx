@@ -1,10 +1,13 @@
 import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, DeliveryDayDropdown, Label, Table } from '../../components';
-import { useEffect, useState } from 'react';
+import { ActionButtons, BreadCrumb, Button, Card, DeliveryDayDropdown, Label, Table, Toast } from '../../components';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { getDayIndex } from '../../app/Helpers';
 import App from '../../app/App';
-import API from '../../app/API';
+import { listColumns } from './Routes.data';
+import { getAllRoutes } from './Routes.helpers';
+import { Messages } from '../../constants/Messages';
+import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
 
 const breadcrumbItems = [
     {
@@ -14,65 +17,63 @@ const breadcrumbItems = [
 ];
 
 const RouteList = () => {
-    const columns = [
-        {
-            name: 'dealer',
-            text: 'Repartidor',
-            textCenter: true,
-        },
-        {
-            name: 'totalCarts',
-            text: 'Envíos a Realizar',
-            textCenter: true,
-        },
-        {
-            name: 'actions',
-            text: 'Acciones',
-            component: (props) => <ActionButtons entity='planilla' {...props} />,
-            className: 'text-center',
-        },
-    ];
-
     const navigate = useNavigate();
 
+	const routeColumns = [
+		...listColumns,
+		{
+			name: 'actions',
+			text: 'Acciones',
+			component: (props) => <ActionButtons entity='planilla' {...props} />,
+			className: 'text-center',
+		},
+	];
+	
     const [rows, setRows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [dayFilter, setDayFilter] = useState(getDayIndex());
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+	// Refs
+	const actionConfirmationRef = useRef(null);
 
-    const handleDayFilterChange = (v) => {
-        setDayFilter(v);
-    };
-
+	// Effects
     useEffect(() => {
         if (!App.isAdmin()) {
             return navigate('/notAllowed');
         }
     }, [navigate]);
 
-    useEffect(() => {
-        const rq = {
-            deliveryDay: dayFilter,
-        };
+	// Todo: paginar esto??
+	useEffect(() => {
+		getAllRoutes(dayFilter, ({ routes, totalCount }) => {
+			setTotalCount(totalCount);
+			setRows(routes);
 
-        API.get('route/getAllStaticRoutes', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.routes.map((route) => {
-                    return {
-                        id: route.id,
-                        dealer: route.dealer,
-                        totalCarts: route.totalCarts,
-                        endpoint: 'Routes',
-                    };
-                }),
-            );
-        });
+			if (routes.length === 0) {
+				Toast.warning(Messages.Error.noRows);
+			}
+		});
     }, [currentPage, dayFilter]);
+
+	// Handlers
+	const handlePageChange = (page) => {
+		setCurrentPage(page);
+	};
+
+	const handleDayFilterChange = (v) => {
+		setDayFilter(v);
+	};
+
+	const handleRenewAllSubscriptions = () => {
+		actionConfirmationRef.current?.open(
+			{},
+			'Subscription/RenewAll',
+			'Esta acción no se puede revertir',
+			'¿Seguro deseas renovar TODOS los abonos? Esto incluye los clientes de todo el sistema. Si un abono ya se renovó, no se volverá a renovar',
+			() => { },
+		);
+	};
 
     const updateDeletedRow = (id) => {
         setRows((prevRow) => prevRow.filter((row) => row.id !== id));
@@ -80,6 +81,7 @@ const RouteList = () => {
 
     return (
         <>
+            <ActionConfirmationModal ref={actionConfirmationRef} />
             <BreadCrumb items={breadcrumbItems} title='Planillas' />
             <div>
                 <Col xs={11} className='container'>
@@ -99,9 +101,9 @@ const RouteList = () => {
                                 </Row>
                                 <Table
                                     className='mb-5'
-                                    columns={columns}
+                                    columns={routeColumns}
                                     rows={rows}
-                                    emptyTableMessage='No se encontraron planillas para el día seleccionado'
+                                    emptyTableMessage={rows.length === 0 && 'No se encontraron planillas para el día seleccionado'}
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
@@ -111,7 +113,13 @@ const RouteList = () => {
                             </>
                         }
                         footer={
-                            <div className='d-flex justify-content-end'>
+                            <div className='d-flex justify-content-between'>
+                                <Button
+                                    onClick={handleRenewAllSubscriptions}
+                                    variant='primary'
+                                >
+                                    Renovar TODOS los abonos
+                                </Button>
                                 <Button
                                     onClick={() => navigate('/planillas/new')}
                                     variant='primary'

@@ -1,6 +1,6 @@
-import { Button } from '../../components';
+import { Button } from '../../../components';
 import { faClipboard } from '@fortawesome/free-solid-svg-icons';
-import './route.scss';
+import '../route.scss';
 import classNames from 'classnames';
 
 const LastProductsButton = ({ onClick = () => {}, className }) => {

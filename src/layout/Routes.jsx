@@ -9,12 +9,12 @@ import CreateSubscription from '../screens/subscriptions/CreateSubscription.jsx'
 import CreateClient from '../screens/clients/create/CreateClient.jsx';
 import ClientList from '../screens/clients/ClientList.jsx';
 import RouteList from '../screens/routes/RouteList.jsx';
-import CreateRoute from '../screens/routes/CreateRoute.jsx';
-import EditRoute from '../screens/routes/EditRoute.jsx';
-import RouteDetails from '../screens/routes/StaticRouteDetails.jsx';
-import DynamicRouteDetails from '../screens/routes/DynamicRouteDetails.jsx';
+import EditRoute from '../screens/routes/edit/EditRoute.jsx';
+import RouteDetails from '../screens/routes/staticRouteDetails/StaticRouteDetails.jsx';
 import CreateCart from '../screens/carts/CreateCart.jsx';
 import ClientDetails from '../screens/clients/details/ClientDetails.jsx';
+import CreateRoute from '../screens/routes/create/CreateRoute.jsx';
+import DynamicRouteDetails from '../screens/routes/dynamicRouteDetails/DynamicRouteDetails.jsx';
 
 // Lazy loading de componentes
 const Login = lazy(() => import('../screens/public/Login.jsx'));

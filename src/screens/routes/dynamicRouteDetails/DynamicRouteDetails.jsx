@@ -1,21 +1,25 @@
+/* eslint-disable no-console */
 import { Dropdown as DropdownBS, Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Dropdown, Input, ProductTypesDropdown, Spinner, Table, Toast } from '../../components';
+import { BreadCrumb, Button, Card, CellNumericInput, Dropdown, Input, ProductTypesDropdown, Spinner, Table, Toast } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
-import API from '../../app/API';
+import API from '../../../app/API';
 import { useNavigate, useParams } from 'react-router';
-import App from '../../app/App';
-import { InitialFormStates } from '../../app/InitialFormStates';
-import { formatCartProducts, formatCartSubscriptionProducts, formatComboItems, formatDebt, formatDeliveryDay, formatOptions } from '../../app/Helpers';
+import App from '../../../app/App';
+import { formatCartProducts, formatCartSubscriptionProducts, formatComboItems, formatCurrency, formatDebt, formatDeliveryDay, formatOptions, getDebtTextColor } from '../../../app/Helpers';
 import { faCheck, faClock, faDollarSign, faHouse, faPhone, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
-import LastProductsModal from './LastProductsModal';
-import SimpleCard from '../../components/SimpleCard/SimpleCard';
-import RouteInfoCard from './RouteInfoCard';
+import SimpleCard from '../../../components/SimpleCard/SimpleCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import LastProductsButton from './LastProductsButton';
-import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import { CartStatuses } from '../../constants/Cart';
+import { CartStatuses } from '../../../constants/Cart';
+import { InitialFormStates } from '../../../app/InitialFormStates';
+import LastProductsModal from '../lastProducts/LastProductsModal';
+import RouteInfoCard from '../cards/RouteInfoCard';
+import LastProductsButton from '../lastProducts/LastProductsButton';
+import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
+import { soldProductsColumns } from '../Routes.data';
+import { getCartTitleClassname, getIsSkippedCart, getMoneyCollected, getSoldProductsRows, getTotalCart, getTotalDebt, updateAfterSubmit } from '../Routes.helpers';
+import { onProductsChange, onSubscriptionProductsChange } from '../Routes.helpers';
 
-import './route.scss';
+import '../route.scss';
 
 const breadcrumbItems = [
     {
@@ -32,31 +36,61 @@ const initialForm = InitialFormStates.RouteDetails;
 const initialFilters = InitialFormStates.CartFilters;
 
 const DynamicRouteDetails = () => {
+
     // Consts
     const navigate = useNavigate();
     const params = useParams();
     const id = (params && params.id) || null;
-
-    const columns = [
+	
+	const cartReturnedProductColumns = [
         {
             name: 'name',
             text: 'Producto',
             textCenter: true,
         },
         {
-            name: 'soldQuantity',
-            text: 'Vendidos',
+            name: 'quantity',
+            text: 'Cantidad',
+			component: (props) => { return <span>{props.row.returnedQuantity !== '' ? props.row.returnedQuantity : '-'}</span>},
+            className: 'text-center',
+        },
+    ];
+	
+    const cartProductColumns = (pending) => [
+        {
+            name: pending ? 'description' : 'name',
+            text: 'Producto',
             textCenter: true,
         },
         {
-            name: 'returnedQuantity',
-            text: 'Devueltos',
+            name: pending ? 'quantity' : 'soldQuantity',
+            text: pending ? 'Bajó' : 'Cantidad',
+			component: (props) => {
+                if (!pending)
+                    return <span>{props.row.soldQuantity !== '' ? props.row.soldQuantity : '-'}</span>
+                else
+                    return <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => onProductsChange(props, v, setCartProductRows)} />
+            },
+            className: 'text-center',
+        },
+    ];
+
+    const cartSubscriptionProductsColumns = (pending) => [
+        {
+            name: pending ? 'description' : 'name',
+            text: 'Producto',
             textCenter: true,
         },
         {
-            name: 'stock',
-            text: 'Stock del cliente',
-            textCenter: true,
+            name: pending ? 'quantity' : 'subscriptionQuantity',
+            text: pending ? 'Bajó' : 'Cantidad',
+			component: (props) => {
+                if (!pending)
+                    return <span>{props.row.subscriptionQuantity !== '' ? props.row.subscriptionQuantity : '-'}</span>
+                else
+                    return <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => onSubscriptionProductsChange(props, v, setCartSubscriptionProductRows)} />
+            },
+            className: 'text-center',
         },
     ];
 
@@ -72,204 +106,9 @@ const DynamicRouteDetails = () => {
     const [cartSubscriptionProductRows, setCartSubscriptionProductRows] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
 
-    const cartProductColumns = (pending) => [
-        {
-            name: pending ? 'description' : 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: pending ? 'quantity' : 'soldQuantity',
-            text: pending ? 'Bajó' : 'Cantidad',
-            component: (props) => (
-                <Input
-                    numeric
-                    isFloat
-                    minValue={0}
-                    placeholder='Cantidad'
-                    type='number'
-                    value={pending ? props.row.quantity : props.row.soldQuantity}
-                    onChange={(value) => (
-                        setCartProductRows((prevState) => {
-                            return prevState.map((cart) => {
-                                if (cart.id === props.row.cartId) {
-                                    const updatedProducts = cart.products.map((p) => {
-                                        if (p.id === props.row.id) {
-
-                                            return {
-                                                ...p,
-                                                quantity: parseInt(value, 10),
-                                            };
-                                        }
-                                        return p;
-                                    });
-                                    return {
-                                        ...cart,
-                                        products: updatedProducts,
-                                    };
-                                }
-                                return cart;
-                            });
-                        })
-                    )}
-                    {...props}
-                    disabled={!pending}
-                />
-            ),
-            className: 'text-center',
-        },
-    ];
-
-    const cartReturdesProductColumns = [
-        {
-            name: 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: 'quantity',
-            text: 'Cantidad',
-            component: (props) => (
-                <Input
-                    numeric
-                    isFloat
-                    minValue={0}
-                    placeholder='Cantidad'
-                    type='number'
-                    value={props.row.returnedQuantity}
-                    {...props}
-                    disabled={true}
-                />
-            ),
-            className: 'text-center',
-        },
-    ];
-
-    const cartSubscriptionProductsColumns = (pending) => [
-        {
-            name: pending ? 'description' : 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: pending ? 'quantity' : 'subscriptionQuantity',
-            text: pending ? 'Bajó' : 'Cantidad',
-            component: (props) => (
-                <Input
-                    numeric
-                    isFloat
-                    minValue={0}
-                    placeholder='Cantidad'
-                    type='number'
-                    value={pending ? props.row.quantity : props.row.subscriptionQuantity}
-                    onChange={(value) => (
-                        setCartSubscriptionProductRows((prevState) => {
-                            return prevState.map((cart) => {
-                                if (cart.id === props.row.cartId) {
-                                    const updatedSubscriptionProducts = cart.subscriptionProducts.map((sp) => {
-                                        if (sp.id === props.row.id) {
-
-                                            return {
-                                                ...sp,
-                                                quantity: parseInt(value, 10),
-                                            };
-                                        }
-                                        return sp;
-                                    });
-                                    return {
-                                        ...cart,
-                                        subscriptionProducts: updatedSubscriptionProducts,
-                                    };
-                                }
-                                return cart;
-                            });
-                        })
-                    )}
-                    {...props}
-                    disabled={!pending}
-                />
-            ),
-            className: 'text-center',
-        },
-    ];
-
     const countNotPendingCarts = form.carts.filter((cart) => cart.status.toLocaleLowerCase() !== 'pendiente'.toLocaleLowerCase())?.length;
 
-    const getTotalDebt = () => {
-        let totalDebt = 0;
-        form.carts.forEach((cart) => (totalDebt = totalDebt + cart.client.debt));
-        return totalDebt;
-    };
-
-    const getTotalCart = (id) => {
-        let total = 0;
-        cartProductRows.find(x => x.id === id)?.products.forEach((product) => (total = total + product.quantity * product.price));
-        return total;
-    };
-
-    const getCartTitleClassname = (status) => {
-        switch (status.toLocaleLowerCase()) {
-            case CartStatuses.Pending.toLocaleLowerCase():
-                return ''
-            case CartStatuses.Confirmed.toLocaleLowerCase():
-                return 'text-success'
-            case CartStatuses.Absent.toLocaleLowerCase():
-            case CartStatuses.DidNotNeed.toLocaleLowerCase():
-            case CartStatuses.Holiday.toLocaleLowerCase():
-                return 'text-warning'
-            default:
-                return ''
-        }
-    }
-
-    const getProductStock = (productId) => {
-        let finalStock = 0;
-        form.carts.forEach((cart) => {
-            cart.client.products.forEach((prod) => {
-                if (parseInt(prod.productId) === parseInt(productId))
-                    finalStock = finalStock + prod.stock;
-            });
-        })
-        return finalStock;
-    }
-
-    const getIsSkippedCart = (status) => {
-        return status.toLocaleLowerCase() === CartStatuses.Absent.toLocaleLowerCase() || status.toLocaleLowerCase() === CartStatuses.DidNotNeed.toLocaleLowerCase() || status.toLocaleLowerCase() === CartStatuses.Holiday.toLocaleLowerCase()
-    }
-
-    const getMoneyCollected = () => {
-        let total = 0;
-        form.carts.forEach((cart) => {
-            cart.paymentMethods.forEach((pm) => {
-                total = total + pm.amount
-            })
-        });
-        return total + form.transfersAmount
-    }
-
-    const getSoldProductsRows = () => {
-        return form.carts
-            .flatMap(cart => cart.products)
-            .reduce((acc, product) => {
-                const existing = acc.find(item => item.productId === product.productId);
-                if (existing) {
-                    existing.soldQuantity += product.soldQuantity;
-                    existing.returnedQuantity += product.returnedQuantity;
-                } else {
-
-                    acc.push({
-                        productId: product.productId,
-                        stock: getProductStock(product.productId),
-                        name: product.name,
-                        soldQuantity: product.soldQuantity,
-                        returnedQuantity: product.returnedQuantity,
-                    });
-                }
-                return acc;
-            }, []);
-    }
-
-    // Refs
+	// Refs
     const lastProductsRef = useRef(null);
     const actionConfirmationRef = useRef(null);
 
@@ -321,7 +160,7 @@ const DynamicRouteDetails = () => {
 
 
     //  Handlers
-    const handleOpenLastProducts = (lastProducts) => {
+    const handleOpenLastProducts = (lastProducts = []) => {
         lastProductsRef.current?.open(() => { }, lastProducts);
     };
 
@@ -376,34 +215,29 @@ const DynamicRouteDetails = () => {
     const handleSubmit = async (rq = {}) => {
         if (submitting) return;
 
-        // if (
-        //     !url &&
-        //     (!form.name ||
-        //         !form.address ||
-        //         !form.phone ||
-        //         (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit)))
-        // ) {
-        //     Toast.warning(Messages.Validation.requiredFields);
-        //     return;
-        // }
+        if (cartProductRows.find(x => x.id === rq.id)?.products.some(y =>  y.quantity === 0) || cartSubscriptionProductRows.find(x => x.id === rq.id)?.subscriptionProducts.some(y =>  y.quantity === 0))
+		{
+            Toast.warning("La cantidad debe ser mayor a cero.");
+            return;
+        };
 
         setSubmitting(true);
-
+		
         rq = {
             ...rq,
-            products: cartProductRows.find((cr) => cr.id === rq.id)?.products.map((p) => ({
+            products: cartProductRows.find((cr) => cr.id === rq.id)?.products.filter(x => !Number.isNaN(x.quantity) && x.quantity !== '').map((p) => ({
                 productTypeId: p.id,
                 soldQuantity: p.quantity,
                 returnedQuantity: p.quantity
             })),
-            subscriptionProducts: cartSubscriptionProductRows.find((cspr) => cspr.id === rq.id)?.subscriptionProducts.map((p) => ({
+            subscriptionProducts: cartSubscriptionProductRows.find((cspr) => cspr.id === rq.id)?.subscriptionProducts.filter(x => !Number.isNaN(x.quantity) && x.quantity !== '').map((p) => ({
                 productTypeId: p.id,
                 quantity: p.quantity,
             })),
             paymentMethods: [
                 {
-                    id: paymentMethods.find(x => x.label.toLocaleLowerCase() === "Efectivo".toLocaleLowerCase()).value,
-                    amount: getTotalCart(rq.id)
+                    id: paymentMethods.find(x => x.label.toLocaleLowerCase() === "Efectivo".toLocaleLowerCase())?.value,
+                    amount: getTotalCart(rq.id, cartProductRows)
                 }
             ]
         };
@@ -411,14 +245,7 @@ const DynamicRouteDetails = () => {
         API.post('Cart/Confirm', rq)
             .then((r) => {
                 Toast.success(r.message);
-                setForm(prevForm => ({
-                    ...prevForm,
-                    carts: prevForm.carts.map(cart =>
-                        cart.id === r.data.id
-                            ? { ...cart, status: CartStatuses.Confirmed }
-                            : cart
-                    ),
-                }));
+				updateAfterSubmit(form, r.data.id, rq.products, rq.subscriptionProducts, setForm);
             })
             .catch((r) => {
                 Toast.error(r.error.message);
@@ -439,23 +266,12 @@ const DynamicRouteDetails = () => {
             />
             <Col xs={12} className='container-fluid'>
                 <Row>
-                    <Col xs={12} lg={6}>
-                        <SimpleCard
-                            body={
-                                <Row>
-                                    <Col xs={12} className='text-end'>
-                                        <Button className='mb-2 mb-md-0'>Precio dispenser</Button>
-                                    </Col>
-                                </Row>
-                            }
-                        />
-                    </Col>
-                    <Col className='mt-4 mt-lg-0' xs={12} lg={6}>
+                    <Col className='mt-4 mt-lg-0' xs={12}>
                         <SimpleCard
                             body={
                                 <>
-                                    <p className='mb-1'>{`Total de repartos: ${form.carts.length}`}</p>
-                                    <p className='mb-1'>{`Deuda total: $${getTotalDebt()}`}</p>
+                                    <span className='mb-1 d-block fs-4'>{`Total de repartos: ${form.carts.length}`}</span>
+                                    <span className='mb-1 d-block fs-4'>{`Deuda total: ${formatCurrency(getTotalDebt(form))}`}</span>
                                 </>
                             }
                         />
@@ -464,7 +280,7 @@ const DynamicRouteDetails = () => {
                         <Card
                             title='Productos vendidos'
                             header={<p className='mb-0'>06/01/2025</p>}
-                            body={<Table columns={columns} rows={getSoldProductsRows()}></Table>}
+                            body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)}></Table>}
                         />
                     </Col>
                     <Col xs={12} xl={6} className='mt-5'>
@@ -475,7 +291,7 @@ const DynamicRouteDetails = () => {
                                         <RouteInfoCard
                                             icon={faDollarSign}
                                             bgColor='rgb(116, 96, 238)'
-                                            title={`$${getMoneyCollected()}`}
+                                            title={`${formatCurrency(getMoneyCollected(form))}`}
                                             description='Recaudado en el día'
                                         />
                                     }
@@ -487,7 +303,7 @@ const DynamicRouteDetails = () => {
                                         <RouteInfoCard
                                             icon={faShoppingBag}
                                             bgColor='rgb(252, 75, 108)'
-                                            title={`$${form.spentAmount}`}
+                                            title={`${formatCurrency(form.spentAmount)}`}
                                             description='Gasto en el día'
                                         />
                                     }
@@ -572,8 +388,7 @@ const DynamicRouteDetails = () => {
                                             onChange={(v) => handleFilterRows(v.toLowerCase(), 'text')}
                                         />
                                     </Col>
-                                    {form.carts.filter(cart => (!filters.cartStatus.length || filters.cartStatus.includes(cart.status)
-                                        && (!filters.productType.length || filters.productType.includes(cart.products.map(p => parseInt(p.productId))))
+                                    {form.carts.filter(cart => ((filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status)) && (filters.productType.length === 0 || filters.productType.includes(cart.products.map(p => parseInt(p.productId)))) 
                                     )).map((cart, idx) => {
                                         return (
                                             <Col className='mb-4' xs={12} key={idx}>
@@ -584,8 +399,8 @@ const DynamicRouteDetails = () => {
                                                                 <Col xs={12} md={10}>
                                                                     <h4 className={getCartTitleClassname(cart.status)}>{`${cart.client.name} #${cart.client.id} - ${cart.status}`}</h4>
                                                                     <p className='mb-1'>
-                                                                        {`Bajada ${cart.id} - Creada: ${cart.createdAt} - Últ. modif: ${cart.updatedAt} - `}
-                                                                        {formatDebt(cart.client.debt)}
+                                                                        {`Bajada ${cart.id} - Creada: ${cart.createdAt} ${cart.updatedAt ? ' - Últ. modif: ' + cart.updatedAt : ''} - `}
+                                                                        <span className={getDebtTextColor(cart.client.debt)}>{formatDebt(cart.client.debt)}</span>
                                                                     </p>
                                                                     <p className='mb-1'>
                                                                         <FontAwesomeIcon
@@ -617,11 +432,11 @@ const DynamicRouteDetails = () => {
                                                                     <LastProductsButton
                                                                         className='me-auto me-md-0 ms-md-auto'
                                                                         onClick={() =>
-                                                                            handleOpenLastProducts(cart.lastProducts)
+                                                                            handleOpenLastProducts(cart.client.lastProducts)
                                                                         }
                                                                     />
                                                                     {
-                                                                        !getIsSkippedCart(cart.status) && (
+                                                                        cart.status.toLocaleLowerCase() === cartStatuses.Pending && (
                                                                             <DropdownBS className='ms-auto'>
                                                                                 <DropdownBS.Toggle as={Button} variant="primary" id="dropdown-basic">
                                                                                     Acción
@@ -642,36 +457,36 @@ const DynamicRouteDetails = () => {
                                                                 !getIsSkippedCart(cart.status) && (
                                                                     <Row>
                                                                         {
-                                                                            cart.client.subscriptionProducts.length && (
+                                                                            cart.client.subscriptionProducts.length > 0 && (
                                                                                 <Col xs={12} md={4}>
                                                                                     <h4>Abonos</h4>
                                                                                     <Table
                                                                                         className='mt-1'
                                                                                         columns={cartSubscriptionProductsColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-                                                                                        rows={cart.products.length ? cart.products : cartSubscriptionProductRows.find((cr) => cr.id === cart.id)?.subscriptionProducts}
+                                                                                        rows={cart.products.length > 0 ? cart.products.filter(x => x.subscriptionQuantity !== 0)  : cartSubscriptionProductRows.find((cr) => cr.id === cart.id)?.subscriptionProducts}
                                                                                     />
                                                                                 </Col>
                                                                             )
                                                                         }
-                                                                        <Col xs={12} md={cart.client.subscriptionProducts.length ? 4 : 6}>
+                                                                        <Col xs={12} md={cart.client.subscriptionProducts.length > 0  ? 4 : 6}>
                                                                             <h4>Bajada</h4>
                                                                             <Table
                                                                                 className='mt-1'
                                                                                 columns={cartProductColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-                                                                                rows={cart.products.length ? cart.products : cartProductRows.find((cr) => cr.id === cart.id)?.products}
+                                                                                rows={cart.products.length > 0 ? cart.products.filter(x => x.soldQuantity !== 0) : cartProductRows.find((cr) => cr.id === cart.id)?.products}
                                                                             />
                                                                         </Col>
                                                                         {
                                                                             cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
-                                                                                <Col xs={12} md={cart.client.subscriptionProducts.length ? 4 : 6}>
-                                                                                    <h4>Total: ${getTotalCart(cart.id)}</h4>
+                                                                                <Col xs={12} md={cart.client.subscriptionProducts.length > 0 ? 4 : 6}>
+                                                                                    <h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
                                                                                     <Input
                                                                                         className='mt-1'
                                                                                         placeholder='Total'
                                                                                         isFloat
                                                                                         numeric
                                                                                         type='number'
-                                                                                        value={getTotalCart(cart.id)}
+                                                                                        value={getTotalCart(cart.id, cartProductRows)}
                                                                                     />
                                                                                 </Col>
                                                                             )
@@ -679,11 +494,11 @@ const DynamicRouteDetails = () => {
                                                                         {
                                                                             cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
                                                                                 <>
-                                                                                    <Col xs={12} md={cart.client.subscriptionProducts.length ? 4 : 6}>
+                                                                                    <Col xs={12} md={cart.client.subscriptionProducts.length > 0 ? 4 : 6}>
                                                                                         <h4>Devoluciones</h4>
                                                                                         <Table
                                                                                             className='mt-1'
-                                                                                            columns={cartReturdesProductColumns}
+                                                                                            columns={cartReturnedProductColumns}
                                                                                             rows={cart.products}
                                                                                         />
                                                                                     </Col>
@@ -760,7 +575,7 @@ const DynamicRouteDetails = () => {
                                 onClick={() => navigate(`/planillas/edit/${id}`)}
                                 variant='primary'
                             >
-                                Editar planilla
+                                Agregar fuera de reparto
                             </Button>
                         </div>
                     }

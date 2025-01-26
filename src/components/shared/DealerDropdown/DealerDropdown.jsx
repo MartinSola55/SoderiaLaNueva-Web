@@ -19,7 +19,7 @@ const DealerDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('user/getComboDealers').then((r) => {
+        API.get('dealer/getComboDealers').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [roles, items]);

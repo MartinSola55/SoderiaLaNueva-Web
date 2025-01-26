@@ -1,17 +1,17 @@
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Spinner } from '../../components';
+import { BreadCrumb, Button, Card, Spinner } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
-import API from '../../app/API';
+import API from '../../../app/API';
 import { useNavigate, useParams } from 'react-router';
-import App from '../../app/App';
-import { InitialFormStates } from '../../app/InitialFormStates';
-import { formatDebt, formatDeliveryDay } from '../../app/Helpers';
+import App from '../../../app/App';
+import { InitialFormStates } from '../../../app/InitialFormStates';
+import { formatDebt, formatDeliveryDay, getDebtTextColor } from '../../../app/Helpers';
 import { faHouse, faPhone, faTruck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import LastProductsModal from './LastProductsModal';
-import LastProductsButton from './LastProductsButton';
-import './route.scss';
-import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
+import LastProductsModal from '../lastProducts/LastProductsModal';
+import LastProductsButton from '../lastProducts/LastProductsButton';
+import '../route.scss';
+import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
 
 const breadcrumbItems = [
     {
@@ -70,6 +70,7 @@ const StaticRouteDetails = () => {
             () => { },
         );
     };
+	
     const hanldeOpenNewRoute = () => {
         actionConfirmationRef.current?.open(
             { routeId: id },
@@ -107,6 +108,9 @@ const StaticRouteDetails = () => {
                             <Spinner />
                         ) : (
                             <Row>
+								{form.carts.length === 0 && (
+									<span>No existen carritos para esta ruta</span>
+								)}
                                 {form.carts.map((cart, idx) => {
                                     return (
                                         <Col xs={12} key={idx} className='row mx-0'>
@@ -138,7 +142,12 @@ const StaticRouteDetails = () => {
                                                             <p className='mb-1'>
                                                                 Creado: {cart.createdAt}
                                                             </p>
-                                                            <p className='mb-1'>
+															{cart.updatedAt && (
+																<p className='mb-1'>
+																	Últ. modif: {cart.updatedAt}
+																</p>
+															)}
+                                                            <p className={`mb-1 ${getDebtTextColor(cart.debt)}`}>
                                                                 {formatDebt(cart.debt)}
                                                             </p>
                                                             <p className='mb-1'>

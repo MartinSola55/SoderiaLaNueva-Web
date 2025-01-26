@@ -33,7 +33,7 @@ export const createClient = async (form, onSuccess, onError) => {
         invoiceType: form.invoiceType,
         taxCondition: form.taxCondition,
         cuit: form.cuit,
-        products: form.products.map((x) => ({
+        products: form.products.filter(x => x.quantity !== '').map((x) => ({
             productId: x.id,
             quantity: x.quantity,
         })).filter((x) => x.quantity >= 0),
@@ -84,7 +84,7 @@ export const updateClient = async (form, onSuccess, onError) => {
 export const updateClientProducts = async (form, onSuccess, onError) => {
     const rq = {
         clientId: form.id,
-        products: form.products.map((x) => ({
+        products: form.products.filter(x => x.quantity !== '').map((x) => ({
             productId: x.id,
             quantity: x.quantity,
         })).filter((x) => x.quantity >= 0),
@@ -218,22 +218,27 @@ export const handleInputChange = (value, field, setForm) => {
 };
 
 export const handleOnSubmit = (onSubmit, setInteralIsWatching) => {
+	// eslint-disable-next-line no-console
+	console.log('a')
 	onSubmit();
 	setInteralIsWatching(true)
 };
 
 
 export const handleProductsChange = (props, value, form, setForm) => {
-	const products = form.products.map((x) => {
-		if (x.id === props.row.id)
-			return {
-				...x,
-				quantity: value,
-			};
-		return x;
-	});
-
-	handleInputChange(products, 'products', setForm);
+	const formProduct = form.products.find(fpm => fpm.id === props.row.id);
+	const newProducts = formProduct ? 
+		form.products.map(x => {
+			if (x.id === props.row.id)
+				return {
+					...x,
+					quantity: value,
+				};
+			return x;
+		}) : 
+		[...form.products, { id: props.row.id, quantity: value }];
+		
+	handleInputChange(newProducts, 'products', setForm);
 };
 
 export const handleSubscriptionsChange = (props, value, form, setForm) => {

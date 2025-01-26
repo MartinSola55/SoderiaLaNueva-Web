@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, Table } from '../../components';
+import { Button, Table } from '../../../components';
 
 // eslint-disable-next-line react/display-name
 const LastProductsModal = forwardRef((props, ref) => {
@@ -69,7 +69,11 @@ const LastProductsModal = forwardRef((props, ref) => {
             <Modal.Body>
                 <Row>
                     <Col xs={12}>
-                        <Table columns={columns} rows={rows}></Table>
+                        <Table
+							rows={rows}
+							columns={columns}
+							emptyTableMessage={rows.length === 0 && 'El cliente no cuenta con un historial de últimos productos'}
+						/>
                     </Col>
                 </Row>
             </Modal.Body>

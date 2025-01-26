@@ -42,7 +42,7 @@ export const formatCartProducts = (prod, cartId) => {
     return prod?.map((p) => ({
         id: p.productId,
         description: p.name + ' - ' + formatCurrency(p.price),
-        quantity: p.quantity || 0,
+        quantity: "",
         price: parseFloat(p.price),
         cartId
     }));
@@ -52,7 +52,7 @@ export const formatCartSubscriptionProducts = (subsProd, cartId) => {
     return subsProd?.map((sp) => ({
         id: sp.typeId,
         description: `${sp.name} - Disponible: ${sp.available}`,
-        quantity: sp.quantity || 0,
+        quantity: "",
         cartId
     }));
 };
@@ -61,6 +61,14 @@ export const formatOptionsBoolean = (options) => {
     return options.map((option) => ({
         value: option.value,
         label: option.label,
+    }));
+};
+
+export const formatPaymentMethods = (items) => {
+    return items.map((item) => ({
+        id: item.stringId ? item.stringId : item.id,
+        label: item.description,
+        amount: 0,
     }));
 };
 
@@ -85,6 +93,12 @@ export const formatDebt = (value) => {
         return 'Sin deuda';
 
     return `${value > 0 ? 'A favor' : 'Deuda'}: $${value}`;
+};
+
+export const getDebtTextColor = (value) => {
+	if (value < 0) return 'text-danger'
+	if (value > 0) return 'text-success'
+	return ''
 };
 
 export const buildDealerRouteName = (dealerName, day) => {

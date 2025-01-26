@@ -2,7 +2,7 @@ import { Col, Row } from "react-bootstrap";
 import { Card, Spinner, Table } from "../../../components";
 
 export const ClientProductSalesTable = ({
-    products,
+    products = [],
     loading,
 }) => {
     const productsColumns = [
@@ -30,7 +30,11 @@ export const ClientProductSalesTable = ({
             body={loading ? <Spinner /> :
                 <Row className='align-items-center'>
                     <Col xs={12}>
-                        <Table rows={products} columns={productsColumns} />
+                        <Table 
+							rows={products} 
+							columns={productsColumns} 
+							emptyTableMessage={products.length === 0 && 'El cliente no cuenta con un historial de bajadas y transferencias'}
+						/>
                     </Col>
                 </Row>
             }

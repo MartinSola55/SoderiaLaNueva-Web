@@ -1,13 +1,16 @@
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Input, Loader, Spinner, Table } from '../../components';
+import { BreadCrumb, Button, Card, Input, Loader, Spinner, Table } from '../../../components';
 import { useEffect, useState } from 'react';
-import Toast from '../../components/Toast/Toast';
-import API from '../../app/API';
-import { InitialFormStates } from '../../app/InitialFormStates';
+import Toast from '../../../components/Toast/Toast';
+import API from '../../../app/API';
+import { InitialFormStates } from '../../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
-import App from '../../app/App';
-import { formatClients, formatDeliveryDay } from '../../app/Helpers';
+import App from '../../../app/App';
+import { formatClients, formatDeliveryDay } from '../../../app/Helpers';
 import { faArrowLeft, faRemove } from '@fortawesome/free-solid-svg-icons';
+import { editNotSelectedColumns, editSelectedColumns } from '../Routes.data';
+import { getAllClientList } from '../Routes.helpers';
+import { Messages } from '../../../constants/Messages';
 
 const initialForm = InitialFormStates.RouteClients;
 
@@ -38,16 +41,7 @@ const EditRoute = ({ isWatching = false }) => {
     ];
 
     const selectedColumns = [
-        {
-            name: 'name',
-            text: 'Nombre',
-            textCenter: true,
-        },
-        {
-            name: 'address',
-            text: 'Dirección',
-            textCenter: true,
-        },
+		...editSelectedColumns,
         {
             name: 'remove',
             text: 'Quitar',
@@ -80,18 +74,14 @@ const EditRoute = ({ isWatching = false }) => {
             ),
             className: 'text-center',
         },
-        {
-            name: 'name',
-            text: 'Nombre',
-            textCenter: true,
-        },
-        {
-            name: 'address',
-            text: 'Dirección',
-            textCenter: true,
-        },
+		...editNotSelectedColumns
     ];
 
+	const selectedRows = form.clients.filter((r) => r.name.toLowerCase().includes(filter.selected));
+
+	const notSelectedRows = clients.filter((r) => r.name.toLowerCase().includes(filter.notSelected));
+	
+	// Effects
     // Get form data
     useEffect(() => {
         if (id) {
@@ -107,11 +97,15 @@ const EditRoute = ({ isWatching = false }) => {
 
     // Get clients
     useEffect(() => {
-        if (!isWatching) {
-            API.post('Route/GetClientsList', { id: id, currentPage: currentPage }).then((r) => {
-                setTotalCount(r.data.totalCount);
-                setClients(formatClients(r.data.items));
-            });
+		if (!isWatching) {
+			getAllClientList(currentPage, id, ({ clients, totalCount }) => {
+				setTotalCount(totalCount);
+				setClients(clients);
+	
+				if (clients.length === 0) {
+					Toast.warning(Messages.Error.noRows);
+				}
+			});
         }
     }, [currentPage, id, isWatching]);
 
@@ -199,17 +193,12 @@ const EditRoute = ({ isWatching = false }) => {
                                                     placeholder='Buscar'
                                                     helpText='Nombre'
                                                     value={filter.selected}
-                                                    onChange={(v) =>
-                                                        handleFilterRows(v, 'selected')
-                                                    }
+                                                    onChange={(v) => handleFilterRows(v, 'selected')}
                                                 />
                                                 <Table
-                                                    rows={form.clients.filter((r) =>
-                                                        r.name
-                                                            .toLowerCase()
-                                                            .includes(filter.selected),
-                                                    )}
+                                                    rows={selectedRows}
                                                     columns={selectedColumns}
+													emptyTableMessage={selectedRows.length === 0 && 'No se hay clientes en la ruta'}
                                                 ></Table>
                                             </Col>
                                         </Row>
@@ -226,13 +215,7 @@ const EditRoute = ({ isWatching = false }) => {
                                         </Button>
                                         {!isWatching && (
                                             <Button onClick={handleSubmit} disabled={submiting}>
-                                                {submiting ? (
-                                                    <Loader />
-                                                ) : id ? (
-                                                    'Actualizar'
-                                                ) : (
-                                                    'Crear'
-                                                )}
+                                                {submiting ? <Loader /> : ( id ? 'Actualizar' : 'Crear' )}
                                             </Button>
                                         )}
                                     </div>
@@ -254,17 +237,12 @@ const EditRoute = ({ isWatching = false }) => {
                                                         placeholder='Buscar'
                                                         helpText='Nombre'
                                                         value={filter.notSelected}
-                                                        onChange={(v) =>
-                                                            handleFilterRows(v, 'notSelected')
-                                                        }
+                                                        onChange={(v) => handleFilterRows(v, 'notSelected')}
                                                     />
                                                 </Col>
                                                 <Table
-                                                    rows={clients.filter((r) =>
-                                                        r.name
-                                                            .toLowerCase()
-                                                            .includes(filter.notSelected),
-                                                    )}
+                                                    rows={notSelectedRows}
+													emptyTableMessage={notSelectedRows.length === 0 && 'No se encontraron más clientes'}
                                                     columns={notSelectedColumns}
                                                     totalCount={totalCount}
                                                     currentPage={currentPage}

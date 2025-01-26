@@ -44,21 +44,23 @@ export const ClientProductsTable = ({
             }
 			footer={
                 <div className={`d-flex justify-content-${interalIsWatching ? 'end' : 'between'}`}>
-					{!interalIsWatching ? (
-						<>
-							<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
-								Cancelar
-							</Button>
-							<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
-								{submiting ? <Loader /> : 'Guardar'}
-							</Button>
-						</>
-                    ) : (
-						<>
-							<Button onClick={() => {setInteralIsWatching(false)}}>
-								Editar
-							</Button>
-						</>
+					{isWatching && (
+						!interalIsWatching ? (
+							<>
+								<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+									Cancelar
+								</Button>
+								<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
+									{submiting ? <Loader /> : 'Guardar'}
+								</Button>
+							</>
+						) : (
+							<>
+								<Button onClick={() => {setInteralIsWatching(false)}}>
+									Editar
+								</Button>
+							</>
+						)
 					)}
                 </div>
             }
