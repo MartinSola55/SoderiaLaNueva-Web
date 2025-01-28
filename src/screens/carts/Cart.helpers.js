@@ -25,16 +25,40 @@ export const onPaymentMethodsChange = (props, v, form, handleInputChange) => {
 	handleInputChange(newPaymentMethods, 'paymentMethods');
 };
 
-export const onQuantityChange = (props, v, form, handleInputChange, name) => {
-	handleInputChange(
-		form.products.map((p) => {
-			if (p.id === props.row.id)
-				return {
-					...p,
-					[name]: v,
-				};
-			return p;
-		}),
-		'products',
-	);
+export const onProductsChange = (props, v, form, handleInputChange, name) => {
+	const productIndex = form.products.findIndex(x => x.productTypeId === props.row.productTypeId);
+	let newProducts = [...form.products];
+
+	if (productIndex !== -1)
+		newProducts[productIndex] = {
+			...form.products[productIndex],
+			[name]: v,
+		  };
+	else
+		newProducts.push({productTypeId : props.row.productTypeId, [name] : v});
+
+	handleInputChange(newProducts, 'products');
+};
+
+export const getSubscriptionProductsRows = (form) => {
+	return form.subscriptionProducts?.map((sp) => {
+		const existingSubscriptionProduct = form.products.find(x => x.productTypeId === sp.typeId);
+		return {
+			productTypeId: sp.typeId,
+			name: `${sp.name} - Disponible: ${sp.available} `,
+			subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
+		};
+	})
+};
+
+export const getProductsRows = (form) => {
+	return form.clientProducts?.map((cp) => {
+		const existingCLientProduct = form.products.find(x => x.productTypeId === cp.productTypeId);
+		return {
+			productTypeId: cp.productTypeId,
+			name: cp.name,
+			soldQuantity: existingCLientProduct?.soldQuantity || "",
+			returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
+		};
+	})
 };

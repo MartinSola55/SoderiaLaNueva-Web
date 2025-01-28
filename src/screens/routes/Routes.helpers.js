@@ -180,9 +180,10 @@ export const getSoldProductsRows = (form) => {
 		});
 };
 
-export const updateAfterSubmit = (form, id, rqProducts, rqSubscriptionProducts, setForm) => {
+export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
 	const cart = form.carts.find(x => x.id === id);
-	const products = rqProducts.map((p) => (
+
+	const products = rq.products.map((p) => (
 		{
 			productTypeId: p.productTypeId,
 			soldQuantity: p.returnedQuantity,
@@ -190,7 +191,8 @@ export const updateAfterSubmit = (form, id, rqProducts, rqSubscriptionProducts, 
 			name: cart.client.products.find(x => x.productId === p.productTypeId)?.name
 		}
 	));
-	const subscriptionProducts = rqSubscriptionProducts.map((p) => (
+	
+	const subscriptionProducts = rq.subscriptionProducts.map((p) => (
 		{
 			productTypeId: p.productTypeId,
 			quantity: p.quantity,
@@ -218,11 +220,16 @@ export const updateAfterSubmit = (form, id, rqProducts, rqSubscriptionProducts, 
 			});
 	});
 
+	const newPaymentMethods = rq.paymentMethods.map(x => ({
+		name: paymentMethods.find(y => y.value === x.id)?.label,
+		amount: x.amount
+	}))
+	
 	setForm(prevForm => ({
 		...prevForm,
 		carts: prevForm.carts.map(cart =>
 			cart.id === id
-				? { ...cart, status: CartStatuses.Confirmed, products: newProducts }
+				? { ...cart, status: CartStatuses.Confirmed, products: newProducts, paymentMethods: newPaymentMethods }
 				: cart
 		),
 	}));

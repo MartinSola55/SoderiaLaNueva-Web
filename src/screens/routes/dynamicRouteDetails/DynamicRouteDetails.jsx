@@ -1,12 +1,11 @@
-/* eslint-disable no-console */
 import { Dropdown as DropdownBS, Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, CellNumericInput, Dropdown, Input, ProductTypesDropdown, Spinner, Table, Toast } from '../../../components';
+import { BreadCrumb, Button, Card, CellNumericInput, Dropdown, Input, ProductTypesDropdown, Spinner, Table, Toast, Tooltip } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
 import API from '../../../app/API';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../../app/App';
 import { formatCartProducts, formatCartSubscriptionProducts, formatComboItems, formatCurrency, formatDebt, formatDeliveryDay, formatOptions, getDebtTextColor } from '../../../app/Helpers';
-import { faCheck, faClock, faDollarSign, faHouse, faPhone, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faClock, faDollarSign, faHouse, faInfoCircle, faPhone, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import SimpleCard from '../../../components/SimpleCard/SimpleCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CartStatuses } from '../../../constants/Cart';
@@ -36,7 +35,6 @@ const initialForm = InitialFormStates.RouteDetails;
 const initialFilters = InitialFormStates.CartFilters;
 
 const DynamicRouteDetails = () => {
-
     // Consts
     const navigate = useNavigate();
     const params = useParams();
@@ -95,7 +93,7 @@ const DynamicRouteDetails = () => {
     ];
 
     // States
-    const [form, setForm] = useState(initialForm);
+	const [form, setForm] = useState(initialForm);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [filters, setFilters] = useState(initialFilters);
@@ -202,7 +200,51 @@ const DynamicRouteDetails = () => {
                             : cart
                     ),
                 }));
-            });
+			}
+		);
+    };
+
+    const handleDeleteCart = (cartId) => {
+        actionConfirmationRef.current?.open(
+            {
+                id: cartId,
+            },
+            'Cart/Delete',
+            `Esta acción no se puede revertir`,
+            '¿Seguro deseas eliminar esta bajada? Esto restablecerá el stock y el saldo del cliente',
+            () => {
+                setForm(prevForm => ({
+                    ...prevForm,
+                    carts: prevForm.carts.filter(x => x.id !== cartId)
+                }));
+			}
+		);
+    };
+
+    const handleCloseRoute = () => {
+        actionConfirmationRef.current?.open(
+            {
+                routeId: id,
+            },
+            'Route/Close',
+            `Esta acción no se puede revertir`,
+            '¿Seguro deseas cerrar esta planilla? Esto eliminará TODAS las planillas PENDIENTES',
+            () => {
+                setForm(prevForm => ({
+                    ...prevForm,
+                    carts: prevForm.carts.filter(x => x.status.toLocaleLowerCase() !== CartStatuses.Pending.toLocaleLowerCase())
+                }));
+			}
+		);
+    };
+    const handleDeleteRoute = () => {
+        actionConfirmationRef.current?.open(
+            {},
+            'Route/Delete',
+            `Esta acción no se puede revertir`,
+            '¿Seguro deseas eliminar esta planilla? Esto restablecerá el stock y el saldo del cliente',
+            () => {}
+		);
     };
 
     const handleFilterRows = (value, name) => {
@@ -245,7 +287,7 @@ const DynamicRouteDetails = () => {
         API.post('Cart/Confirm', rq)
             .then((r) => {
                 Toast.success(r.message);
-				updateAfterSubmit(form, r.data.id, rq.products, rq.subscriptionProducts, setForm);
+				updateAfterSubmit(form, r.data.id, rq, paymentMethods, setForm);
             })
             .catch((r) => {
                 Toast.error(r.error.message);
@@ -254,6 +296,28 @@ const DynamicRouteDetails = () => {
                 setSubmitting(false);
             });
     };
+
+	const getMoneyCollectedToottip = () => {
+		return (
+			`<ul className='text-left'>
+				<li>Efectivo: ${formatCurrency(getMoneyCollected(form) - form.transfersAmount)}</li>
+				${form.transfersAmount > 0 ? '<li>Transferencia (administración): ' + formatCurrency(form.transfersAmount) + '</li>' : ''}
+			</ul>`
+		)
+	};
+
+	const showTable = (cart, name, quantity) => {
+		const hasClientItems = name ? cart.client[name]?.length > 0 : true;
+		const hasValidProducts = 
+			cart.products.length === 0 || 
+			cart.products.some(product => product[quantity] !== 0);
+		
+		return hasClientItems && hasValidProducts;
+	};	 
+	 
+	const getTableStyleColumns = (cart) => {
+		return (showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && showTable(cart, null, 'soldQuantity')) ? 4 : 6
+	};	  
 
     return (
         <>
@@ -264,7 +328,7 @@ const DynamicRouteDetails = () => {
                 ref={actionConfirmationRef}
                 title=' ¿Está seguro que el cliente no estaba?'
             />
-            <Col xs={12} className='container-fluid'>
+            <Col xs={11} className='container-fluid'>
                 <Row>
                     <Col className='mt-4 mt-lg-0' xs={12}>
                         <SimpleCard
@@ -273,14 +337,14 @@ const DynamicRouteDetails = () => {
                                     <span className='mb-1 d-block fs-4'>{`Total de repartos: ${form.carts.length}`}</span>
                                     <span className='mb-1 d-block fs-4'>{`Deuda total: ${formatCurrency(getTotalDebt(form))}`}</span>
                                 </>
-                            }
+							}
                         />
                     </Col>
                     <Col xs={12} xl={6} className='mt-5'>
                         <Card
                             title='Productos vendidos'
                             header={<p className='mb-0'>06/01/2025</p>}
-                            body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)}></Table>}
+                            body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)}/>}
                         />
                     </Col>
                     <Col xs={12} xl={6} className='mt-5'>
@@ -292,7 +356,14 @@ const DynamicRouteDetails = () => {
                                             icon={faDollarSign}
                                             bgColor='rgb(116, 96, 238)'
                                             title={`${formatCurrency(getMoneyCollected(form))}`}
-                                            description='Recaudado en el día'
+                                            description={
+												<>
+													<span className='me-2'>Recaudado en el día</span>
+													<Tooltip text={getMoneyCollectedToottip()}>
+														<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)'/>
+													</Tooltip>
+												</>
+											}
                                         />
                                     }
                                 />
@@ -457,8 +528,8 @@ const DynamicRouteDetails = () => {
                                                                 !getIsSkippedCart(cart.status) && (
                                                                     <Row>
                                                                         {
-                                                                            cart.client.subscriptionProducts.length > 0 && (
-                                                                                <Col xs={12} md={4}>
+                                                                           showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && (
+                                                                                <Col xs={12} md={getTableStyleColumns(cart)}>
                                                                                     <h4>Abonos</h4>
                                                                                     <Table
                                                                                         className='mt-1'
@@ -468,17 +539,20 @@ const DynamicRouteDetails = () => {
                                                                                 </Col>
                                                                             )
                                                                         }
-                                                                        <Col xs={12} md={cart.client.subscriptionProducts.length > 0  ? 4 : 6}>
-                                                                            <h4>Bajada</h4>
-                                                                            <Table
-                                                                                className='mt-1'
-                                                                                columns={cartProductColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-                                                                                rows={cart.products.length > 0 ? cart.products.filter(x => x.soldQuantity !== 0) : cartProductRows.find((cr) => cr.id === cart.id)?.products}
-                                                                            />
-                                                                        </Col>
-                                                                        {
-                                                                            cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
-                                                                                <Col xs={12} md={cart.client.subscriptionProducts.length > 0 ? 4 : 6}>
+																		{
+																			showTable(cart, null, 'soldQuantity') && (
+																			<Col xs={12} md={getTableStyleColumns(cart)}>
+																				<h4>Bajada</h4>
+																				<Table
+																					className='mt-1'
+																					columns={cartProductColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
+																					rows={cart.products.length > 0 ? cart.products.filter(x => x.soldQuantity !== 0) : cartProductRows.find((cr) => cr.id === cart.id)?.products}
+																				/>
+																			</Col>
+																			)
+																		}
+                                                                        {cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
+                                                                                <Col xs={12} md={getTableStyleColumns(cart)}>
                                                                                     <h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
                                                                                     <Input
                                                                                         className='mt-1'
@@ -489,12 +563,11 @@ const DynamicRouteDetails = () => {
                                                                                         value={getTotalCart(cart.id, cartProductRows)}
                                                                                     />
                                                                                 </Col>
-                                                                            )
-                                                                        }
-                                                                        {
-                                                                            cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
+																			)
+																		}
+                                                                        {cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
                                                                                 <>
-                                                                                    <Col xs={12} md={cart.client.subscriptionProducts.length > 0 ? 4 : 6}>
+                                                                                    <Col xs={12} md={getTableStyleColumns(cart)}>
                                                                                         <h4>Devoluciones</h4>
                                                                                         <Table
                                                                                             className='mt-1'
@@ -532,30 +605,30 @@ const DynamicRouteDetails = () => {
                                                                                     Confirmar bajada
                                                                                 </Button>
                                                                             )
-                                                                                : (
-                                                                                    <>
-                                                                                        <Button
-                                                                                            onClick={() => navigate(`/bajadas/${cart.id}`)}
-                                                                                            className='bg-danger border-0 me-3'
-                                                                                        >
-                                                                                            Eliminar
-                                                                                        </Button>
-                                                                                        <Button
-                                                                                            onClick={() => navigate(`/bajadas/${cart.id}`)}
-                                                                                        >
-                                                                                            Ediar bajada
-                                                                                        </Button>
-                                                                                    </>
-                                                                                )
+																			: (
+																				<>
+																					<Button
+																						onClick={() => handleDeleteCart(cart.id)}
+																						className='bg-danger border-0 me-3'
+																					>
+																						Eliminar
+																					</Button>
+																					<Button
+																						onClick={() => navigate(`/bajadas/${cart.id}`)}
+																					>
+																						Ediar bajada
+																					</Button>
+																				</>
+																			)
                                                                         )
-                                                                            : (
-                                                                                <Button
-                                                                                    className='bg-danger border-0'
-                                                                                    onClick={() => handleOpenRestoreCartStatus(cart.id)}
-                                                                                >
-                                                                                    Cancelar estado
-                                                                                </Button>
-                                                                            )
+																		: (
+																			<Button
+																				className='bg-danger border-0'
+																				onClick={() => handleOpenRestoreCartStatus(cart.id)}
+																			>
+																				Cancelar estado
+																			</Button>
+																		)
                                                                     }
                                                                 </Col>
                                                             </Row>
@@ -570,7 +643,22 @@ const DynamicRouteDetails = () => {
                         )
                     }
                     footer={
-                        <div className='d-flex justify-content-end'>
+                        <div className='d-flex justify-content-between'>
+							<div>
+								<Button
+									className='me-4'
+									onClick={handleCloseRoute}
+									variant='warning'
+								>
+									Cerrar planilla
+								</Button>
+								<Button
+									onClick={handleDeleteRoute}
+									variant='danger'
+								>
+									Eliminar planilla
+								</Button>
+							</div>
                             <Button
                                 onClick={() => navigate(`/planillas/edit/${id}`)}
                                 variant='primary'

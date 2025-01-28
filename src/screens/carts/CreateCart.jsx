@@ -7,7 +7,7 @@ import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
 import { formatPaymentMethods } from '../../app/Helpers';
-import { getPaymentMethodRows, onPaymentMethodsChange, onQuantityChange } from './Cart.helpers.js';
+import { getPaymentMethodRows, getProductsRows, getSubscriptionProductsRows, onPaymentMethodsChange, onProductsChange } from './Cart.helpers.js';
 import { Loader } from 'rsuite';
 
 const initialForm = InitialFormStates.Cart;
@@ -22,7 +22,6 @@ const CreateCart = ({ isWatching = false }) => {
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
     const [paymentMethods, setPaymentMethods] = useState([]);
-    const [subscriptionProductsRows, setSubscriptionProductsRows] = useState([]);
 
     const breadcrumbItems = [
         {
@@ -45,7 +44,7 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'soldQuantity',
             text: 'Cantidad',
-            component: (props) => (<CellNumericInput {...props} value={props.row.soldQuantity} onChange={(v) => onQuantityChange(props, v, form, handleInputChange, 'soldQuantity')}/>),
+            component: (props) => (<CellNumericInput {...props} value={props.row.soldQuantity} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'soldQuantity')}/>),
             textCenter: true,
         },
     ];
@@ -59,7 +58,7 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'returnedQuantity',
             text: 'Cantidad',
-            component: (props) => (<CellNumericInput {...props} value={props.row.returnedQuantity} onChange={(v) => onQuantityChange(props, v, form, handleInputChange, 'returnedQuantity')}/>),
+            component: (props) => (<CellNumericInput {...props} value={props.row.returnedQuantity} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'returnedQuantity')}/>),
             textCenter: true,
         },
     ];
@@ -73,7 +72,7 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'subscriptionQuantity',
             text: 'Cantidad',
-            component: (props) => (<CellNumericInput {...props} value={props.row.subscriptionQuantity} onChange={(v) => onQuantityChange(props, v, form, handleInputChange, 'subscriptionQuantity')}/>),
+            component: (props) => (<CellNumericInput {...props} value={props.row.subscriptionQuantity} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'subscriptionQuantity')}/>),
             textCenter: true,
         },
     ];
@@ -92,7 +91,6 @@ const CreateCart = ({ isWatching = false }) => {
         },
     ];
 
-
     // Get form data
     useEffect(() => {
         if (id) {
@@ -100,7 +98,6 @@ const CreateCart = ({ isWatching = false }) => {
                 setForm(() => ({
                     ...r.data,
                 }));
-				setSubscriptionProductsRows(r.data.subscriptionProducts)
                 setLoading(false);
             });
         }
@@ -111,25 +108,26 @@ const CreateCart = ({ isWatching = false }) => {
 
     const handleSubmit = async () => {
         if (submiting) return;
-
-		if (form.products.some(x => (x.soldQuantity === '' && x.returnedQuantity !== '') || (x.returnedQuantity === '' && x.soldQuantity !== ''))) {
-			Toast.warning("Para eliminar un producto, ambos campos deben estar vacíos.");
-			return;
-		};
 		
 		setSubmiting(true);
 
+		// eslint-disable-next-line no-console
+		console.log(form.products)
+		// eslint-disable-next-line no-console
+		console.log(getProductsRows(form))
+		// eslint-disable-next-line no-console
+		console.log(getSubscriptionProductsRows(form))
+
 		let rq = {
-			products: form.products.filter(x => x.soldQuantity !== '' && x.returnedQuantity !== '').map((x) => ({
+			products: getProductsRows(form).map((x) => ({
 				productTypeId: x.productTypeId,
-				soldQuantity: x.soldQuantity,
-				returnedQuantity: x.returnedQuantity,
+				soldQuantity: x.soldQuantity != '' ? x.soldQuantity : 0,
+				returnedQuantity: x.returnedQuantity != '' ? x.returnedQuantity : 0,
 			})),
-			// TODO no entiendo
-			// subscriptionProducts: form.products.filter(x => x.subscriptionQuantity !== '').map((x) => ({
-			// 	productTypeId: x.id,
-			// 	quantity: x.subscriptionQuantity,
-			// })),
+			subscriptionProducts: getSubscriptionProductsRows(form).map((x) => ({
+				productTypeId: x.productTypeId,
+				quantity: x.subscriptionQuantity != '' ? x.subscriptionQuantity : 0,
+			})),
 			paymentMethods: form.paymentMethods.filter(x => x.amount !== '').map((x) => ({
 				paymentMethodId: x.paymentMethodId,
 				amount: x.amount,
@@ -167,17 +165,6 @@ const CreateCart = ({ isWatching = false }) => {
         return navigate('/notAllowed');
     }
 
-	const getSubscriptionProductsRows = () => {
-		return form.subscriptionProducts?.map((sp) => {
-			const existingSubscriptionProduct = form.products.find(x => x.productTypeId === sp.typeId);
-			return {
-				productTypeId: sp.typeId,
-				name: `${sp.name} - Disponible: ${sp.available} `,
-				subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
-			};
-		})
-	};
-
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Bajadas' />
@@ -198,7 +185,7 @@ const CreateCart = ({ isWatching = false }) => {
                                 ) : (
                                     <Table
                                         columns={subscriptionColumns}
-                                        rows={getSubscriptionProductsRows()}
+                                        rows={getSubscriptionProductsRows(form)}
                                     />
                                 )
                             }
@@ -213,7 +200,7 @@ const CreateCart = ({ isWatching = false }) => {
                                 ) : (
                                     <Table
                                         columns={soldColumns}
-                                        rows={form.products}
+                                        rows={getProductsRows(form)}
                                     />
                                 )
                             }
@@ -228,7 +215,7 @@ const CreateCart = ({ isWatching = false }) => {
                                 ) : (
                                     <Table
                                         columns={returnedColumns}
-                                        rows={form.products}
+                                        rows={form.products.filter(x => x.name)}
                                     />
                                 )
                             }
