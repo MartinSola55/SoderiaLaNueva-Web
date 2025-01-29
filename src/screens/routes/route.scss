@@ -40,4 +40,40 @@
 	justify-content: center;
 	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
-  
+
+.my-routes-table {
+    thead {
+        border-width: 0;
+
+        th {
+            border: 0px;
+            color: #99abb4 !important;
+            padding: 12px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+    }
+
+    tbody {
+
+        tr {
+            cursor: pointer;
+            border-left: 4px solid #ffffff;
+
+            &:hover {
+                border-left: 4px solid #1e88e5;
+            }
+
+            td {
+                border-bottom-width: 0;
+                border-top: 1px solid #dee2e6;
+                padding: 12px;
+                height: 45px;
+
+                h6 {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}

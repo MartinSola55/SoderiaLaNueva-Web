@@ -1,5 +1,5 @@
 import API from "../../app/API";
-import { buildGenericGetAllRq, formatClients } from "../../app/Helpers";
+import { buildGenericGetAllRq, formatClients, formatDeliveryDay } from "../../app/Helpers";
 import { CartStatuses } from "../../constants/Cart";
 import { Roles } from "../../constants/Roles";
 
@@ -22,6 +22,23 @@ export const getAllRoutes = (dayFilter, onSuccess) => {
         onSuccess({ routes, totalCount })
     });
 };
+
+export const getAllDealerRoutes = (onSuccess) => {
+    API.get('route/getAllDealerStaticRoutes').then((r) => {
+        const routes = r.data.routes.map((x) => {
+			return {
+				id: x.id,
+				dealer: x.dealer,
+				totalCarts: x.totalCarts,
+				deliveryDay: formatDeliveryDay(x.deliveryDay),
+				endpoint: 'Route',
+			};
+        });
+
+        onSuccess({ routes })
+    });
+};
+
 
 export const getAllDealers = (currentPage, onSuccess) => {
 	const rq = buildGenericGetAllRq(null, currentPage);

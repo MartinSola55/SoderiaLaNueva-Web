@@ -2,9 +2,7 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../components';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import API from '../../app/API';
-import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
-import App from '../../app/App';
 import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
 import TableFilters from '../../components/shared/TableFilters/TableFilters';
 import ExpenseModal from './ExpenseModal';
@@ -49,8 +47,6 @@ const ExpenseList = () => {
         { value: 'createdAt-asc', label: 'Creado - Asc.' },
         { value: 'createdAt-desc', label: 'Creado - Desc.' },
     ];
-
-    const navigate = useNavigate();
 
     //States
     const [rows, setRows] = useState([]);
@@ -164,12 +160,6 @@ const ExpenseList = () => {
     };
 
     // Effects
-    useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
-
     useEffect(() => {
         getExpenses();
     }, [currentPage, dateRange, getExpenses, sort]);
