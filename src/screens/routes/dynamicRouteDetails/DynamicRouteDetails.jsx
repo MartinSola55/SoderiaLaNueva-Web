@@ -67,7 +67,7 @@ const DynamicRouteDetails = () => {
                 if (!pending)
                     return <span>{props.row.soldQuantity !== '' ? props.row.soldQuantity : '-'}</span>
                 else
-                    return <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => onProductsChange(props, v, setCartProductRows)} />
+                    return <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => onProductsChange(props, v, setCartProductRows)} />
             },
             className: 'text-center',
         },
@@ -86,7 +86,7 @@ const DynamicRouteDetails = () => {
                 if (!pending)
                     return <span>{props.row.subscriptionQuantity !== '' ? props.row.subscriptionQuantity : '-'}</span>
                 else
-                    return <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => onSubscriptionProductsChange(props, v, setCartSubscriptionProductRows)} />
+                    return <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => onSubscriptionProductsChange(props, v, setCartSubscriptionProductRows)} />
             },
             className: 'text-center',
         },
@@ -284,7 +284,7 @@ const DynamicRouteDetails = () => {
 				updateAfterSubmit(form, r.data.id, rq, paymentMethods, setForm);
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmitting(false);

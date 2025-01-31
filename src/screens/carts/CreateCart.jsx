@@ -44,7 +44,7 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'soldQuantity',
             text: 'Cantidad',
-            component: (props) => (<CellNumericInput {...props} value={props.row.soldQuantity} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'soldQuantity')}/>),
+            component: (props) => (<CellNumericInput {...props} value={props.row.soldQuantity} maxValue={undefined} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'soldQuantity')}/>),
             textCenter: true,
         },
     ];
@@ -58,7 +58,7 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'returnedQuantity',
             text: 'Cantidad',
-            component: (props) => (<CellNumericInput {...props} value={props.row.returnedQuantity} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'returnedQuantity')}/>),
+            component: (props) => (<CellNumericInput {...props} value={props.row.returnedQuantity} maxValue={undefined} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'returnedQuantity')}/>),
             textCenter: true,
         },
     ];
@@ -72,7 +72,7 @@ const CreateCart = ({ isWatching = false }) => {
         {
             name: 'subscriptionQuantity',
             text: 'Cantidad',
-            component: (props) => (<CellNumericInput {...props} value={props.row.subscriptionQuantity} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'subscriptionQuantity')}/>),
+            component: (props) => (<CellNumericInput {...props} value={props.row.subscriptionQuantity} maxValue={undefined} onChange={(v) => onProductsChange(props, v, form, handleInputChange, 'subscriptionQuantity')}/>),
             textCenter: true,
         },
     ];

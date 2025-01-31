@@ -37,7 +37,7 @@ const ExpenseList = () => {
             name: 'actions',
             text: 'Acciones',
             component: (props) => (
-                <ActionButtonsExpense onEdit={handleOpenExpense} entity='gasto' {...props} />
+                <ActionButtonsExpense canDelete={true} onEdit={handleOpenExpense} entity='gasto' {...props} />
             ),
             className: 'text-center',
         },
@@ -54,7 +54,7 @@ const ExpenseList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
-    const [dateRange, setDateRange] = useState({ from: null, to: null });
+    const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
     const [submiting, setSubmiting] = useState(false);
 
     // Refs
@@ -109,7 +109,7 @@ const ExpenseList = () => {
                 getExpenses();
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmiting(false);

@@ -37,7 +37,7 @@ const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {
                 if (callbacks?.onSuccess) callbacks?.onSuccess(r);
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             });
     };
 

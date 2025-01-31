@@ -72,6 +72,10 @@ export const formatPaymentMethods = (items) => {
     }));
 };
 
+export const formatSoldProducts = (items) => {
+    return items.map((item) => (`${item.name} (${item.amount})`))
+};
+
 export const formatCurrency = (value) => {
     if (value === null || value === undefined)
         return '';

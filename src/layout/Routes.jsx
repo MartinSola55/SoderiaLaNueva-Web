@@ -164,7 +164,7 @@ export const AppRoutes = () => (
                     />
                 </Route>
 
-                {/* Clients */}
+                {/* Clients Admin*/}
                 <Route path='/clientes' element={<AdminRoute />}>
                     <Route
                         path='/clientes/list'
@@ -182,6 +182,10 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
+                </Route>
+
+                {/* Clients Admin and Dealer*/}
+                <Route path='/clientes' element={<PrivateRoute />}>
                     <Route
                         path='/clientes/new'
                         element={

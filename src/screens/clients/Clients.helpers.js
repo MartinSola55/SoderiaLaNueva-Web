@@ -45,7 +45,7 @@ export const createClient = async (form, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            Toast.error(r.error?.message);
             onError();
         })
 };
@@ -76,7 +76,7 @@ export const updateClient = async (form, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            Toast.error(r.error?.message);
             onError();
         })
 };
@@ -96,7 +96,7 @@ export const updateClientProducts = async (form, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            Toast.error(r.error?.message);
             onError();
         })
 };
@@ -113,7 +113,7 @@ export const updateClientSubscriptions = async (form, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            Toast.error(r.error?.message);
             onError();
         })
 };

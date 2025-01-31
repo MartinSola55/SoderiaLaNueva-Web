@@ -27,7 +27,7 @@ export const ClientProductsTable = ({
                 if (interalIsWatching)
                     return <span>{props.row.quantity !== '' ? props.row.quantity : '-'}</span>
                 else
-                    return <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => onProductsChange(props, v)} />
+                    return <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => onProductsChange(props, v)} />
             }
         },
     ];

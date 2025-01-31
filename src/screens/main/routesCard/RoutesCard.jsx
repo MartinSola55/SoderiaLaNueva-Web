@@ -1,12 +1,12 @@
-/* eslint-disable no-console */
 import { useEffect, useState } from "react";
 import { Card, DatePicker, DeliveryDayDropdown, Spinner, Table } from "../../../components";
 import { dealerRoutesCols, routesCols } from "../Home.data";
 import API from "../../../app/API";
-import { Dates, formatCurrency, getDayIndex } from "../../../app/Helpers";
+import { Dates, formatCurrency, formatSoldProducts, getDayIndex } from "../../../app/Helpers";
 
 import './RoutesCard.scss';
 import { useNavigate } from "react-router";
+import App from "../../../app/App";
 
 export const RoutesCard = ({ isAdmin }) => {
     const [data, setData] = useState([]);
@@ -33,7 +33,11 @@ export const RoutesCard = ({ isAdmin }) => {
         setLoading(true);
 		let rq = isAdmin ? { date: Dates.formatDate(date) } : { deliveryDay : date };
         API.post('route/getDynamicRoutes', rq).then((r) => {
-            setData(r.data.routes.map(r => ({...r, href: r.id})));
+            setData(r.data.routes.map(r => ({
+				...r, 
+				href: r.id,
+				soldProducts: r.soldProducts.length > 0 ? formatSoldProducts(r.soldProducts) : [] 
+			})));
             setLoading(false);
         });
     }, [date, isAdmin]);
@@ -67,7 +71,7 @@ export const RoutesCard = ({ isAdmin }) => {
             body={loading ? <Spinner /> :
                 <>
                     <Table
-                        className="routes-table"
+                        className={`routes-table ${App.isAdmin() ?  'admin-routes-table' : ''}`}
                         rows={data}
 						onRowClick={(_, id) => navigate('planillas/abierta/' + id)}
 						clickable={true}

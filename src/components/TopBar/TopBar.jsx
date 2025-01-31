@@ -57,7 +57,7 @@ const TopBar = () => {
                 window.location.href = '/login';
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setLoading(false);

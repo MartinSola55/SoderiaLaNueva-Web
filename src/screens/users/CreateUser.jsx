@@ -85,7 +85,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                 navigate('/usuarios/list');
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmiting(false);

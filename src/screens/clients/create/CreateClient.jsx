@@ -44,15 +44,10 @@ const CreateClient = () => {
 
         setSubmiting(true);
         createClient(form,
-            () => { navigate('/clientes/list') },
+            () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
             () => { setSubmiting(false) }
         );
     };
-
-    // Render
-    if (!App.isAdmin()) {
-        return navigate('/notAllowed');
-    }
 
     return (
         <>

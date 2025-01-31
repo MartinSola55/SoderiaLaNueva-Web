@@ -125,7 +125,7 @@ const EditRoute = ({ isWatching = false }) => {
                 navigate('/planillas/list');
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
                 setSubmiting(false);
