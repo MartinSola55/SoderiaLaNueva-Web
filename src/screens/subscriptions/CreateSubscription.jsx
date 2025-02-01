@@ -55,8 +55,12 @@ const CreateSubscription = ({ isWatching = false }) => {
     const handleSubmit = async () => {
         if (submiting) return;
 
-        if (!form.name || !form.price || form.subscriptionProducts.every((x) => !x.quantity)) {
+        if (!form.name || !form.price) {
             Toast.warning(Messages.Validation.requiredFields);
+            return;
+        }
+        if (form.subscriptionProducts.every((x) => !x.quantity)) {
+            Toast.warning('El abono debe contar minimamente con un producto.');
             return;
         }
 

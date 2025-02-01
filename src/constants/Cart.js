@@ -5,4 +5,8 @@ export class CartStatuses {
     static DidNotNeed = "No necesitó";
     static Holiday = "De vacaciones";
 }
+export class CartPaymentStatuses {
+    static Pending = "Pendiente";
+    static Completed = "Realizado";
+}
 

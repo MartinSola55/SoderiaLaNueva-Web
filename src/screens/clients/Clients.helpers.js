@@ -218,8 +218,6 @@ export const handleInputChange = (value, field, setForm) => {
 };
 
 export const handleOnSubmit = (onSubmit, setInteralIsWatching) => {
-	// eslint-disable-next-line no-console
-	console.log('a')
 	onSubmit();
 	setInteralIsWatching(true)
 };

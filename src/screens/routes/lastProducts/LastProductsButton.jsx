@@ -1,21 +1,12 @@
-import { Button } from '../../../components';
 import { faClipboard } from '@fortawesome/free-solid-svg-icons';
 import '../route.scss';
-import classNames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const LastProductsButton = ({ onClick = () => {}, className }) => {
+const LastProductsButton = ({ onClick = () => {} }) => {
     return (
-        <Button
-            icon={faClipboard}
-            className={classNames(className, 'btn-last-products')}
-            style={{
-                minWidth: '45px',
-            }}
-            iconStyle={{
-                marginLeft: '0px',
-            }}
-            onClick={() => onClick()}
-        />
+		<span onClick={onClick} className='btn-last-products'>
+			<FontAwesomeIcon color='white' icon={faClipboard}/>
+		</span>
     );
 };
 

@@ -111,22 +111,13 @@ const CreateCart = ({ isWatching = false }) => {
 		
 		setSubmiting(true);
 
-		// eslint-disable-next-line no-console
-		console.log(form.products)
-		// eslint-disable-next-line no-console
-		console.log(getProductsRows(form))
-		// eslint-disable-next-line no-console
-		console.log(getSubscriptionProductsRows(form))
-
 		let rq = {
-			products: getProductsRows(form).map((x) => ({
+			products: form.products.filter(x => x.soldQuantity !== '' && x.returnedQuantity !== '' && x.subscriptionQuantity !== '').map((x) => ({
 				productTypeId: x.productTypeId,
-				soldQuantity: x.soldQuantity != '' ? x.soldQuantity : 0,
-				returnedQuantity: x.returnedQuantity != '' ? x.returnedQuantity : 0,
-			})),
-			subscriptionProducts: getSubscriptionProductsRows(form).map((x) => ({
-				productTypeId: x.productTypeId,
-				quantity: x.subscriptionQuantity != '' ? x.subscriptionQuantity : 0,
+				soldQuantity: x.soldQuantity !== '' ? x.soldQuantity : 0,
+				returnedQuantity: x.returnedQuantity !== '' ? x.returnedQuantity : 0,
+				subscriptionQuantity: x.subscriptionQuantity !== '' ? x.subscriptionQuantity : 0,
+
 			})),
 			paymentMethods: form.paymentMethods.filter(x => x.amount !== '').map((x) => ({
 				paymentMethodId: x.paymentMethodId,

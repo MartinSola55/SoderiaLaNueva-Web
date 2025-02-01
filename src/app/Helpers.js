@@ -68,7 +68,7 @@ export const formatPaymentMethods = (items) => {
     return items.map((item) => ({
         id: item.stringId ? item.stringId : item.id,
         label: item.description,
-        amount: 0,
+        amount: '',
     }));
 };
 
@@ -182,6 +182,20 @@ const formatDate = (dateString) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}T00:00:00Z`;
+};
+
+export const openActionConfirmationModal = (ref, rq, url, title, description, onSuccess) => {
+	ref.current?.open(
+		rq,
+		url,
+		title,
+		description,
+		onSuccess,
+	);
+};
+
+export const handleOpenLastProducts = (lastProductsRef, lastProducts = []) => {
+	lastProductsRef.current?.open(() => { }, lastProducts);
 };
 
 export class Dates {

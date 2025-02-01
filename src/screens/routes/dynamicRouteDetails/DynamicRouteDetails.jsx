@@ -1,24 +1,20 @@
-import { Dropdown as DropdownBS, Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, CellNumericInput, Dropdown, Input, ProductTypesDropdown, Spinner, Table, Toast, Tooltip } from '../../../components';
+import { Col, Row } from 'react-bootstrap';
+import { BreadCrumb, Button, Card, Spinner, Toast } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
 import API from '../../../app/API';
 import { useNavigate, useParams } from 'react-router';
-import { formatCartProducts, formatCartSubscriptionProducts, formatComboItems, formatCurrency, formatDebt, formatDeliveryDay, formatOptions, getDebtTextColor } from '../../../app/Helpers';
-import { faCheck, faClock, faDollarSign, faHouse, faInfoCircle, faPhone, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import { formatCartProducts, formatCartSubscriptionProducts, formatDeliveryDay, formatOptions, formatPaymentMethods } from '../../../app/Helpers';
 import SimpleCard from '../../../components/SimpleCard/SimpleCard';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CartStatuses } from '../../../constants/Cart';
+import { CartPaymentStatuses, CartStatuses } from '../../../constants/Cart';
 import { InitialFormStates } from '../../../app/InitialFormStates';
 import LastProductsModal from '../lastProducts/LastProductsModal';
-import RouteInfoCard from '../cards/RouteInfoCard';
-import LastProductsButton from '../lastProducts/LastProductsButton';
 import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import { soldProductsColumns } from '../Routes.data';
-import { getCartTitleClassname, getIsSkippedCart, getMoneyCollected, getSoldProductsRows, getTotalCart, getTotalDebt, updateAfterSubmit } from '../Routes.helpers';
-import { onProductsChange, onSubscriptionProductsChange } from '../Routes.helpers';
-
-import '../route.scss';
+import { getTotalCart, updateAfterSubmit } from '../Routes.helpers';
 import App from '../../../app/App';
+import { DynamicRouteGeneralData } from './DynamicRouteGeneralData';
+import '../route.scss';
+import { DynamicRouteFilters } from './DynamicRouteFilters';
+import { DynamicRouteCartDetailCard } from '../cards/DynamicRouteCartDetailCard';
 
 const breadcrumbItems = [
     {
@@ -40,58 +36,6 @@ const DynamicRouteDetails = () => {
     const params = useParams();
     const id = (params && params.id) || null;
 	
-	const cartReturnedProductColumns = [
-        {
-            name: 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: 'quantity',
-            text: 'Cantidad',
-			component: (props) => { return <span>{props.row.returnedQuantity !== '' ? props.row.returnedQuantity : '-'}</span>},
-            className: 'text-center',
-        },
-    ];
-	
-    const cartProductColumns = (pending) => [
-        {
-            name: pending ? 'description' : 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: pending ? 'quantity' : 'soldQuantity',
-            text: pending ? 'Bajó' : 'Cantidad',
-			component: (props) => {
-                if (!pending)
-                    return <span>{props.row.soldQuantity !== '' ? props.row.soldQuantity : '-'}</span>
-                else
-                    return <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => onProductsChange(props, v, setCartProductRows)} />
-            },
-            className: 'text-center',
-        },
-    ];
-
-    const cartSubscriptionProductsColumns = (pending) => [
-        {
-            name: pending ? 'description' : 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: pending ? 'quantity' : 'subscriptionQuantity',
-            text: pending ? 'Bajó' : 'Cantidad',
-			component: (props) => {
-                if (!pending)
-                    return <span>{props.row.subscriptionQuantity !== '' ? props.row.subscriptionQuantity : '-'}</span>
-                else
-                    return <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => onSubscriptionProductsChange(props, v, setCartSubscriptionProductRows)} />
-            },
-            className: 'text-center',
-        },
-    ];
-
     // States
 	const [form, setForm] = useState(initialForm);
     const [loading, setLoading] = useState(true);
@@ -104,7 +48,6 @@ const DynamicRouteDetails = () => {
     const [cartSubscriptionProductRows, setCartSubscriptionProductRows] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
 
-    const countNotPendingCarts = form.carts.filter((cart) => cart.status.toLocaleLowerCase() !== 'pendiente'.toLocaleLowerCase())?.length;
 
 	// Refs
     const lastProductsRef = useRef(null);
@@ -118,7 +61,7 @@ const DynamicRouteDetails = () => {
             setCartPaymentStatuses(formatOptions(r.data.cartPaymentStatuses));
         });
         API.get('Cart/GetPaymentStatusesCombo').then((r) => {
-            setPaymentMethods(formatComboItems(r.data.items));
+            setPaymentMethods(formatPaymentMethods(r.data.items));
         });
         API.get('Route/GetDynamicRoute', { id }).then((r) => {
             setForm(() => ({
@@ -150,71 +93,7 @@ const DynamicRouteDetails = () => {
         });
     }, [id]);
 
-
     //  Handlers
-    const handleOpenLastProducts = (lastProducts = []) => {
-        lastProductsRef.current?.open(() => { }, lastProducts);
-    };
-
-    const handleOpenUpdateCartStatus = (value, cartId, message = '') => {
-        actionConfirmationRef.current?.open(
-            {
-                id: cartId,
-                status: value
-            },
-            'Cart/UpdateStatus',
-            `¿Está seguro que el cliente ${message}?`,
-            null,
-            () => {
-                setForm(prevForm => ({
-                    ...prevForm,
-                    carts: prevForm.carts.map(cart =>
-                        cart.id === cartId
-                            ? { ...cart, status: value }
-                            : cart
-                    ),
-                }));
-            });
-    };
-
-    const handleOpenRestoreCartStatus = (cartId) => {
-        actionConfirmationRef.current?.open(
-            {
-                id: cartId,
-            },
-            'Cart/RestoreStatus',
-            `Esta acción no se puede revertir`,
-            '¿Seguro deseas restablecer el estado de la bajada?',
-            () => {
-                setForm(prevForm => ({
-                    ...prevForm,
-                    carts: prevForm.carts.map(cart =>
-                        cart.id === cartId
-                            ? { ...cart, status: CartStatuses.Pending }
-                            : cart
-                    ),
-                }));
-			}
-		);
-    };
-
-    const handleDeleteCart = (cartId) => {
-        actionConfirmationRef.current?.open(
-            {
-                id: cartId,
-            },
-            'Cart/Delete',
-            `Esta acción no se puede revertir`,
-            '¿Seguro deseas eliminar esta bajada? Esto restablecerá el stock y el saldo del cliente',
-            () => {
-                setForm(prevForm => ({
-                    ...prevForm,
-                    carts: prevForm.carts.filter(x => x.id !== cartId)
-                }));
-			}
-		);
-    };
-
     const handleCloseRoute = () => {
         actionConfirmationRef.current?.open(
             {
@@ -226,7 +105,8 @@ const DynamicRouteDetails = () => {
             () => {
                 setForm(prevForm => ({
                     ...prevForm,
-                    carts: prevForm.carts.filter(x => x.status.toLocaleLowerCase() !== CartStatuses.Pending.toLocaleLowerCase())
+                    carts: prevForm.carts.filter(x => x.status.toLocaleLowerCase() !== CartStatuses.Pending.toLocaleLowerCase()),
+					isClosed: true,
                 }));
 			}
 		);
@@ -241,21 +121,24 @@ const DynamicRouteDetails = () => {
 		);
     };
 
-    const handleFilterRows = (value, name) => {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [name]: value,
-        }));
-    };
-
     const handleSubmit = async (rq = {}) => {
         if (submitting) return;
 
         if (cartProductRows.find(x => x.id === rq.id)?.products.some(y =>  y.quantity === 0) || cartSubscriptionProductRows.find(x => x.id === rq.id)?.subscriptionProducts.some(y =>  y.quantity === 0))
 		{
-            Toast.warning("La cantidad debe ser mayor a cero.");
+            Toast.warning("La cantidad de productos debe ser mayor a cero.");
             return;
         };
+		
+        if (paymentMethods.some(x =>  x.amount === 0))
+		{
+            Toast.warning("La cantidad de dinero debe ser mayor a cero.");
+            return;
+        };
+
+		if (paymentMethods.reduce((sum, x) => sum + x.amount, 0) !== getTotalCart(rq.id, cartProductRows))
+            Toast.warning("Alerta, la cantidad total de dinero no coincide con el total");
+			//TODO, poner un modal capaz (Modal de Toaster)
 
         setSubmitting(true);
 		
@@ -270,12 +153,12 @@ const DynamicRouteDetails = () => {
                 productTypeId: p.id,
                 quantity: p.quantity,
             })),
-            paymentMethods: [
-                {
-                    id: paymentMethods.find(x => x.label.toLocaleLowerCase() === "Efectivo".toLocaleLowerCase())?.value,
-                    amount: getTotalCart(rq.id, cartProductRows)
-                }
-            ]
+            paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
+				return ({
+					id: x.id,
+					amount: x.amount
+				})
+			})
         };
 
         API.post('Cart/Confirm', rq)
@@ -290,28 +173,24 @@ const DynamicRouteDetails = () => {
                 setSubmitting(false);
             });
     };
+	
+	const getFilteredCarts = (carts) => {
+		const cartStatusFilter = (cart) => filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status);
+		const cartProductTypes = (cart) => filters.productType.length === 0 || cart.products.every(p => filters.productType.includes(p.productTypeId));
+		const cartPaymentStatus = (cart) => {
+			const total = getTotalCart(cart.id, cartProductRows.find(x => x.id === cart.id)?.products);
+			return filters.cartPaymentStatus.length === 0 || filters.cartPaymentStatus.length === 2 || (filters.cartPaymentStatus[0] === CartPaymentStatuses.Pending ? total === 0 : total !== 0)
+		};
+		const cartTransfersTypes = (cart) => {
+			if (!filters.cartTransfersType.length) return true;
 
-	const getMoneyCollectedToottip = () => {
-		return (
-			`<ul className='text-left'>
-				<li>Efectivo: ${formatCurrency(getMoneyCollected(form) - form.transfersAmount)}</li>
-				${form.transfersAmount > 0 ? '<li>Transferencia (administración): ' + formatCurrency(form.transfersAmount) + '</li>' : ''}
-			</ul>`
-		)
-	};
+			return cart.paymentMethods.some(p => 
+				filters.cartTransfersType.includes(p.productTypeId) && p.amount !== ''
+			);
+		};
 
-	const showTable = (cart, name, quantity) => {
-		const hasClientItems = name ? cart.client[name]?.length > 0 : true;
-		const hasValidProducts = 
-			cart.products.length === 0 || 
-			cart.products.some(product => product[quantity] !== 0);
-		
-		return hasClientItems && hasValidProducts;
-	};	 
-	 
-	const getTableStyleColumns = (cart) => {
-		return (showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && showTable(cart, null, 'soldQuantity')) ? 4 : 6
-	};	  
+		return carts.filter(cart => (cartStatusFilter(cart) && cartProductTypes(cart) && (App.isAdmin() || cartTransfersTypes(cart)) && cartPaymentStatus(cart)));
+	}
 
     return (
         <>
@@ -324,83 +203,8 @@ const DynamicRouteDetails = () => {
             />
             <Col xs={11} className='container-fluid'>
 				{App.isAdmin() && (
-					<Row>
-						<Col className='mt-4 mt-lg-0' xs={12}>
-							<SimpleCard
-								body={
-									<>
-										<span className='mb-1 d-block fs-4'>{`Total de repartos: ${form.carts.length}`}</span>
-										<span className='mb-1 d-block fs-4'>{`Deuda total: ${formatCurrency(getTotalDebt(form))}`}</span>
-									</>
-								}
-							/>
-						</Col>
-						<Col xs={12} xl={6} className='mt-5'>
-							<Card
-								title='Productos vendidos'
-								header={<p className='mb-0'>06/01/2025</p>}
-								body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)}/>}
-							/>
-						</Col>
-						<Col xs={12} xl={6} className='mt-5'>
-							<Row>
-								<Col xs={12} md={6} className='mb-4'>
-									<SimpleCard
-										body={
-											<RouteInfoCard
-												icon={faDollarSign}
-												bgColor='rgb(116, 96, 238)'
-												title={`${formatCurrency(getMoneyCollected(form))}`}
-												description={
-													<>
-														<span className='me-2'>Recaudado en el día</span>
-														<Tooltip text={getMoneyCollectedToottip()}>
-															<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)'/>
-														</Tooltip>
-													</>
-												}
-											/>
-										}
-									/>
-								</Col>
-								<Col xs={12} md={6} className='mb-4'>
-									<SimpleCard
-										body={
-											<RouteInfoCard
-												icon={faShoppingBag}
-												bgColor='rgb(252, 75, 108)'
-												title={`${formatCurrency(form.spentAmount)}`}
-												description='Gasto en el día'
-											/>
-										}
-									/>
-								</Col>
-								<Col xs={12} md={6} className='mb-4'>
-									<SimpleCard
-										body={
-											<RouteInfoCard
-												icon={faCheck}
-												bgColor='rgb(38, 198, 218)'
-												title={countNotPendingCarts}
-												description='Clientes visitados'
-											/>
-										}
-									/>
-								</Col>
-								<Col xs={12} md={6} className='mb-4 mb-lg-0'>
-									<SimpleCard
-										body={
-											<RouteInfoCard
-												icon={faClock}
-												bgColor='rgb(255, 178, 43)'
-												title={form.carts.length - countNotPendingCarts}
-												description='Clientes por visitar'
-											/>
-										}
-									/>
-								</Col>
-							</Row>
-						</Col>
+					<Row>	
+						<DynamicRouteGeneralData form={form}/>
 					</Row>
 				)}
                 <Card
@@ -412,222 +216,33 @@ const DynamicRouteDetails = () => {
                         ) : (
                             <>
                                 <Row>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <Dropdown
-                                            placeholder='Estado'
-                                            items={cartStatuses}
-                                            isMulti
-                                            value={filters.cartStatus}
-                                            onChange={(options) => handleFilterRows(options.map(o => o.value), 'cartStatus')}
-                                        />
-                                    </Col>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <ProductTypesDropdown
-                                            value={filters.productType}
-                                            isMulti
-                                            onChange={(options) => handleFilterRows(options.map(o => o.value), 'productType')}
-                                        />
-                                    </Col>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <Dropdown
-                                            placeholder='Tipo de servicio'
-                                            items={cartTransfersTypes}
-                                            isMulti
-                                            value={filters.cartTransfersType}
-                                            onChange={(options) => handleFilterRows(options.map(o => o.value), 'cartTransfersType')}
-                                        />
-                                    </Col>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <Dropdown
-                                            placeholder='Estado del pago'
-                                            items={cartPaymentStatuses}
-                                            isMulti
-                                            value={filters.cartPaymentStatus}
-                                            onChange={(options) => handleFilterRows(options.map(o => o.value), 'cartPaymentStatus')}
-                                        />
-                                    </Col>
-                                    <Col xs={12} className='pe-3 mb-3'>
-                                        <Input
-                                            borderless
-                                            placeholder='Buscar'
-                                            helpText='Nombre'
-                                            value={filters.text}
-                                            onChange={(v) => handleFilterRows(v.toLowerCase(), 'text')}
-                                        />
-                                    </Col>
-                                    {form.carts.filter(cart => ((filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status)) && (filters.productType.length === 0 || filters.productType.includes(cart.products.map(p => parseInt(p.productId)))) 
-                                    )).map((cart, idx) => {
+									<DynamicRouteFilters 
+										filters={filters}
+										setFilters={setFilters}
+										cartStatuses={cartStatuses}
+										cartTransfersTypes={cartTransfersTypes}
+										cartPaymentStatuses={cartPaymentStatuses}
+									/>
+                                    {getFilteredCarts(form.carts).map((cart, idx) => {
                                         return (
                                             <Col className='mb-4' xs={12} key={idx}>
                                                 <SimpleCard
                                                     body={
                                                         <>
-                                                            <Row>
-                                                                <Col xs={12} md={10}>
-                                                                    <h4 className={getCartTitleClassname(cart.status)}>{`${cart.client.name} #${cart.client.id} - ${cart.status}`}</h4>
-                                                                    <p className='mb-1'>
-                                                                        {`Bajada ${cart.id} - Creada: ${cart.createdAt} ${cart.updatedAt ? ' - Últ. modif: ' + cart.updatedAt : ''} - `}
-                                                                        <span className={getDebtTextColor(cart.client.debt)}>{formatDebt(cart.client.debt)}</span>
-                                                                    </p>
-                                                                    <p className='mb-1'>
-                                                                        <FontAwesomeIcon
-                                                                            icon={faHouse}
-                                                                        />
-                                                                        {` ${cart.client.address} - `}
-                                                                        <FontAwesomeIcon
-                                                                            icon={faPhone}
-                                                                        />
-                                                                        {` ${cart.client.phone}`}
-                                                                    </p>
-                                                                    <ul>
-                                                                        {cart.client.products.map(
-                                                                            (product, idx) => (
-                                                                                <li key={idx}>
-                                                                                    <p className='mb-1'>
-                                                                                        {`${product.name} - Stock: ${product.stock}`}
-                                                                                    </p>
-                                                                                </li>
-                                                                            ),
-                                                                        )}
-                                                                    </ul>
-                                                                </Col>
-                                                                <Col
-                                                                    className='d-flex flex-md-column justify-content-between'
-                                                                    xs={12}
-                                                                    md={2}
-                                                                >
-                                                                    <LastProductsButton
-                                                                        className='me-auto me-md-0 ms-md-auto'
-                                                                        onClick={() =>
-                                                                            handleOpenLastProducts(cart.client.lastProducts)
-                                                                        }
-                                                                    />
-                                                                    {
-                                                                        cart.status.toLocaleLowerCase() === cartStatuses.Pending && (
-                                                                            <DropdownBS className='ms-auto'>
-                                                                                <DropdownBS.Toggle as={Button} variant="primary" id="dropdown-basic">
-                                                                                    Acción
-                                                                                </DropdownBS.Toggle>
-
-                                                                                <DropdownBS.Menu align="top">
-                                                                                    <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.Absent, cart.id, 'estaba ausente')}>{CartStatuses.Absent}</DropdownBS.Item>
-                                                                                    <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.DidNotNeed, cart.id, 'no necesitaba')}>{CartStatuses.DidNotNeed}</DropdownBS.Item>
-                                                                                    <DropdownBS.Item onClick={() => handleOpenUpdateCartStatus(CartStatuses.Holiday, cart.id, 'estaba de vacaciones')}>{CartStatuses.Holiday}</DropdownBS.Item>
-                                                                                </DropdownBS.Menu>
-                                                                            </DropdownBS>
-                                                                        )
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                            <hr />
-                                                            {
-                                                                !getIsSkippedCart(cart.status) && (
-                                                                    <Row>
-                                                                        {
-                                                                           showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && (
-                                                                                <Col xs={12} md={getTableStyleColumns(cart)}>
-                                                                                    <h4>Abonos</h4>
-                                                                                    <Table
-                                                                                        className='mt-1'
-                                                                                        columns={cartSubscriptionProductsColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-                                                                                        rows={cart.products.length > 0 ? cart.products.filter(x => x.subscriptionQuantity !== 0)  : cartSubscriptionProductRows.find((cr) => cr.id === cart.id)?.subscriptionProducts}
-                                                                                    />
-                                                                                </Col>
-                                                                            )
-                                                                        }
-																		{
-																			showTable(cart, null, 'soldQuantity') && (
-																			<Col xs={12} md={getTableStyleColumns(cart)}>
-																				<h4>Bajada</h4>
-																				<Table
-																					className='mt-1'
-																					columns={cartProductColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-																					rows={cart.products.length > 0 ? cart.products.filter(x => x.soldQuantity !== 0) : cartProductRows.find((cr) => cr.id === cart.id)?.products}
-																				/>
-																			</Col>
-																			)
-																		}
-                                                                        {cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
-                                                                                <Col xs={12} md={getTableStyleColumns(cart)}>
-                                                                                    <h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
-                                                                                    <Input
-                                                                                        className='mt-1'
-                                                                                        placeholder='Total'
-                                                                                        isFloat
-                                                                                        numeric
-                                                                                        type='number'
-                                                                                        value={getTotalCart(cart.id, cartProductRows)}
-                                                                                    />
-                                                                                </Col>
-																			)
-																		}
-                                                                        {cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
-                                                                                <>
-                                                                                    <Col xs={12} md={getTableStyleColumns(cart)}>
-                                                                                        <h4>Devoluciones</h4>
-                                                                                        <Table
-                                                                                            className='mt-1'
-                                                                                            columns={cartReturnedProductColumns}
-                                                                                            rows={cart.products}
-                                                                                        />
-                                                                                    </Col>
-                                                                                    <hr />
-                                                                                    <Col xs={12}>
-                                                                                        {cart.paymentMethods.map((pm, idx) => {
-                                                                                            return <ul key={idx}>
-                                                                                                <li>
-                                                                                                    <p>
-                                                                                                        {`${pm.name}: $${pm.amount} `}
-                                                                                                    </p>
-                                                                                                </li>
-                                                                                            </ul>
-                                                                                        })}
-                                                                                    </Col>
-                                                                                    <hr />
-                                                                                </>
-                                                                            )
-                                                                        }
-                                                                    </Row>
-                                                                )
-                                                            }
-                                                            <Row>
-                                                                <Col className='text-end mt-4' xs={12}>
-                                                                    {
-                                                                        !getIsSkippedCart(cart.status) ? (
-                                                                            cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() ? (
-                                                                                <Button
-                                                                                    onClick={() => handleSubmit({ id: cart.id })}
-                                                                                >
-                                                                                    Confirmar bajada
-                                                                                </Button>
-                                                                            )
-																			: (
-																				<>
-																					<Button
-																						onClick={() => handleDeleteCart(cart.id)}
-																						className='bg-danger border-0 me-3'
-																					>
-																						Eliminar
-																					</Button>
-																					<Button
-																						onClick={() => navigate(`/bajadas/${cart.id}`)}
-																					>
-																						Ediar bajada
-																					</Button>
-																				</>
-																			)
-                                                                        )
-																		: (
-																			<Button
-																				className='bg-danger border-0'
-																				onClick={() => handleOpenRestoreCartStatus(cart.id)}
-																			>
-																				Cancelar estado
-																			</Button>
-																		)
-                                                                    }
-                                                                </Col>
-                                                            </Row>
+															<DynamicRouteCartDetailCard 
+																cart={cart}
+																setForm={setForm}
+																actionConfirmationRef={actionConfirmationRef}
+																lastProductsRef={lastProductsRef}
+																setCartSubscriptionProductRows={setCartSubscriptionProductRows}
+																setCartProductRows={setCartProductRows}
+																cartSubscriptionProductRows={cartSubscriptionProductRows}
+																cartProductRows={cartProductRows}
+																handleSubmit={handleSubmit}
+																form={form}
+																setPaymentMethods={setPaymentMethods}
+																paymentMethods={paymentMethods}
+															/>
                                                         </>
                                                     }
                                                 />
@@ -642,13 +257,15 @@ const DynamicRouteDetails = () => {
                         <div className='d-flex justify-content-between'>
 							{App.isAdmin() && (
 								<div>
-									<Button
-										className='me-4'
-										onClick={handleCloseRoute}
-										variant='warning'
-									>
-										Cerrar planilla
-									</Button>
+									{!form.isClosed && (
+										<Button
+											className='me-4'
+											onClick={handleCloseRoute}
+											variant='warning'
+										>
+											Cerrar planilla
+										</Button>
+									)}
 									<Button
 										onClick={handleDeleteRoute}
 										variant='danger'

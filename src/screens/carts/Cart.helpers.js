@@ -60,5 +60,32 @@ export const getProductsRows = (form) => {
 			soldQuantity: existingCLientProduct?.soldQuantity || "",
 			returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
 		};
-	})
+	});
 };
+
+// export const getRqProducts = (form) => {
+// 	const products = getProductsRows(form);
+// 	const newProducts = products.forEach(x => {
+// 		const existingProduct = products.find(x => x.productTypeId === sp.typeId);
+
+// 	})
+// 	return form.subscriptionProducts?.map((sp) => {
+// 		return {
+// 			productTypeId: sp.typeId,
+// 			name: `${sp.name} - Disponible: ${sp.available} `,
+// 			subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
+// 		};
+// 	})
+// }
+
+
+// const products = form.clientProducts?.map((cp) => {
+// 	const existingCLientProduct = form.products.find(x => x.productTypeId === cp.productTypeId);
+// 	return {
+// 		productTypeId: cp.productTypeId,
+// 		name: cp.name,
+// 		soldQuantity: existingCLientProduct?.soldQuantity || "",
+// 		returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
+// 	};
+// });
+

@@ -238,7 +238,7 @@ export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
 	});
 
 	const newPaymentMethods = rq.paymentMethods.map(x => ({
-		name: paymentMethods.find(y => y.value === x.id)?.label,
+		name: paymentMethods.find(y => y.id === x.id)?.label,
 		amount: x.amount
 	}))
 	

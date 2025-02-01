@@ -50,6 +50,7 @@ export const RoutesCard = ({ isAdmin }) => {
     // Render
     return (
         <Card
+			cardBodyClassName='p-0'
             header={
                 <div className="d-flex flex-row align-items-center">
                     <h5 className="me-3 mb-0">Repartos del día</h5>
