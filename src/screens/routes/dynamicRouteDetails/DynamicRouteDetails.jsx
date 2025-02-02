@@ -3,13 +3,13 @@ import { BreadCrumb, Button, Card, Spinner, Toast } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
 import API from '../../../app/API';
 import { useNavigate, useParams } from 'react-router';
-import { formatCartProducts, formatCartSubscriptionProducts, formatDeliveryDay, formatOptions, formatPaymentMethods } from '../../../app/Helpers';
+import { formatCartProducts, formatCartSubscriptionProducts, formatDeliveryDay, formatOptions, formatPaymentMethods, openActionConfirmationModal } from '../../../app/Helpers';
 import SimpleCard from '../../../components/SimpleCard/SimpleCard';
-import { CartPaymentStatuses, CartStatuses } from '../../../constants/Cart';
+import { CartStatuses } from '../../../constants/Cart';
 import { InitialFormStates } from '../../../app/InitialFormStates';
 import LastProductsModal from '../lastProducts/LastProductsModal';
 import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import { getTotalCart, updateAfterSubmit } from '../Routes.helpers';
+import { getFilteredCarts, getTotalCart, updateAfterSubmit } from '../Routes.helpers';
 import App from '../../../app/App';
 import { DynamicRouteGeneralData } from './DynamicRouteGeneralData';
 import '../route.scss';
@@ -47,7 +47,6 @@ const DynamicRouteDetails = () => {
     const [cartProductRows, setCartProductRows] = useState([]);
     const [cartSubscriptionProductRows, setCartSubscriptionProductRows] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
-
 
 	// Refs
     const lastProductsRef = useRef(null);
@@ -95,10 +94,9 @@ const DynamicRouteDetails = () => {
 
     //  Handlers
     const handleCloseRoute = () => {
-        actionConfirmationRef.current?.open(
-            {
-                routeId: id,
-            },
+        openActionConfirmationModal(
+			actionConfirmationRef,
+            {routeId: id},
             'Route/Close',
             `Esta acción no se puede revertir`,
             '¿Seguro deseas cerrar esta planilla? Esto eliminará TODAS las planillas PENDIENTES',
@@ -112,7 +110,8 @@ const DynamicRouteDetails = () => {
 		);
     };
     const handleDeleteRoute = () => {
-        actionConfirmationRef.current?.open(
+        openActionConfirmationModal(
+			actionConfirmationRef,
             {},
             'Route/Delete',
             `Esta acción no se puede revertir`,
@@ -174,23 +173,7 @@ const DynamicRouteDetails = () => {
             });
     };
 	
-	const getFilteredCarts = (carts) => {
-		const cartStatusFilter = (cart) => filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status);
-		const cartProductTypes = (cart) => filters.productType.length === 0 || cart.products.every(p => filters.productType.includes(p.productTypeId));
-		const cartPaymentStatus = (cart) => {
-			const total = getTotalCart(cart.id, cartProductRows.find(x => x.id === cart.id)?.products);
-			return filters.cartPaymentStatus.length === 0 || filters.cartPaymentStatus.length === 2 || (filters.cartPaymentStatus[0] === CartPaymentStatuses.Pending ? total === 0 : total !== 0)
-		};
-		const cartTransfersTypes = (cart) => {
-			if (!filters.cartTransfersType.length) return true;
 
-			return cart.paymentMethods.some(p => 
-				filters.cartTransfersType.includes(p.productTypeId) && p.amount !== ''
-			);
-		};
-
-		return carts.filter(cart => (cartStatusFilter(cart) && cartProductTypes(cart) && (App.isAdmin() || cartTransfersTypes(cart)) && cartPaymentStatus(cart)));
-	}
 
     return (
         <>
@@ -223,7 +206,7 @@ const DynamicRouteDetails = () => {
 										cartTransfersTypes={cartTransfersTypes}
 										cartPaymentStatuses={cartPaymentStatuses}
 									/>
-                                    {getFilteredCarts(form.carts).map((cart, idx) => {
+                                    {getFilteredCarts(form.carts, filters, cartProductRows).map((cart, idx) => {
                                         return (
                                             <Col className='mb-4' xs={12} key={idx}>
                                                 <SimpleCard
@@ -275,7 +258,7 @@ const DynamicRouteDetails = () => {
 								</div>
 							)}
                             <Button
-                                onClick={() => navigate(`/planillas/edit/${id}`)}
+                                onClick={() => navigate(`/planillas/agregarFueraReparto`, { state: { clientIds: form.carts.map(x => x.client.id) } })}
                                 variant='primary'
                             >
                                 Agregar fuera de reparto

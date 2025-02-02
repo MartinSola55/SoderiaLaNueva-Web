@@ -147,8 +147,10 @@ export const getSubscriptions = (onSuccess) => {
     });
 };
 
-export const getClients = (sort, currentPage, onSuccess) => {
+export const getClients = (sort, currentPage, filterClients = [], onSuccess) => {
     const rq = buildGenericGetAllRq(sort, currentPage);
+
+	if (filterClients.length > 0) rq.filterClients = filterClients;
 
     API.post('client/getAll', rq).then((r) => {
         const { clients, totalCount } = r.data;
@@ -158,14 +160,13 @@ export const getClients = (sort, currentPage, onSuccess) => {
                 debt: formatCurrency(client.debt),
                 deliveryDay: client.dealerName
                     ? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`
-                    : ' - ',
+                    : ' Sin repartidor asignado - Sin día asignado ',
                 endpoint: 'client',
             };
         });
 
         onSuccess({ clients: formattedClients, totalCount });
     });
-
 };
 
 export const getClient = (id, onSuccess) => {

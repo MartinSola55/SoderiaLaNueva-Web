@@ -29,7 +29,7 @@ const ClientList = () => {
 
     // Effects
     useEffect(() => {
-        getClients(sort, currentPage, ({ clients, totalCount }) => {
+        getClients(sort, currentPage, [], ({ clients, totalCount }) => {
             setTotalCount(totalCount);
             setRows(clients);
             if (clients.length === 0) {

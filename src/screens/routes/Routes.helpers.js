@@ -1,6 +1,7 @@
 import API from "../../app/API";
+import App from "../../app/App";
 import { buildGenericGetAllRq, formatClients, formatDeliveryDay } from "../../app/Helpers";
-import { CartStatuses } from "../../constants/Cart";
+import { CartPaymentStatuses, CartStatuses } from "../../constants/Cart";
 import { Roles } from "../../constants/Roles";
 
 export const getAllRoutes = (dayFilter, onSuccess) => {
@@ -250,4 +251,34 @@ export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
 				: cart
 		),
 	}));
+};
+
+export const handleChangePaymentMethods = (props, value, paymentMethods, setPaymentMethods) => {
+	const newPaymentMethods = paymentMethods.map((x) => {
+		if (x.id === props.row.id)
+			return {
+				...x,
+				amount: value
+			};
+		return x;
+	});
+	setPaymentMethods(newPaymentMethods);
+};
+
+export const getFilteredCarts = (carts, filters, cartProductRows) => {
+	const cartStatusFilter = (cart) => filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status);
+	const cartProductTypes = (cart) => filters.productType.length === 0 || cart.products.every(p => filters.productType.includes(p.productTypeId));
+	const cartPaymentStatus = (cart) => {
+		const total = getTotalCart(cart.id, cartProductRows.find(x => x.id === cart.id)?.products);
+		return filters.cartPaymentStatus.length === 0 || filters.cartPaymentStatus.length === 2 || (filters.cartPaymentStatus[0] === CartPaymentStatuses.Pending ? total === 0 : total !== 0)
+	};
+	const cartTransfersTypes = (cart) => {
+		if (!filters.cartTransfersType.length) return true;
+
+		return cart.paymentMethods.some(p => 
+			filters.cartTransfersType.includes(p.productTypeId) && p.amount !== ''
+		);
+	};
+
+	return carts.filter(cart => (cartStatusFilter(cart) && cartProductTypes(cart) && (App.isAdmin() || cartTransfersTypes(cart)) && cartPaymentStatus(cart)));
 }

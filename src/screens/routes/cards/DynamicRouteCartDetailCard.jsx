@@ -3,12 +3,13 @@ import LastProductsButton from "../lastProducts/LastProductsButton"
 import { formatCurrency, formatDebt, getDebtTextColor, handleOpenLastProducts, openActionConfirmationModal } from "../../../app/Helpers"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone } from "@fortawesome/free-solid-svg-icons"
-import { getCartTitleClassname, getIsSkippedCart, getTotalCart, onProductsChange, onSubscriptionProductsChange } from "../Routes.helpers"
+import { getCartTitleClassname, getIsSkippedCart, getTotalCart, handleChangePaymentMethods, onProductsChange, onSubscriptionProductsChange } from "../Routes.helpers"
 import { CartActionButton } from "../dynamicRouteDetails/CartActionButton"
 import { CartStatuses } from "../../../constants/Cart"
 import { Button, CellNumericInput, Table } from "../../../components"
 import { useNavigate } from "react-router"
 import App from "../../../app/App"
+import { paymentMethodsColumns } from "../Routes.data"
 
 export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef, lastProductsRef, paymentMethods, setCartSubscriptionProductRows, setCartProductRows, cartSubscriptionProductRows, cartProductRows, handleSubmit, setPaymentMethods}) => {
 
@@ -28,16 +29,12 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 		},
 	];
 
-	const paymentMethodsColumns = [
-		{
-			name: 'label',
-			text: 'Método',
-			textCenter: true,
-		},
+	const paymentMethodsTableColumns = [
+		...paymentMethodsColumns,
 		{
 			name: 'amount',
 			text: 'Cantidad',
-			component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v)}/>),
+			component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)}/>),
 			textCenter: true,
 		},
 	];
@@ -128,17 +125,6 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 			}
 		);
 	};
-	const handleChangePaymentMethods = (props, value) => {
-		const newPaymentMethods = paymentMethods.map((x) => {
-			if (x.id === props.row.id)
-				return {
-					...x,
-					amount: value
-				};
-			return x;
-		});
-		setPaymentMethods(newPaymentMethods);
-	};
 	
 	return (
 		<>
@@ -173,11 +159,7 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 						</ul>
 					)}
 				</Col>
-				<Col
-					className='d-flex flex-md-column justify-content-between align-items-end'
-					xs={12}
-					md={2}
-				>
+				<Col xs={12} md={2} className='d-flex flex-md-column justify-content-between align-items-end' >
 					<LastProductsButton
 						onClick={() =>handleOpenLastProducts(lastProductsRef, cart.client.lastProducts)}
 					/>
@@ -220,25 +202,11 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 							</Col>
 							)
 						}
-						{/* {cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
-								<Col xs={12} md={getTableStyleColumns(cart)}>
-									<h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
-									<Input
-										className='mt-1'
-										placeholder='Total'
-										isFloat
-										numeric
-										type='number'
-										value={getTotalCart(cart.id, cartProductRows)}
-									/>
-								</Col>
-							)
-						} */}
 						{cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
 								<Col xs={12} md={getTableStyleColumns(cart)}>
 									<h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
 									<Table
-										columns={paymentMethodsColumns}
+										columns={paymentMethodsTableColumns}
 										rows={paymentMethods}
 									/>
 								</Col>

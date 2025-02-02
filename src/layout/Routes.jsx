@@ -27,6 +27,7 @@ const UserList = lazy(() => import('../screens/users/UserList.jsx'));
 const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx'));
 const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
 const DealerRouteList = lazy(() => import('../screens/routes/DealerRouteList.jsx'));
+const AddClientList = lazy(() => import('../screens/routes/dynamicRouteDetails/AddClientList.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 
@@ -206,15 +207,6 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
-                    {/* // TODO */}
-                    {/* <Route
-                        path='/planillas/:id'
-                        element={
-                            <DefaultLayout>
-                                <EditRoute isWatching />
-                            </DefaultLayout>
-                        }
-                    /> */}
                     <Route
                         path='/planillas/:id'
                         element={
@@ -248,6 +240,14 @@ export const AppRoutes = () => (
 						element={
 							<DefaultLayout>
 								<DynamicRouteDetails />
+							</DefaultLayout>
+						}
+					/>
+					<Route
+						path='/planillas/agregarFueraReparto/'
+						element={
+							<DefaultLayout>
+								<AddClientList />
 							</DefaultLayout>
 						}
 					/>

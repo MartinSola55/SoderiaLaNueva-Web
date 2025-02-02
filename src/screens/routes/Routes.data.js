@@ -73,3 +73,10 @@ export const soldProductsColumns = [
 	},
 ];
 
+export const paymentMethodsColumns = [
+	{
+		name: 'label',
+		text: 'Método',
+		textCenter: true,
+	}
+];
