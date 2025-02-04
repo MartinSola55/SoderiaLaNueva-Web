@@ -258,7 +258,7 @@ const DynamicRouteDetails = () => {
 								</div>
 							)}
                             <Button
-                                onClick={() => navigate(`/planillas/agregarFueraReparto`, { state: { clientIds: form.carts.map(x => x.client.id) } })}
+                                onClick={() => navigate(`/planillas/agregarFueraReparto`, { state: { clientIds: form.carts.map(x => x.client.id), routeId: id } })}
                                 variant='primary'
                             >
                                 Agregar fuera de reparto

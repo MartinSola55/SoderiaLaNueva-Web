@@ -1,12 +1,13 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { Button, CellNumericInput, Loader, Table } from '../../../components';
 import { paymentMethodsColumns } from '../Routes.data';
 import { handleChangePaymentMethods } from '../Routes.helpers';
-import { formatCurrency } from '../../../app/Helpers';
+import { formatCartProducts, formatCurrency, formatPaymentMethods } from '../../../app/Helpers';
+import API from '../../../app/API';
 
 // eslint-disable-next-line react/display-name
-const AddClientModal = forwardRef(({ disabled, paymentMethods, setPaymentMethods, products = [], setProducts}, ref) => {
+const AddClientModal = forwardRef(({ disabled }, ref) => {
 	const paymentMethodsTableColumns = [
 		...paymentMethodsColumns,
 		{
@@ -34,6 +35,8 @@ const AddClientModal = forwardRef(({ disabled, paymentMethods, setPaymentMethods
 	const [isVisible, setIsVisible] = useState(false);
     const [callbacks, setCallbacks] = useState(null);
     const [name, setName] = useState('');
+    const [products, setProducts] = useState([]);
+    const [paymentMethods, setPaymentMethods] = useState([]);
 
     useImperativeHandle(ref, () => ({
         open,
@@ -41,13 +44,16 @@ const AddClientModal = forwardRef(({ disabled, paymentMethods, setPaymentMethods
         confirm,
     }));
 
-    const open = (onConfirm, onClose, name) => {
+    const open = (onConfirm, onClose, name, id) => {
         setCallbacks({
             onConfirm,
             onClose,
         });
         setIsVisible(true);
         setName(name);
+		API.get('Client/GetClientProducts', { id }).then((r) => {
+            setProducts(formatCartProducts(r.data.products));
+        });
     };
 
     const close = () => {
@@ -56,7 +62,7 @@ const AddClientModal = forwardRef(({ disabled, paymentMethods, setPaymentMethods
     };
 
     const confirm = () => {
-        if (callbacks?.onConfirm) callbacks?.onConfirm();
+        if (callbacks?.onConfirm) callbacks?.onConfirm(products, paymentMethods);
     };
 
     const handleConfirm = () => {
@@ -77,6 +83,12 @@ const AddClientModal = forwardRef(({ disabled, paymentMethods, setPaymentMethods
 			return x;
 		}))
     };
+
+	useEffect(() => {
+		API.get('Cart/GetPaymentStatusesCombo').then((r) => {
+            setPaymentMethods(formatPaymentMethods(r.data.items));
+        });
+	}, [setPaymentMethods])
 
     if (!isVisible) return null;
 
@@ -101,7 +113,7 @@ const AddClientModal = forwardRef(({ disabled, paymentMethods, setPaymentMethods
 						/>
 					</Col>
                     <Col xs={12} className='mb-3'>
-						<h4>Total: {formatCurrency(paymentMethods.reduce((sum, x) => sum + x.amount, 0))}</h4>
+						<h4>Total: {formatCurrency(products.reduce((sum, x) => sum + (x.quantity * x.price), 0))}</h4>
 						<Table
 							columns={paymentMethodsTableColumns}
 							rows={paymentMethods}

@@ -20,6 +20,29 @@ export const getBreadcrumbItems = (label) => {
 
     return items;
 };
+export const getAddClientBreadcrumbItems = (label, routeId) => {
+    const items = [
+        {
+            active: false,
+            url: '/planillas/list',
+            label: 'Planillas',
+        },
+        {
+            active: false,
+            url: '/planillas/abierta/' + routeId,
+            label: 'Detalles planilla ' + routeId,
+        }
+    ];
+
+    if (label) {
+        items.push({
+            active: true,
+            label,
+        });
+    }
+
+    return items;
+};
 
 export const createClient = async (form, onSuccess, onError) => {
     const rq = {

@@ -1,14 +1,14 @@
-/* eslint-disable no-console */
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '../../../components';
+import { useNavigate } from 'react-router';
+import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
 import { Messages } from '../../../constants/Messages';
-import { getBreadcrumbItems, getClients } from '../../clients/Clients.helpers';
+import { getAddClientBreadcrumbItems, getClients } from '../../clients/Clients.helpers';
 import { clientColumns, sortClientItems } from '../../clients/Clients.data';
 import { useLocation } from 'react-router';
 import AddClientModal from './AddClientModal';
 import API from '../../../app/API';
-import { formatCartProducts, formatPaymentMethods } from '../../../app/Helpers';
+import CellButton from '../../../components/shared/CellInputs/CellButton';
 
 const AddClientList = () => {
     const columns = [
@@ -17,7 +17,7 @@ const AddClientList = () => {
             name: 'actions',
             text: 'Acciones',
             className: 'text-center',
-            component: (props) => <Button {...props} onClick={() => handleSelectClient(props.row)}>Seleccionar</Button>,
+            component: (props) => <CellButton {...props} onClick={() => handleSelectClient(props.row)}>Seleccionar</CellButton>,
         },
     ];
 
@@ -27,12 +27,11 @@ const AddClientList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
-    const [paymentMethods, setPaymentMethods] = useState([]);
-    const [products, setProducts] = useState([]);
     const [submiting, setSubmiting] = useState(false);
 
 	const location = useLocation();
-    const { clientIds } = location.state || {}; 
+	const navigate = useNavigate();
+    const { clientIds, routeId } = location.state || {}; 
 
 	const addClientModal = useRef(null);
 
@@ -44,9 +43,6 @@ const AddClientList = () => {
             if (clients.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
-        });
-		API.get('Cart/GetPaymentStatusesCombo').then((r) => {
-            setPaymentMethods(formatPaymentMethods(r.data.items));
         });
     }, [clientIds, currentPage, sort]);
 
@@ -64,13 +60,10 @@ const AddClientList = () => {
     };
 
     const handleSelectClient = (row) => {
-		API.get('Client/GetClientProducts', {id: row.id}).then((r) => {
-            setProducts(formatCartProducts(r.data.products));
-        });
-        addClientModal.current?.open(handleSubmit, () => {}, row.name);
+        addClientModal.current?.open((products, paymentMethods) => handleSubmit(products, paymentMethods, row.id), () => {}, row.name, row.id);
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (products, paymentMethods, clientId) => {
         if (submiting) return;
 
 		if (products.some(y =>  y.quantity === 0))
@@ -92,10 +85,12 @@ const AddClientList = () => {
         setSubmiting(true);
 
         const rq = {
+			routeId,
+			clientId,
             products: products.filter(x => x.quantity !== '').map(x => ({
 				productTypeId : x.id,
 				soldQuantity: x.quantity,
-				ReturnedQuantity: x.quantity,
+				returnedQuantity: x.quantity,
 			})),
 			paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
 				return ({
@@ -105,9 +100,10 @@ const AddClientList = () => {
 			})
         };
 
-        API.post(`Cart/Confirm`, rq)
+        API.post(`Route/AddClient`, rq)
             .then((r) => {
                 Toast.success(r.message);
+				navigate('/planillas/abierta/' + routeId)
             })
             .catch((r) => {
                 Toast.error(r.error?.message);
@@ -119,8 +115,8 @@ const AddClientList = () => {
 
     return (
         <>
-            <BreadCrumb items={getBreadcrumbItems()} title='Clientes' />
-			<AddClientModal ref={addClientModal} paymentMethods={paymentMethods} setPaymentMethods={setPaymentMethods} products={products} setProducts={setProducts}/>
+            <BreadCrumb items={getAddClientBreadcrumbItems('Agregar cliente fuera de reparto', routeId)} title='Clientes' />
+			<AddClientModal ref={addClientModal}/>
             <div>
                 <Col xs={11} className='container'>
                     <Card
