@@ -1,9 +1,11 @@
 import API from "../../app/API";
 import App from "../../app/App";
 import { buildGenericGetAllRq, formatClients, formatDeliveryDay } from "../../app/Helpers";
-import { CartPaymentStatuses, CartStatuses } from "../../constants/Cart";
+import { Toast } from "../../components";
+import { CartPaymentStatuses, CartServiceType, CartStatuses } from "../../constants/Cart";
 import { Roles } from "../../constants/Roles";
 
+// Routes List
 export const getAllRoutes = (dayFilter, onSuccess) => {
 	const rq = {
 		deliveryDay: dayFilter,
@@ -24,6 +26,7 @@ export const getAllRoutes = (dayFilter, onSuccess) => {
     });
 };
 
+// Dealer Routes List
 export const getAllDealerRoutes = (onSuccess) => {
     API.get('route/getAllDealerStaticRoutes').then((r) => {
         const routes = r.data.routes.map((x) => {
@@ -40,7 +43,7 @@ export const getAllDealerRoutes = (onSuccess) => {
     });
 };
 
-
+// Create Route
 export const getAllDealers = (currentPage, onSuccess) => {
 	const rq = buildGenericGetAllRq(null, currentPage);
 
@@ -60,95 +63,12 @@ export const getAllDealers = (currentPage, onSuccess) => {
     });
 };
 
-export const getAllClientList = (currentPage, id, onSuccess) => {
-    API.post('Route/GetClientsList', { id: id, currentPage: currentPage } ).then((r) => {
-        const { totalCount } = r.data;
-        const clients = formatClients(r.data.items);
-
-        onSuccess({ clients, totalCount })
-    });
-};
-
-export const onProductsChange = (props, value, setCartProductRows) => {
-	setCartProductRows((prevState) => {
-		return prevState.map((cart) => {
-			if (cart.id === props.row.cartId) {
-				const updatedProducts = cart.products.map((p) => {
-					if (p.id === props.row.id) {
-						return {
-							...p,
-							quantity: parseInt(value, 10),
-						};
-						}
-					return p;
-				});
-				
-				return {
-					...cart,
-					products: updatedProducts,
-				};
-			}
-			return cart;
-		});
-	});
-};
-
-export const onSubscriptionProductsChange = (props, value, setCartSubscriptionProductRows) => {
-	setCartSubscriptionProductRows((prevState) => {
-		return prevState.map((cart) => {
-			if (cart.id === props.row.cartId) {
-				const updatedSubscriptionProducts = cart.subscriptionProducts.map((sp) => {
-					if (sp.id === props.row.id) {
-
-						return {
-							...sp,
-							quantity: parseInt(value, 10),
-						};
-					}
-					return sp;
-				});
-				return {
-					...cart,
-					subscriptionProducts: updatedSubscriptionProducts,
-				};
-			}
-			return cart;
-		});
-	})
-};
-
+// Dynamic Route General Data
 export const getTotalDebt = (form) => {
 	let totalDebt = 0;
 	form.carts.forEach((cart) => (totalDebt = totalDebt + cart.client.debt));
 	return totalDebt;
 };
-
-export const getTotalCart = (id, cartProductRows = []) => {
-	let total = 0;
-	cartProductRows.find(x => x.id === id)?.products.filter(x => !Number.isNaN(x.quantity)).forEach((product) => (total = total + product.quantity * product.price));
-	return total;
-};
-
-export const getCartTitleClassname = (status) => {
-	switch (status.toLocaleLowerCase()) {
-		case CartStatuses.Pending.toLocaleLowerCase():
-			return ''
-		case CartStatuses.Confirmed.toLocaleLowerCase():
-			return 'text-success'
-		case CartStatuses.Absent.toLocaleLowerCase():
-		case CartStatuses.DidNotNeed.toLocaleLowerCase():
-		case CartStatuses.Holiday.toLocaleLowerCase():
-			return 'text-warning'
-		default:
-			return ''
-	}
-}
-
-export const getIsSkippedCart = (status) => {
-	return status.toLocaleLowerCase() === CartStatuses.Absent.toLocaleLowerCase() 
-		|| status.toLocaleLowerCase() === CartStatuses.DidNotNeed.toLocaleLowerCase() 
-		|| status.toLocaleLowerCase() === CartStatuses.Holiday.toLocaleLowerCase()
-}
 
 export const getMoneyCollected = (form) => {
 	let total = 0;
@@ -253,6 +173,160 @@ export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
 	}));
 };
 
+export const getFilteredCarts = (carts, filters, cartProductRows) => {
+	const cartStatusFilter = (cart) => filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status);
+	const cartProductTypes = (cart) => filters.productType.length === 0 || cart.products.some(x => filters.productType.includes(x.productTypeId));
+	const cartPaymentStatus = (cart) => {
+		if (filters.cartPaymentStatus.length === 0 || filters.cartPaymentStatus.length === 2) return true;
+
+		const total = getTotalCart(cart.id, cartProductRows.find(x => x.id === cart.id)?.products);
+		return (filters.cartPaymentStatus[0] === CartPaymentStatuses.Pending ? total === 0 : total !== 0)
+	};
+	const cartTransfersTypes = (cart) => {
+		if (filters.cartTransfersType.length === 0) return true;
+
+		return cart.paymentMethods.some(p => 
+			filters.cartTransfersType.includes(p.productTypeId) && p.amount !== ''
+		);
+	};
+	const cartServiceTypes = (cart) => {
+		if (filters.cartServiceType.length === 0 || filters.cartServiceType.length === 2) return true;
+
+		return cart.products.some(p => 
+			filters.cartServiceType[0] === CartServiceType.Subscription ? (p.subscriptionQuantity !== '' && p.subscriptionQuantity !== 0) : (p.soldQuantity !== '' && p.soldQuantity !== 0)
+		);
+	};
+
+	return carts.filter(cart => (cartStatusFilter(cart) && cartProductTypes(cart) && cartServiceTypes(cart) && (App.isAdmin() || cartTransfersTypes(cart)) && cartPaymentStatus(cart)));
+};
+
+export const confirmCart = (form, rq, cartProductRows, cartSubscriptionProductRows, paymentMethods, onSuccess, onError, onFinally) => {
+	rq = {
+		...rq,
+		products: cartProductRows.find((cr) => cr.id === rq.id)?.products.filter(x => !Number.isNaN(x.quantity) && x.quantity !== '').map((p) => ({
+			productTypeId: p.id,
+			soldQuantity: p.quantity,
+			returnedQuantity: p.quantity
+		})),
+		subscriptionProducts: cartSubscriptionProductRows.find((cspr) => cspr.id === rq.id)?.subscriptionProducts.filter(x => !Number.isNaN(x.quantity) && x.quantity !== '').map((p) => ({
+			productTypeId: p.id,
+			quantity: p.quantity,
+		})),
+		paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
+			return ({
+				id: x.id,
+				amount: x.amount
+			})
+		})
+	};
+
+	API.post('Cart/Confirm', rq)
+		.then((r) => {
+			Toast.success(r.message);
+			onSuccess(form, r.data.id, rq, paymentMethods);
+		})
+		.catch((r) => {
+			Toast.error(r.error?.message);
+		})
+		.finally(() => {
+			onFinally();
+		});
+};
+
+// Dynamic Route Card Details Card
+export const showTable = (cart, name, quantity) => {
+	const hasClientItems = name ? cart.client[name]?.length > 0 : true;
+	const hasValidProducts = 
+		cart.products.length === 0 || 
+		cart.products.some(product => product[quantity] !== 0);
+	
+	return hasClientItems && hasValidProducts;
+};	 
+		
+export const getTableStyleColumns = (cart) => {
+	return (showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && showTable(cart, null, 'soldQuantity')) ? 4 : 6
+};	
+
+export const getIsSkippedCart = (status) => {
+	return status.toLocaleLowerCase() === CartStatuses.Absent.toLocaleLowerCase() 
+		|| status.toLocaleLowerCase() === CartStatuses.DidNotNeed.toLocaleLowerCase() 
+		|| status.toLocaleLowerCase() === CartStatuses.Holiday.toLocaleLowerCase()
+}
+
+export const getCartTitleClassname = (status) => {
+	switch (status.toLocaleLowerCase()) {
+		case CartStatuses.Pending.toLocaleLowerCase():
+			return ''
+		case CartStatuses.Confirmed.toLocaleLowerCase():
+			return 'text-success'
+		case CartStatuses.Absent.toLocaleLowerCase():
+		case CartStatuses.DidNotNeed.toLocaleLowerCase():
+		case CartStatuses.Holiday.toLocaleLowerCase():
+			return 'text-warning'
+		default:
+			return ''
+	}
+};
+
+export const onProductsChange = (props, value, setCartProductRows) => {
+	setCartProductRows((prevState) => {
+		return prevState.map((cart) => {
+			if (cart.id === props.row.cartId) {
+				const updatedProducts = cart.products.map((p) => {
+					if (p.id === props.row.id) {
+						return {
+							...p,
+							quantity: parseInt(value, 10),
+						};
+						}
+					return p;
+				});
+				
+				return {
+					...cart,
+					products: updatedProducts,
+				};
+			}
+			return cart;
+		});
+	});
+};
+
+export const onSubscriptionProductsChange = (props, value, setCartSubscriptionProductRows) => {
+	setCartSubscriptionProductRows((prevState) => {
+		return prevState.map((cart) => {
+			if (cart.id === props.row.cartId) {
+				const updatedSubscriptionProducts = cart.subscriptionProducts.map((sp) => {
+					if (sp.id === props.row.id) {
+
+						return {
+							...sp,
+							quantity: parseInt(value, 10),
+						};
+					}
+					return sp;
+				});
+				return {
+					...cart,
+					subscriptionProducts: updatedSubscriptionProducts,
+				};
+			}
+			return cart;
+		});
+	})
+};
+
+// Edit Route
+export const getAllClientList = (currentPage, id, onSuccess) => {
+    API.post('Route/GetClientsList', { id: id, currentPage: currentPage } ).then((r) => {
+        const { totalCount } = r.data;
+        const clients = formatClients(r.data.items);
+
+        onSuccess({ clients, totalCount })
+    });
+};
+
+// Shared
 export const handleChangePaymentMethods = (props, value, paymentMethods, setPaymentMethods) => {
 	const newPaymentMethods = paymentMethods.map((x) => {
 		if (x.id === props.row.id)
@@ -265,20 +339,9 @@ export const handleChangePaymentMethods = (props, value, paymentMethods, setPaym
 	setPaymentMethods(newPaymentMethods);
 };
 
-export const getFilteredCarts = (carts, filters, cartProductRows) => {
-	const cartStatusFilter = (cart) => filters.cartStatus.length === 0 || filters.cartStatus.includes(cart.status);
-	const cartProductTypes = (cart) => filters.productType.length === 0 || cart.products.every(p => filters.productType.includes(p.productTypeId));
-	const cartPaymentStatus = (cart) => {
-		const total = getTotalCart(cart.id, cartProductRows.find(x => x.id === cart.id)?.products);
-		return filters.cartPaymentStatus.length === 0 || filters.cartPaymentStatus.length === 2 || (filters.cartPaymentStatus[0] === CartPaymentStatuses.Pending ? total === 0 : total !== 0)
-	};
-	const cartTransfersTypes = (cart) => {
-		if (!filters.cartTransfersType.length) return true;
+export const getTotalCart = (id, cartProductRows = []) => {
+	let total = 0;
+	cartProductRows.find(x => x.id === id)?.products.filter(x => !Number.isNaN(x.quantity)).forEach((product) => (total = total + product.quantity * product.price));
+	return total;
+};
 
-		return cart.paymentMethods.some(p => 
-			filters.cartTransfersType.includes(p.productTypeId) && p.amount !== ''
-		);
-	};
-
-	return carts.filter(cart => (cartStatusFilter(cart) && cartProductTypes(cart) && (App.isAdmin() || cartTransfersTypes(cart)) && cartPaymentStatus(cart)));
-}

@@ -1,15 +1,15 @@
-import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, Spinner } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
-import API from '../../../app/API';
+import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router';
+import { BreadCrumb, Button, Card, Spinner } from '../../../components';
+import API from '../../../app/API';
 import App from '../../../app/App';
 import { InitialFormStates } from '../../../app/InitialFormStates';
 import { formatDeliveryDay, openActionConfirmationModal } from '../../../app/Helpers';
 import LastProductsModal from '../lastProducts/LastProductsModal';
 import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import '../route.scss';
 import { CartDetailCard } from '../cards/CartDetailCard';
+import '../route.scss';
 
 const breadcrumbItems = [
     {

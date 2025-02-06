@@ -9,12 +9,13 @@ import { CartStatuses } from '../../../constants/Cart';
 import { InitialFormStates } from '../../../app/InitialFormStates';
 import LastProductsModal from '../lastProducts/LastProductsModal';
 import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import { getFilteredCarts, getTotalCart, updateAfterSubmit } from '../Routes.helpers';
+import { confirmCart, getFilteredCarts, getTotalCart, updateAfterSubmit } from '../Routes.helpers';
 import App from '../../../app/App';
 import { DynamicRouteGeneralData } from './DynamicRouteGeneralData';
 import '../route.scss';
 import { DynamicRouteFilters } from './DynamicRouteFilters';
 import { DynamicRouteCartDetailCard } from '../cards/DynamicRouteCartDetailCard';
+import { cartServiceTypes } from '../Routes.data';
 
 const breadcrumbItems = [
     {
@@ -73,19 +74,9 @@ const DynamicRouteDetails = () => {
                 }));
             });
             setCartSubscriptionProductRows(() => {
-                // TODO: Preguntar por typeId repetidos
                 return r.data.carts.map((cart) => ({
                     id: cart.id,
-                    subscriptionProducts: formatCartSubscriptionProducts(Object.values(
-                        cart.client.subscriptionProducts.reduce((acc, item) => {
-                            if (!acc[item.typeId]) {
-                                acc[item.typeId] = { ...item };
-                            } else {
-                                acc[item.typeId].available += item.available;
-                            }
-                            return acc;
-                        }, {})
-                    ), cart.id)
+                    subscriptionProducts: formatCartSubscriptionProducts(cart.client.subscriptionProducts, cart.id)
                 }));
             });
             setLoading(false);
@@ -140,40 +131,12 @@ const DynamicRouteDetails = () => {
 			//TODO, poner un modal capaz (Modal de Toaster)
 
         setSubmitting(true);
-		
-        rq = {
-            ...rq,
-            products: cartProductRows.find((cr) => cr.id === rq.id)?.products.filter(x => !Number.isNaN(x.quantity) && x.quantity !== '').map((p) => ({
-                productTypeId: p.id,
-                soldQuantity: p.quantity,
-                returnedQuantity: p.quantity
-            })),
-            subscriptionProducts: cartSubscriptionProductRows.find((cspr) => cspr.id === rq.id)?.subscriptionProducts.filter(x => !Number.isNaN(x.quantity) && x.quantity !== '').map((p) => ({
-                productTypeId: p.id,
-                quantity: p.quantity,
-            })),
-            paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
-				return ({
-					id: x.id,
-					amount: x.amount
-				})
-			})
-        };
-
-        API.post('Cart/Confirm', rq)
-            .then((r) => {
-                Toast.success(r.message);
-				updateAfterSubmit(form, r.data.id, rq, paymentMethods, setForm);
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
-            })
-            .finally(() => {
-                setSubmitting(false);
-            });
+		confirmCart(form, rq, cartProductRows, cartSubscriptionProductRows, paymentMethods,
+			(form, id, rq, paymentMethods) => { updateAfterSubmit(form, id, rq, paymentMethods, setForm) },
+			() => { setSubmitting(false) },
+			() => { setSubmitting(false) },
+		);
     };
-	
-
 
     return (
         <>
@@ -205,6 +168,7 @@ const DynamicRouteDetails = () => {
 										cartStatuses={cartStatuses}
 										cartTransfersTypes={cartTransfersTypes}
 										cartPaymentStatuses={cartPaymentStatuses}
+										cartServiceTypes={cartServiceTypes}
 									/>
                                     {getFilteredCarts(form.carts, filters, cartProductRows).map((cart, idx) => {
                                         return (

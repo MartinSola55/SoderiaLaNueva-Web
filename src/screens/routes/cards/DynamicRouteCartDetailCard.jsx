@@ -3,7 +3,7 @@ import LastProductsButton from "../lastProducts/LastProductsButton"
 import { formatCurrency, formatDebt, getDebtTextColor, handleOpenLastProducts, openActionConfirmationModal } from "../../../app/Helpers"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone } from "@fortawesome/free-solid-svg-icons"
-import { getCartTitleClassname, getIsSkippedCart, getTotalCart, handleChangePaymentMethods, onProductsChange, onSubscriptionProductsChange } from "../Routes.helpers"
+import { getCartTitleClassname, getIsSkippedCart, getTableStyleColumns, getTotalCart, handleChangePaymentMethods, onProductsChange, onSubscriptionProductsChange, showTable } from "../Routes.helpers"
 import { CartActionButton } from "../dynamicRouteDetails/CartActionButton"
 import { CartStatuses } from "../../../constants/Cart"
 import { Button, CellNumericInput, Table } from "../../../components"
@@ -75,20 +75,7 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 			},
 			className: 'text-center',
 		},
-	];
-
-	const showTable = (cart, name, quantity) => {
-		const hasClientItems = name ? cart.client[name]?.length > 0 : true;
-		const hasValidProducts = 
-			cart.products.length === 0 || 
-			cart.products.some(product => product[quantity] !== 0);
-		
-		return hasClientItems && hasValidProducts;
-	};	 
-		 
-	const getTableStyleColumns = (cart) => {
-		return (showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && showTable(cart, null, 'soldQuantity')) ? 4 : 6
-	};	 
+	]; 
 
 	const handleOpenRestoreCartStatus = (cartId) => {
 		openActionConfirmationModal(

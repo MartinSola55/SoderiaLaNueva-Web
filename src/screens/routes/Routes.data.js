@@ -1,3 +1,5 @@
+import { CartServiceType } from "../../constants/Cart";
+
 export const listColumns = [
 	{
 		name: 'dealer',
@@ -80,3 +82,5 @@ export const paymentMethodsColumns = [
 		textCenter: true,
 	}
 ];
+
+export const cartServiceTypes = [{value: CartServiceType.Cart, label: CartServiceType.Cart}, {value: CartServiceType.Subscription, label: CartServiceType.Subscription}]

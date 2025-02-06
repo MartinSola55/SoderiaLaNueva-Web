@@ -9,4 +9,8 @@ export class CartPaymentStatuses {
     static Pending = "Pendiente";
     static Completed = "Realizado";
 }
+export class CartServiceType {
+    static Cart = "Bajada";
+    static Subscription = "Abono";
+}
 
