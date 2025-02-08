@@ -1,6 +1,9 @@
+/* eslint-disable no-console */
 import { Col, Row } from "react-bootstrap";
 import { Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdown, Input, InvoiceTypesDropdown, Label, Loader, Spinner, TaxConditionsDropdown } from "../../../components";
 import { useNavigate } from "react-router";
+import AddressInput from "../../../components/AddressInput/AddressInput";
+import { formatAddress } from './../../../components/AddressInput/addressInput.helper';
 
 export const ClientInfo = ({
     form,
@@ -11,6 +14,8 @@ export const ClientInfo = ({
     onInputChange
 }) => {
     const navigate = useNavigate();
+
+    console.log(form.address);
 
     return (
         <Card
@@ -28,10 +33,10 @@ export const ClientInfo = ({
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>
                             <Label required={!isWatching}>Dirección</Label>
-                            <Input
-                                value={form.address}
+                            <AddressInput
+                                onAddressSelect={(address) => onInputChange(formatAddress(address), 'address')}
                                 disabled={isWatching}
-                                onChange={(value) => onInputChange(value, 'address')}
+                                value={formatAddress(form.address)}
                             />
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>

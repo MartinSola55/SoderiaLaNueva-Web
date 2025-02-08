@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
@@ -29,6 +30,7 @@ const CreateClient = () => {
 
     // Handlers
     const handleSubmit = async () => {
+        console.log('form', form);
         if (submiting)
             return;
 
