@@ -1,24 +1,46 @@
 import { useEffect, useState } from "react";
-import { Card, DatePicker, Spinner, Table } from "../../../components";
-import { routesCols } from "../Home.data";
+import { Card, DatePicker, DeliveryDayDropdown, Spinner, Table } from "../../../components";
+import { dealerRoutesCols, routesCols } from "../Home.data";
 import API from "../../../app/API";
-import { Dates, formatCurrency } from "../../../app/Helpers";
+import { Dates, formatCurrency, formatSoldProducts, getDayIndex } from "../../../app/Helpers";
 
 import './RoutesCard.scss';
+import { useNavigate } from "react-router";
+import App from "../../../app/App";
 
-export const RoutesCard = () => {
+export const RoutesCard = ({ isAdmin }) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(isAdmin ? new Date() : getDayIndex());
+	
+	const navigate = useNavigate()
+	
+	const finalDealerRoutesCols = [
+		...dealerRoutesCols,
+		{
+			name: 'status',
+			text: 'Estado',
+			component: (props) => (
+				<span className={`${props.row.totalCarts === props.row.completedCarts ? 'text-success' : 'text-warning'}`}>
+					{`${props.row.totalCarts === props.row.completedCarts ? 'Completado' : 'Pendiente'}`}
+				</span>
+			),
+		},
+	];
 
     // Effects
     useEffect(() => {
         setLoading(true);
-        API.get('route/getDynamicRoutes', { date: Dates.formatDate(date) }).then((r) => {
-            setData(r.data.routes);
+		let rq = isAdmin ? { date: Dates.formatDate(date) } : { deliveryDay : date };
+        API.post('route/getDynamicRoutes', rq).then((r) => {
+            setData(r.data.routes.map(r => ({
+				...r, 
+				href: r.id,
+				soldProducts: r.soldProducts.length > 0 ? formatSoldProducts(r.soldProducts) : [] 
+			})));
             setLoading(false);
         });
-    }, [date]);
+    }, [date, isAdmin]);
 
     // Handlers
     const handleRangeChange = (date) => {
@@ -28,23 +50,34 @@ export const RoutesCard = () => {
     // Render
     return (
         <Card
+			cardBodyClassName='p-0'
             header={
                 <div className="d-flex flex-row align-items-center">
                     <h5 className="me-3 mb-0">Repartos del día</h5>
-                    <DatePicker
-                        value={date}
-                        placeholder='Filtrar por fechas'
-                        maxDate={new Date()}
-                        onChange={handleRangeChange}
-                    />
+					{isAdmin ? ( 
+						<DatePicker
+							value={date}
+							placeholder='Filtrar por fechas'
+							maxDate={new Date()}
+							onChange={handleRangeChange}
+						/> ) : (
+							<DeliveryDayDropdown 
+								value={date} 
+								onChange={handleRangeChange} 
+							/>
+						)
+					}
                 </div>
             }
             body={loading ? <Spinner /> :
                 <>
                     <Table
-                        className="routes-table"
+                        className={`routes-table ${App.isAdmin() ?  'admin-routes-table' : ''}`}
                         rows={data}
-                        columns={routesCols}
+						onRowClick={(_, id) => navigate('planillas/abierta/' + id)}
+						clickable={true}
+                        columns={isAdmin ? routesCols : finalDealerRoutesCols}
+						emptyTableMessage={data.length === 0 && 'No se encontraron repartos para dicho día.'}
                         bordered={false}
                         striped={false}
                         hover={false}

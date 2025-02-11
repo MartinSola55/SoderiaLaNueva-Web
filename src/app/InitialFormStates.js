@@ -55,6 +55,7 @@ export class InitialFormStates {
         productType: [],
         cartTransfersType: [],
         cartPaymentStatus: [],
+        cartServiceType: [],
     };
 
     static Cart = {

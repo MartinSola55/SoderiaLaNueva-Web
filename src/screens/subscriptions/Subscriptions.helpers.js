@@ -92,7 +92,7 @@ export const saveSubscription = (form, id, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            Toast.error(r.error?.message);
             onError();
         })
 };

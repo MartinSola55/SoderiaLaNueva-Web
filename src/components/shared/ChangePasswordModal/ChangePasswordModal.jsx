@@ -46,7 +46,7 @@ const ChangePasswordModal = forwardRef((_, ref) => {
             })
             .catch((r) => {
                 setSubmiting(false);
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             });
     };
 

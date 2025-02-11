@@ -42,7 +42,7 @@ export const formatCartProducts = (prod, cartId) => {
     return prod?.map((p) => ({
         id: p.productId,
         description: p.name + ' - ' + formatCurrency(p.price),
-        quantity: p.quantity || 0,
+        quantity: "",
         price: parseFloat(p.price),
         cartId
     }));
@@ -52,7 +52,7 @@ export const formatCartSubscriptionProducts = (subsProd, cartId) => {
     return subsProd?.map((sp) => ({
         id: sp.typeId,
         description: `${sp.name} - Disponible: ${sp.available}`,
-        quantity: sp.quantity || 0,
+        quantity: "",
         cartId
     }));
 };
@@ -62,6 +62,18 @@ export const formatOptionsBoolean = (options) => {
         value: option.value,
         label: option.label,
     }));
+};
+
+export const formatPaymentMethods = (items) => {
+    return items.map((item) => ({
+        id: item.stringId ? item.stringId : item.id,
+        label: item.description,
+        amount: '',
+    }));
+};
+
+export const formatSoldProducts = (items) => {
+    return items.map((item) => (`${item.name} (${item.amount})`))
 };
 
 export const formatCurrency = (value) => {
@@ -85,6 +97,12 @@ export const formatDebt = (value) => {
         return 'Sin deuda';
 
     return `${value > 0 ? 'A favor' : 'Deuda'}: $${value}`;
+};
+
+export const getDebtTextColor = (value) => {
+	if (value < 0) return 'text-danger'
+	if (value > 0) return 'text-success'
+	return ''
 };
 
 export const buildDealerRouteName = (dealerName, day) => {
@@ -164,6 +182,20 @@ const formatDate = (dateString) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}T00:00:00Z`;
+};
+
+export const openActionConfirmationModal = (ref, rq, url, title, description, onSuccess) => {
+	ref.current?.open(
+		rq,
+		url,
+		title,
+		description,
+		onSuccess,
+	);
+};
+
+export const handleOpenLastProducts = (lastProductsRef, lastProducts = []) => {
+	lastProductsRef.current?.open(() => { }, lastProducts);
 };
 
 export class Dates {

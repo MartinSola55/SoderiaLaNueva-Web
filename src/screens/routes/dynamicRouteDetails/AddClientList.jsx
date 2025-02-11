@@ -1,24 +1,25 @@
 import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '../../components';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Messages } from '../../constants/Messages';
-import { getBreadcrumbItems, getClients } from './Clients.helpers';
-import { clientColumns, sortClientItems } from './Clients.data';
-import App from '../../app/App';
+import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../../components';
+import { useEffect, useRef, useState } from 'react';
+import { Messages } from '../../../constants/Messages';
+import { getAddClientBreadcrumbItems, getClients } from '../../clients/Clients.helpers';
+import { clientColumns, sortClientItems } from '../../clients/Clients.data';
+import { useLocation } from 'react-router';
+import AddClientModal from './AddClientModal';
+import API from '../../../app/API';
+import CellButton from '../../../components/shared/CellInputs/CellButton';
 
-const ClientList = () => {
+const AddClientList = () => {
     const columns = [
         ...clientColumns,
         {
             name: 'actions',
             text: 'Acciones',
             className: 'text-center',
-            component: (props) => <ActionButtons entity='cliente' showEdit={false} {...props} />,
+            component: (props) => <CellButton {...props} onClick={() => handleSelectClient(props.row)}>Seleccionar</CellButton>,
         },
     ];
-
-    const navigate = useNavigate();
 
     // State
     const [rows, setRows] = useState([]);
@@ -26,17 +27,24 @@ const ClientList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
+    const [submiting, setSubmiting] = useState(false);
+
+	const location = useLocation();
+	const navigate = useNavigate();
+    const { clientIds, routeId } = location.state || {}; 
+
+	const addClientModal = useRef(null);
 
     // Effects
     useEffect(() => {
-        getClients(sort, currentPage, [], ({ clients, totalCount }) => {
+        getClients(sort, currentPage, clientIds, ({ clients, totalCount }) => {
             setTotalCount(totalCount);
             setRows(clients);
             if (clients.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [clientIds, currentPage, sort]);
 
     // Handlers
     const handleFilterRows = (value) => {
@@ -51,18 +59,64 @@ const ClientList = () => {
         setSort({ column, direction });
     };
 
-    const updateDeletedRow = (id) => {
-        setRows((prevRow) => prevRow.filter((row) => row.id !== id));
+    const handleSelectClient = (row) => {
+        addClientModal.current?.open((products, paymentMethods) => handleSubmit(products, paymentMethods, row.id), () => {}, row.name, row.id);
     };
 
-    // Render
-    if (!App.isAdmin()) {
-        return navigate('/notAllowed');
-    }
+    const handleSubmit = async (products, paymentMethods, clientId) => {
+        if (submiting) return;
+
+		if (products.some(y =>  y.quantity === 0))
+		{
+			Toast.warning("La cantidad de productos debe ser mayor a cero.");
+			return;
+		};
+		
+		if (paymentMethods.some(x =>  x.amount === 0))
+		{
+			Toast.warning("La cantidad de dinero debe ser mayor a cero.");
+			return;
+		};
+
+		if (paymentMethods.reduce((sum, x) => sum + x.amount, 0) !== 0)
+			Toast.warning("Alerta, la cantidad total de dinero no coincide con el total");
+			//TODO, poner un modal capaz (Modal de Toaster)
+
+        setSubmiting(true);
+
+        const rq = {
+			routeId,
+			clientId,
+            products: products.filter(x => x.quantity !== '').map(x => ({
+				productTypeId : x.id,
+				soldQuantity: x.quantity,
+				returnedQuantity: x.quantity,
+			})),
+			paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
+				return ({
+					id: x.id,
+					amount: x.amount
+				})
+			})
+        };
+
+        API.post(`Route/AddClient`, rq)
+            .then((r) => {
+                Toast.success(r.message);
+				navigate('/planillas/abierta/' + routeId)
+            })
+            .catch((r) => {
+                Toast.error(r.error?.message);
+            })
+            .finally(() => {
+                setSubmiting(false);
+            });
+    };
 
     return (
         <>
-            <BreadCrumb items={getBreadcrumbItems()} title='Clientes' />
+            <BreadCrumb items={getAddClientBreadcrumbItems('Agregar cliente fuera de reparto', routeId)} title='Clientes' />
+			<AddClientModal ref={addClientModal}/>
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -94,16 +148,8 @@ const ClientList = () => {
                                     currentPage={currentPage}
                                     totalCount={totalCount}
                                     onPageChange={handlePageChange}
-                                    onUpdate={updateDeletedRow}
                                 />
                             </>
-                        }
-                        footer={
-                            <div className='d-flex justify-content-end'>
-                                <Button onClick={() => navigate('/clientes/new')} variant='primary'>
-                                    Nuevo Cliente
-                                </Button>
-                            </div>
                         }
                     />
                 </Col>
@@ -112,4 +158,4 @@ const ClientList = () => {
     );
 };
 
-export default ClientList;
+export default AddClientList;

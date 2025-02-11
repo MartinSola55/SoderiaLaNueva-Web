@@ -21,7 +21,7 @@ const CreateSubscription = ({ isWatching = false }) => {
             name: 'quantity',
             text: 'Cantidad',
             className: 'text-center',
-            component: (props) => <CellNumericInput {...props} value={props.row.quantity} onChange={(v) => handleProductsChange(props, v)} />
+            component: (props) => <CellNumericInput {...props} value={props.row.quantity} disabled={isWatching} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />
         },
     ];
 
@@ -55,8 +55,12 @@ const CreateSubscription = ({ isWatching = false }) => {
     const handleSubmit = async () => {
         if (submiting) return;
 
-        if (!form.name || !form.price || form.subscriptionProducts.every((x) => !x.quantity)) {
+        if (!form.name || !form.price) {
             Toast.warning(Messages.Validation.requiredFields);
+            return;
+        }
+        if (form.subscriptionProducts.every((x) => !x.quantity)) {
+            Toast.warning('El abono debe contar minimamente con un producto.');
             return;
         }
 
@@ -107,7 +111,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                                     <Col xs={12} md={6} className='pe-3 mb-3'>
                                         <Label required>Nombre del abono</Label>
                                         <Input
-                                            helpText='Ej: Abono X4'
+                                            helpText={!isWatching && 'Ej: Abono X4'}
                                             disabled={isWatching}
                                             value={form.name}
                                             onChange={(value) => handleInputChange(value, 'name')}
@@ -116,7 +120,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                                     <Col xs={12} md={6} className='pe-3 mb-3'>
                                         <Label required>Precio</Label>
                                         <Input
-                                            helpText='&nbsp;'
+                                            helpText={!isWatching && '\u00A0'}
                                             disabled={isWatching}
                                             isFloat
                                             minValue={0}
