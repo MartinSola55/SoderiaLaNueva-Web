@@ -55,7 +55,7 @@ const ExpenseList = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
     const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     // Refs
     const expenseRef = useRef(null);
@@ -78,7 +78,7 @@ const ExpenseList = () => {
     };
 
     const handleSubmit = async (expense, id) => {
-        if (submiting) return;
+        if (submitting) return;
 
         if (!expense.dealerId || !expense.description || !expense.amount) {
             Toast.warning(Messages.Validation.requiredFields);
@@ -90,7 +90,7 @@ const ExpenseList = () => {
             return;
         }
 
-        setSubmiting(true);
+        setSubmitting(true);
 
         const rq = {
             dealerId: expense.dealerId,
@@ -102,7 +102,7 @@ const ExpenseList = () => {
             rq.id = id;
         }
 
-        API.post(`Expense/${id ? 'Update' : 'Create'}`, rq)
+        API.post(`expense/${id ? 'update' : 'create'}`, rq)
             .then((r) => {
                 Toast.success(r.message);
                 expenseRef.current?.close();
@@ -112,7 +112,7 @@ const ExpenseList = () => {
                 Toast.error(r.error?.message);
             })
             .finally(() => {
-                setSubmiting(false);
+                setSubmitting(false);
             });
     };
 
@@ -135,7 +135,7 @@ const ExpenseList = () => {
     const getExpenses = useCallback(() => {
         const rq = buildGenericGetAllRq(sort, currentPage, dateRange);
 
-        API.post('Expense/GetAll', rq).then((r) => {
+        API.post('expense/getAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.expenses.map((expense) => {
@@ -167,7 +167,7 @@ const ExpenseList = () => {
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Gastos' />
-            <ExpenseModal disabled={submiting} ref={expenseRef} />
+            <ExpenseModal disabled={submitting} ref={expenseRef} />
             <div>
                 <Col xs={11} className='container'>
                     <Card

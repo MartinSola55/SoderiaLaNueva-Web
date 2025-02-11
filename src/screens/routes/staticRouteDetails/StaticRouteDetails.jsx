@@ -47,21 +47,25 @@ const StaticRouteDetails = () => {
     }, [navigate]);
 
     useEffect(() => {
-        API.get('Route/GetStaticRoute', { id }).then((r) => {
-            setForm(() => ({
-                ...r.data,
-            }));
-            setLoading(false);
-        });
-    }, [id]);
+        API.get('route/getStaticRoute', { id })
+            .then((r) => {
+                setForm(() => ({
+                    ...r.data,
+                }));
+                setLoading(false);
+            })
+            .catch(() => {
+                navigate('/notFound');
+            });
+    }, [id, navigate]);
 
     //  Handlers
     const handleSubscriptionRenewals = () => {
-		openActionConfirmationModal(actionConfirmationRef, {routeId: id}, 'Subscription/RenewByRoute', 'Esta acción no se puede revertir', '¿Seguro deseas renovar TODOS los abonos? Esto sólo incluye los clientes de esta planilla. Si un abono ya se renovó, no se volverá a renovar', () => {});
+        openActionConfirmationModal(actionConfirmationRef, { routeId: id }, 'subscription/renewByRoute', 'Esta acción no se puede revertir', '¿Seguro deseas renovar TODOS los abonos? Esto sólo incluye los clientes de esta planilla. Si un abono ya se renovó, no se volverá a renovar', () => { });
     };
-	
+
     const hanldeOpenNewRoute = () => {
-		openActionConfirmationModal(actionConfirmationRef, {routeId: id}, 'Route/OpenNew', '¿Seguro deseas comenzar el reparto?', null, (r) => navigate(`/planillas/abierta/${r.data.id}`));
+        openActionConfirmationModal(actionConfirmationRef, { routeId: id }, 'route/openNew', '¿Seguro deseas comenzar el reparto?', null, (r) => navigate(`/planillas/abierta/${r.data.id}`));
     };
 
     return (
@@ -91,16 +95,16 @@ const StaticRouteDetails = () => {
                             <Spinner />
                         ) : (
                             <Row>
-								{form.carts.length === 0 && (
-									<span>No existen carritos para esta ruta</span>
-								)}
+                                {form.carts.length === 0 && (
+                                    <h6>No existen repartos para esta ruta</h6>
+                                )}
                                 {form.carts.map((cart, idx) => {
                                     return (
-										<CartDetailCard
-											key={idx} 
-											idx={idx} 
-											cart={cart} 
-											lastProductsRef={lastProductsRef}/>
+                                        <CartDetailCard
+                                            key={idx}
+                                            idx={idx}
+                                            cart={cart}
+                                            lastProductsRef={lastProductsRef} />
                                     );
                                 })}
                             </Row>

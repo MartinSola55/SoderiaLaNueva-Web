@@ -21,7 +21,7 @@ const EditRoute = ({ isWatching = false }) => {
     const id = (params && params.id) || null;
 
     const [form, setForm] = useState(initialForm);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
     const [clients, setClients] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +41,7 @@ const EditRoute = ({ isWatching = false }) => {
     ];
 
     const selectedColumns = [
-		...editSelectedColumns,
+        ...editSelectedColumns,
         {
             name: 'remove',
             text: 'Quitar',
@@ -74,52 +74,56 @@ const EditRoute = ({ isWatching = false }) => {
             ),
             className: 'text-center',
         },
-		...editNotSelectedColumns
+        ...editNotSelectedColumns
     ];
 
-	const selectedRows = form.clients.filter((r) => r.name.toLowerCase().includes(filter.selected));
+    const selectedRows = form.clients.filter((r) => r.name.toLowerCase().includes(filter.selected));
 
-	const notSelectedRows = clients.filter((r) => r.name.toLowerCase().includes(filter.notSelected));
-	
-	// Effects
+    const notSelectedRows = clients.filter((r) => r.name.toLowerCase().includes(filter.notSelected));
+
+    // Effects
     // Get form data
     useEffect(() => {
         if (id) {
-            API.get('Route/GetStaticRouteClients', { id }).then((r) => {
-                setForm(() => ({
-                    ...r.data,
-                    clients: formatClients(r.data.clients),
-                }));
-                setLoading(false);
-            });
+            API.get('route/getStaticRouteClients', { id })
+                .then((r) => {
+                    setForm(() => ({
+                        ...r.data,
+                        clients: formatClients(r.data.clients),
+                    }));
+                    setLoading(false);
+                })
+                .catch(() => {
+                    navigate('/notFound');
+                });
         }
-    }, [id]);
+    }, [id, navigate]);
 
     // Get clients
     useEffect(() => {
-		if (!isWatching) {
-			getAllClientList(currentPage, id, ({ clients, totalCount }) => {
-				setTotalCount(totalCount);
-				setClients(clients);
-	
-				if (clients.length === 0) {
-					Toast.warning(Messages.Error.noRows);
-				}
-			});
+        if (!isWatching) {
+            getAllClientList(currentPage, id, ({ clients, totalCount }) => {
+                setTotalCount(totalCount);
+                setClients(clients);
+
+                if (clients.length === 0) {
+                    Toast.warning(Messages.Error.noRows);
+                }
+            });
         }
     }, [currentPage, id, isWatching]);
 
     const handleSubmit = async () => {
-        if (submiting) return;
+        if (submitting) return;
 
-        setSubmiting(true);
+        setSubmitting(true);
 
         const rq = {
             routeId: id,
             clients: form.clients.map((x) => parseInt(x.id)),
         };
 
-        API.post('Route/UpdateClients', rq)
+        API.post('rute/updateClients', rq)
             .then((r) => {
                 Toast.success(r.message);
                 navigate('/planillas/list');
@@ -128,7 +132,7 @@ const EditRoute = ({ isWatching = false }) => {
                 Toast.error(r.error?.message);
             })
             .finally(() => {
-                setSubmiting(false);
+                setSubmitting(false);
             });
     };
 
@@ -198,7 +202,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 <Table
                                                     rows={selectedRows}
                                                     columns={selectedColumns}
-													emptyTableMessage={selectedRows.length === 0 && 'No se hay clientes en la ruta'}
+                                                    emptyTableMessage={selectedRows.length === 0 && 'No se hay clientes en la ruta'}
                                                 ></Table>
                                             </Col>
                                         </Row>
@@ -214,8 +218,8 @@ const EditRoute = ({ isWatching = false }) => {
                                             Volver
                                         </Button>
                                         {!isWatching && (
-                                            <Button onClick={handleSubmit} disabled={submiting}>
-                                                {submiting ? <Loader /> : ( id ? 'Actualizar' : 'Crear' )}
+                                            <Button onClick={handleSubmit} disabled={submitting}>
+                                                {submitting ? <Loader /> : (id ? 'Actualizar' : 'Crear')}
                                             </Button>
                                         )}
                                     </div>
@@ -242,7 +246,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 </Col>
                                                 <Table
                                                     rows={notSelectedRows}
-													emptyTableMessage={notSelectedRows.length === 0 && 'No se encontraron más clientes'}
+                                                    emptyTableMessage={notSelectedRows.length === 0 && 'No se encontraron más clientes'}
                                                     columns={notSelectedColumns}
                                                     totalCount={totalCount}
                                                     currentPage={currentPage}

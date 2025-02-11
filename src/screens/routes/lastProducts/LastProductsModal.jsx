@@ -70,15 +70,15 @@ const LastProductsModal = forwardRef((props, ref) => {
                 <Row>
                     <Col xs={12}>
                         <Table
-							rows={rows}
-							columns={columns}
-							emptyTableMessage={rows.length === 0 && 'El cliente no cuenta con un historial de últimos productos'}
-						/>
+                            rows={rows}
+                            columns={columns}
+                            emptyTableMessage={rows.length === 0 && 'El cliente no cuenta con un historial de últimos productos'}
+                        />
                     </Col>
                 </Row>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='danger' onClick={handleClose}>
+                <Button link onClick={handleClose}>
                     Cerrar
                 </Button>
             </Modal.Footer>

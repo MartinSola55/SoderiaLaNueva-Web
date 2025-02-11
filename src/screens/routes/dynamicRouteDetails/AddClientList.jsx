@@ -27,13 +27,13 @@ const AddClientList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
-	const location = useLocation();
-	const navigate = useNavigate();
-    const { clientIds, routeId } = location.state || {}; 
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { clientIds, routeId } = location.state || {};
 
-	const addClientModal = useRef(null);
+    const addClientModal = useRef(null);
 
     // Effects
     useEffect(() => {
@@ -60,63 +60,61 @@ const AddClientList = () => {
     };
 
     const handleSelectClient = (row) => {
-        addClientModal.current?.open((products, paymentMethods) => handleSubmit(products, paymentMethods, row.id), () => {}, row.name, row.id);
+        addClientModal.current?.open((products, paymentMethods) => handleSubmit(products, paymentMethods, row.id), () => { }, row.name, row.id);
     };
 
     const handleSubmit = async (products, paymentMethods, clientId) => {
-        if (submiting) return;
+        if (submitting) return;
 
-		if (products.some(y =>  y.quantity === 0))
-		{
-			Toast.warning("La cantidad de productos debe ser mayor a cero.");
-			return;
-		};
-		
-		if (paymentMethods.some(x =>  x.amount === 0))
-		{
-			Toast.warning("La cantidad de dinero debe ser mayor a cero.");
-			return;
-		};
-
-		if (paymentMethods.reduce((sum, x) => sum + x.amount, 0) !== 0)
-			Toast.warning("Alerta, la cantidad total de dinero no coincide con el total");
-			//TODO, poner un modal capaz (Modal de Toaster)
-
-        setSubmiting(true);
-
-        const rq = {
-			routeId,
-			clientId,
-            products: products.filter(x => x.quantity !== '').map(x => ({
-				productTypeId : x.id,
-				soldQuantity: x.quantity,
-				returnedQuantity: x.quantity,
-			})),
-			paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
-				return ({
-					id: x.id,
-					amount: x.amount
-				})
-			})
+        if (products.some(y => y.quantity === 0)) {
+            Toast.warning("La cantidad de productos debe ser mayor a cero.");
+            return;
         };
 
-        API.post(`Route/AddClient`, rq)
+        if (paymentMethods.some(x => x.amount === 0)) {
+            Toast.warning("La cantidad de dinero debe ser mayor a cero.");
+            return;
+        };
+
+        if (paymentMethods.reduce((sum, x) => sum + x.amount, 0) !== 0)
+            Toast.warning("Alerta, la cantidad total de dinero no coincide con el total");
+        //TODO, poner un modal capaz (Modal de Toaster)
+
+        setSubmitting(true);
+
+        const rq = {
+            routeId,
+            clientId,
+            products: products.filter(x => x.quantity !== '').map(x => ({
+                productTypeId: x.id,
+                soldQuantity: x.quantity,
+                returnedQuantity: x.quantity,
+            })),
+            paymentMethods: paymentMethods.filter(x => x.amount !== '').map((x) => {
+                return ({
+                    id: x.id,
+                    amount: x.amount
+                })
+            })
+        };
+
+        API.post(`route/addClient`, rq)
             .then((r) => {
                 Toast.success(r.message);
-				navigate('/planillas/abierta/' + routeId)
+                navigate('/planillas/abierta/' + routeId)
             })
             .catch((r) => {
                 Toast.error(r.error?.message);
             })
             .finally(() => {
-                setSubmiting(false);
+                setSubmitting(false);
             });
     };
 
     return (
         <>
             <BreadCrumb items={getAddClientBreadcrumbItems('Agregar cliente fuera de reparto', routeId)} title='Clientes' />
-			<AddClientModal ref={addClientModal}/>
+            <AddClientModal ref={addClientModal} />
             <div>
                 <Col xs={11} className='container'>
                     <Card

@@ -14,7 +14,7 @@ import { getAllDealers } from '../Routes.helpers';
 const initialForm = InitialFormStates.StaticRoute;
 
 const CreateRoute = () => {
-	const breadcrumbItems = [
+    const breadcrumbItems = [
         {
             active: false,
             url: '/planillas/list',
@@ -33,7 +33,7 @@ const CreateRoute = () => {
     const id = (params && params.id) || null;
 
     const [form, setForm] = useState(initialForm);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [rows, setRows] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,25 +41,25 @@ const CreateRoute = () => {
 
     // Get form data
     useEffect(() => {
-		getAllDealers(currentPage, ({ dealers, totalCount }) => {
-			setTotalCount(totalCount);
-			setRows(dealers);
+        getAllDealers(currentPage, ({ dealers, totalCount }) => {
+            setTotalCount(totalCount);
+            setRows(dealers);
 
-			if (dealers.length === 0) {
-				Toast.warning(Messages.Error.noRows);
-			}
-		});
+            if (dealers.length === 0) {
+                Toast.warning(Messages.Error.noRows);
+            }
+        });
     }, [currentPage]);
 
     const handleSubmit = async (form) => {
-        if (submiting) return;
+        if (submitting) return;
 
         if (!form.deliveryDay || !form.dealerId) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
 
-        setSubmiting(true);
+        setSubmitting(true);
 
         const rq = {
             deliveryDay: form.deliveryDay,
@@ -70,7 +70,7 @@ const CreateRoute = () => {
             rq.id = id;
         }
 
-        API.post(`Route/${id ? 'Update' : 'CreateStaticRoute'}`, rq)
+        API.post(`route/${id ? 'update' : 'createStaticRoute'}`, rq)
             .then((r) => {
                 Toast.success(r.message);
                 navigate('/planillas/list');
@@ -79,7 +79,7 @@ const CreateRoute = () => {
                 Toast.error(r.error?.message);
             })
             .finally(() => {
-                setSubmiting(false);
+                setSubmitting(false);
             });
     };
 
@@ -143,7 +143,7 @@ const CreateRoute = () => {
                                     className='mb-5'
                                     columns={createColumns}
                                     rows={rows.filter((r) => r.fullName.toLowerCase().includes(filter) || r.email.toLowerCase().includes(filter))}
-									emptyTableMessage={rows.length === 0 && 'No se encontraron repartidores'}
+                                    emptyTableMessage={rows.length === 0 && 'No se encontraron repartidores'}
                                     clickable={true}
                                     pagination={true}
                                     currentPage={currentPage}

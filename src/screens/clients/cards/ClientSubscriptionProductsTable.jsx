@@ -8,11 +8,11 @@ export const ClientSubscriptionProductsTable = ({
     loading,
     isWatching,
     onSubscriptionsChange,
-	submiting = false,
-	onSubmit = () => {},
+    submitting = false,
+    onSubmit = () => { },
 }) => {
-	const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
-	
+    const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
+
     const subscriptionsColumns = [
         {
             name: 'name',
@@ -24,7 +24,7 @@ export const ClientSubscriptionProductsTable = ({
             text: 'Asociado',
             className: 'text-center',
             component: (props) => (<CellCheck {...props} disabled={interalIsWatching} checked={props.row.checked} onChange={(v) => onSubscriptionsChange(props, v)} />)
-		}
+        }
     ];
 
     return (
@@ -39,22 +39,22 @@ export const ClientSubscriptionProductsTable = ({
             }
             footer={
                 <div className={`d-flex justify-content-${interalIsWatching ? 'end' : 'between'}`}>
-					{!interalIsWatching ? (
-						<>
-							<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
-								Cancelar
-							</Button>
-							<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
-								{submiting ? <Loader /> : 'Guardar'}
-							</Button>
-						</>
+                    {!interalIsWatching ? (
+                        <>
+                            <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                                Cancelar
+                            </Button>
+                            <Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>
+                                {submitting ? <Loader /> : 'Guardar'}
+                            </Button>
+                        </>
                     ) : (
-						<>
-							<Button onClick={() => {setInteralIsWatching(false)}}>
-								Editar
-							</Button>
-						</>
-					)}
+                        <>
+                            <Button onClick={() => { setInteralIsWatching(false) }}>
+                                Editar
+                            </Button>
+                        </>
+                    )}
                 </div>
             }
         />

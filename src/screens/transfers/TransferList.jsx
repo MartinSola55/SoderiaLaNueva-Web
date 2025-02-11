@@ -96,7 +96,7 @@ const TransferList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(sort, currentPage);
 
-        API.post('Transfer/GetAll', rq).then((r) => {
+        API.post('transfer/getAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.transfers.map((transfer) => {

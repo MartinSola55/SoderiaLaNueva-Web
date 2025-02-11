@@ -8,13 +8,13 @@ import { faCheck, faClock, faDollarSign, faInfoCircle, faShoppingBag } from "@fo
 import { getMoneyCollected, getSoldProductsRows, getTotalDebt } from "../Routes.helpers"
 import { soldProductsColumns } from "../Routes.data"
 
-export const DynamicRouteGeneralData= ({form}) => {
+export const DynamicRouteGeneralData = ({ form }) => {
 
 	const countNotPendingCarts = form.carts.filter((cart) => cart.status.toLocaleLowerCase() !== 'pendiente'.toLocaleLowerCase())?.length;
 
 	const getMoneyCollectedTooltip = () => {
 		return (
-			`<ul className='text-left'>
+			`<ul class='text-left ps-3 mb-0'>
 				<li>Efectivo: ${formatCurrency(getMoneyCollected(form) - form.transfersAmount)}</li>
 				${form.transfersAmount > 0 ? '<li>Transferencia (administración): ' + formatCurrency(form.transfersAmount) + '</li>' : ''}
 			</ul>`
@@ -37,7 +37,7 @@ export const DynamicRouteGeneralData= ({form}) => {
 				<Card
 					title='Productos vendidos'
 					header={<p className='mb-0'>06/01/2025</p>}
-					body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)} emptyTableMessage={getSoldProductsRows(form).length === 0 && 'No hay productos en la planilla'}/>}
+					body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)} emptyTableMessage={getSoldProductsRows(form).length === 0 && 'No hay productos en la planilla'} />}
 				/>
 			</Col>
 			<Col xs={12} xl={6} className='mt-5'>
@@ -53,7 +53,7 @@ export const DynamicRouteGeneralData= ({form}) => {
 										<>
 											<span className='me-2'>Recaudado en el día</span>
 											<Tooltip text={getMoneyCollectedTooltip()}>
-												<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)'/>
+												<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)' />
 											</Tooltip>
 										</>
 									}

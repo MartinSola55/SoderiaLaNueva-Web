@@ -1,6 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
 import {
-	ActionButtons,
+    ActionButtons,
     BreadCrumb,
     Button,
     Card,
@@ -26,13 +26,13 @@ const breadcrumbItems = [
 ];
 
 const userColumns = [
-	...columns,
-	{
-		name: 'actions',
-		text: 'Acciones',
-		component: (props) => < ActionButtons entity='usuario' {...props} />,
-		className: 'text-center',
-	},
+    ...columns,
+    {
+        name: 'actions',
+        text: 'Acciones',
+        component: (props) => < ActionButtons entity='usuario' {...props} />,
+        className: 'text-center',
+    },
 ];
 
 const UserList = () => {
@@ -67,7 +67,7 @@ const UserList = () => {
 
         rq.roles = [Roles.Admin, Roles.Dealer];
 
-        API.post('User/GetAll', rq).then((r) => {
+        API.post('user/getAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.users.map((user) => {

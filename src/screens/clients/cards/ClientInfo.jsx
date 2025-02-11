@@ -7,7 +7,7 @@ import { handleOnSubmit } from "../Clients.helpers";
 export const ClientInfo = ({
     form,
     loading,
-    submiting,
+    submitting,
     isWatching,
     onSubmit,
     onInputChange
@@ -70,16 +70,16 @@ export const ClientInfo = ({
                                 onChange={(value) => onInputChange(value, 'deliveryDay')}
                             />
                         </Col>
-						{isWatching && (
-							<Col xs={12} className='pe-3 mb-3'>
-								<Label>Deuda</Label>
-								<Input
-									value={form.debt}
-									disabled={interalIsWatching}
-									onChange={(value) => onInputChange(value, 'debt')}
-								/>
-							</Col>
-						)}
+                        {isWatching && (
+                            <Col xs={12} className='pe-3 mb-3'>
+                                <Label>Deuda</Label>
+                                <Input
+                                    value={form.debt}
+                                    disabled={interalIsWatching}
+                                    onChange={(value) => onInputChange(value, 'debt')}
+                                />
+                            </Col>
+                        )}
                         <Col xs={12} className='pe-3 mb-3'>
                             <CheckBox
                                 label='¿Quiere factura?'
@@ -127,27 +127,27 @@ export const ClientInfo = ({
             }
             footer={
                 <div className={`d-flex justify-content-${isWatching ? 'between' : 'end'}`}>
-					{!interalIsWatching ? (
-						<>
-							{isWatching && (
-								<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
-									Cancelar
-								</Button>
-							)}
-							<Button onClick={() => !isWatching ? onSubmit() : handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
-								{submiting ? <Loader /> : 'Guardar'}
-							</Button>
-						</>
+                    {!interalIsWatching ? (
+                        <>
+                            {isWatching && (
+                                <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                                    Cancelar
+                                </Button>
+                            )}
+                            <Button onClick={() => !isWatching ? onSubmit() : handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>
+                                {submitting ? <Loader /> : 'Guardar'}
+                            </Button>
+                        </>
                     ) : (
-						<>
-							<Button variant='secondary' className='me-2' onClick={() => navigate('/clientes/list')}>
-								Volver
-							</Button>
-							<Button onClick={() => { setInteralIsWatching(false) }}>
-								Editar
-							</Button>
-						</>
-					)}
+                        <>
+                            <Button variant='secondary' className='me-2' onClick={() => navigate('/clientes/list')}>
+                                Volver
+                            </Button>
+                            <Button onClick={() => { setInteralIsWatching(false) }}>
+                                Editar
+                            </Button>
+                        </>
+                    )}
                 </div>
             }
         />

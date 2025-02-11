@@ -11,7 +11,7 @@ export const getPaymentMethodRows = (paymentMethods = [], form) => {
 
 export const onPaymentMethodsChange = (props, v, form, handleInputChange) => {
 	const formPayemntMethod = form.paymentMethods.find(fpm => fpm.paymentMethodId === props.row.id);
-	const newPaymentMethods = formPayemntMethod ? 
+	const newPaymentMethods = formPayemntMethod ?
 		form.paymentMethods.map(x => {
 			if (x.paymentMethodId === props.row.id)
 				return {
@@ -19,9 +19,9 @@ export const onPaymentMethodsChange = (props, v, form, handleInputChange) => {
 					amount: v,
 				};
 			return x;
-		}) : 
+		}) :
 		[...form.paymentMethods, { paymentMethodId: props.row.id, amount: v }];
-		
+
 	handleInputChange(newPaymentMethods, 'paymentMethods');
 };
 
@@ -33,9 +33,9 @@ export const onProductsChange = (props, v, form, handleInputChange, name) => {
 		newProducts[productIndex] = {
 			...form.products[productIndex],
 			[name]: v,
-		  };
+		};
 	else
-		newProducts.push({productTypeId : props.row.productTypeId, [name] : v});
+		newProducts.push({ productTypeId: props.row.productTypeId, [name]: v });
 
 	handleInputChange(newProducts, 'products');
 };
@@ -58,34 +58,7 @@ export const getProductsRows = (form) => {
 			productTypeId: cp.productTypeId,
 			name: cp.name,
 			soldQuantity: existingCLientProduct?.soldQuantity || "",
-			returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
+			returnedQuantity: existingCLientProduct?.returnedQuantity || 0,
 		};
 	});
 };
-
-// export const getRqProducts = (form) => {
-// 	const products = getProductsRows(form);
-// 	const newProducts = products.forEach(x => {
-// 		const existingProduct = products.find(x => x.productTypeId === sp.typeId);
-
-// 	})
-// 	return form.subscriptionProducts?.map((sp) => {
-// 		return {
-// 			productTypeId: sp.typeId,
-// 			name: `${sp.name} - Disponible: ${sp.available} `,
-// 			subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
-// 		};
-// 	})
-// }
-
-
-// const products = form.clientProducts?.map((cp) => {
-// 	const existingCLientProduct = form.products.find(x => x.productTypeId === cp.productTypeId);
-// 	return {
-// 		productTypeId: cp.productTypeId,
-// 		name: cp.name,
-// 		soldQuantity: existingCLientProduct?.soldQuantity || "",
-// 		returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
-// 	};
-// });
-

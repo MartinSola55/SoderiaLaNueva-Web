@@ -30,16 +30,22 @@ const CreateSubscription = ({ isWatching = false }) => {
 
     // State
     const [form, setForm] = useState(InitialFormStates.Subscription);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
 
     // Effects
     useEffect(() => {
         if (id) {
-            getSubscription(id, (data) => {
-                setForm(data);
-                setLoading(false);
-            });
+            getSubscription(
+                id,
+                // onSuccess
+                (data) => {
+                    setForm(data);
+                    setLoading(false);
+                },
+                // onError
+                () => { navigate('/notFound') }
+            );
         } else {
             getProductTypes((products) => {
                 setForm((prevForm) => ({
@@ -49,11 +55,11 @@ const CreateSubscription = ({ isWatching = false }) => {
                 setLoading(false);
             });
         }
-    }, [id]);
+    }, [id, navigate]);
 
     // Handlers
     const handleSubmit = async () => {
-        if (submiting) return;
+        if (submitting) return;
 
         if (!form.name || !form.price) {
             Toast.warning(Messages.Validation.requiredFields);
@@ -64,10 +70,10 @@ const CreateSubscription = ({ isWatching = false }) => {
             return;
         }
 
-        setSubmiting(true);
+        setSubmitting(true);
         saveSubscription(form, id,
             () => { navigate('/abonos/list') },
-            () => { setSubmiting(false) }
+            () => { setSubmitting(false) }
         );
     };
 
@@ -142,8 +148,8 @@ const CreateSubscription = ({ isWatching = false }) => {
                                         Volver
                                     </Button>
                                     {!isWatching && (
-                                        <Button onClick={handleSubmit} disabled={submiting}>
-                                            {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
+                                        <Button onClick={handleSubmit} disabled={submitting}>
+                                            {submitting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
                                         </Button>
                                     )}
                                 </div>

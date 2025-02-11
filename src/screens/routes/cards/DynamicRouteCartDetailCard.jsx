@@ -11,7 +11,19 @@ import { useNavigate } from "react-router"
 import App from "../../../app/App"
 import { paymentMethodsColumns } from "../Routes.data"
 
-export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef, lastProductsRef, paymentMethods, setCartSubscriptionProductRows, setCartProductRows, cartSubscriptionProductRows, cartProductRows, handleSubmit, setPaymentMethods}) => {
+export const DynamicRouteCartDetailCard = ({
+	cart,
+	setForm,
+	actionConfirmationRef,
+	lastProductsRef,
+	paymentMethods,
+	setCartSubscriptionProductRows,
+	setCartProductRows,
+	cartSubscriptionProductRows,
+	cartProductRows,
+	handleSubmit,
+	setPaymentMethods
+}) => {
 
 	const navigate = useNavigate();
 
@@ -24,7 +36,7 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 		{
 			name: 'quantity',
 			text: 'Cantidad',
-			component: (props) => { return <span>{props.row.returnedQuantity !== '' ? props.row.returnedQuantity : '-'}</span>},
+			component: (props) => { return <span>{props.row.returnedQuantity !== '' ? props.row.returnedQuantity : '-'}</span> },
 			className: 'text-center',
 		},
 	];
@@ -34,11 +46,11 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 		{
 			name: 'amount',
 			text: 'Cantidad',
-			component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)}/>),
+			component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)} />),
 			textCenter: true,
 		},
 	];
-	
+
 	const cartSubscriptionProductsColumns = (pending) => [
 		{
 			name: pending ? 'description' : 'name',
@@ -75,7 +87,7 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 			},
 			className: 'text-center',
 		},
-	]; 
+	];
 
 	const handleOpenRestoreCartStatus = (cartId) => {
 		openActionConfirmationModal(
@@ -99,7 +111,7 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 
 	const handleDeleteCart = (cartId) => {
 		openActionConfirmationModal(
-			actionConfirmationRef, 
+			actionConfirmationRef,
 			{ id: cartId },
 			'Cart/Delete',
 			`Esta acción no se puede revertir`,
@@ -112,7 +124,7 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 			}
 		);
 	};
-	
+
 	return (
 		<>
 			<Row>
@@ -147,133 +159,105 @@ export const DynamicRouteCartDetailCard = ({cart, setForm, actionConfirmationRef
 					)}
 				</Col>
 				<Col xs={12} md={2} className='d-flex flex-md-column justify-content-between align-items-end' >
-					<LastProductsButton
-						onClick={() =>handleOpenLastProducts(lastProductsRef, cart.client.lastProducts)}
-					/>
-					{
-						cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
-							<CartActionButton
-								actionConfirmationRef={actionConfirmationRef}
-								setForm={setForm}
-								cart={cart}
-							/>
-						)
-					}
+					<LastProductsButton onClick={() => handleOpenLastProducts(lastProductsRef, cart.client.lastProducts)} />
+					{cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
+						<CartActionButton
+							actionConfirmationRef={actionConfirmationRef}
+							setForm={setForm}
+							cart={cart}
+						/>
+					)}
 				</Col>
 			</Row>
 			<hr />
-			{
-				!getIsSkippedCart(cart.status) && (
-					<Row>
-						{
-						showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && (
-								<Col xs={12} md={getTableStyleColumns(cart)}>
-									<h4>Abonos</h4>
-									<Table
-										className='mt-1'
-										columns={cartSubscriptionProductsColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-										rows={cart.products.length > 0 ? cart.products.filter(x => x.subscriptionQuantity !== 0)  : cartSubscriptionProductRows.find((cr) => cr.id === cart.id)?.subscriptionProducts}
-									/>
-								</Col>
-							)
-						}
-						{
-							showTable(cart, null, 'soldQuantity') && (
+			{!getIsSkippedCart(cart.status) && (
+				<Row>
+					{showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && (
+						<Col xs={12} md={getTableStyleColumns(cart)}>
+							<h4>Abonos</h4>
+							<Table
+								className='mt-1'
+								columns={cartSubscriptionProductsColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
+								rows={cart.products.length > 0 ? cart.products.filter(x => x.subscriptionQuantity !== 0) : cartSubscriptionProductRows.find((cr) => cr.id === cart.id)?.subscriptionProducts}
+							/>
+						</Col>
+					)}
+					{showTable(cart, null, 'soldQuantity') && (
+						<Col xs={12} md={getTableStyleColumns(cart)}>
+							<h4>Bajada</h4>
+							<Table
+								className='mt-1'
+								columns={cartProductColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
+								rows={cart.products.length > 0 ? cart.products.filter(x => x.soldQuantity !== 0) : cartProductRows.find((cr) => cr.id === cart.id)?.products}
+							/>
+						</Col>
+					)}
+					{cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
+						<Col xs={12} md={getTableStyleColumns(cart)}>
+							<h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
+							<Table
+								columns={paymentMethodsTableColumns}
+								rows={paymentMethods}
+							/>
+						</Col>
+					)}
+					{cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
+						<>
 							<Col xs={12} md={getTableStyleColumns(cart)}>
-								<h4>Bajada</h4>
+								<h4>Devoluciones</h4>
 								<Table
 									className='mt-1'
-									columns={cartProductColumns(cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase())}
-									rows={cart.products.length > 0 ? cart.products.filter(x => x.soldQuantity !== 0) : cartProductRows.find((cr) => cr.id === cart.id)?.products}
+									columns={cartReturnedProductColumns}
+									rows={cart.products}
 								/>
 							</Col>
-							)
-						}
-						{cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() && (
-								<Col xs={12} md={getTableStyleColumns(cart)}>
-									<h4>Total: {formatCurrency(getTotalCart(cart.id, cartProductRows))}</h4>
-									<Table
-										columns={paymentMethodsTableColumns}
-										rows={paymentMethods}
-									/>
-								</Col>
-							)
-						}
-						{cart.status.toLocaleLowerCase() === CartStatuses.Confirmed.toLocaleLowerCase() && (
-								<>
-									<Col xs={12} md={getTableStyleColumns(cart)}>
-										<h4>Devoluciones</h4>
-										<Table
-											className='mt-1'
-											columns={cartReturnedProductColumns}
-											rows={cart.products}
-										/>
-									</Col>
-									<hr />
-									<Col xs={12}>
-										{cart.paymentMethods.map((pm, idx) => {
-											return <ul key={idx}>
-												<li>
-													<p>
-														{`${pm.name}: $${pm.amount} `}
-													</p>
-												</li>
-											</ul>
-										})}
-									</Col>
-									<hr />
-								</>
-							)
-						}
-					</Row>
-				)
-			}
+							<hr />
+							<Col xs={12}>
+								{cart.paymentMethods.map((pm, idx) => {
+									return <ul key={idx}>
+										<li>
+											<p>
+												{`${pm.name}: $${pm.amount} `}
+											</p>
+										</li>
+									</ul>
+								})}
+							</Col>
+							<hr />
+						</>
+					)}
+				</Row>
+			)}
 			<Row>
 				<Col className='text-end mt-4' xs={12}>
-					{
-						!getIsSkippedCart(cart.status) ? (
-							cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() ? (
-								<Button
-									onClick={() => handleSubmit({ id: cart.id })}
-								>
-									Confirmar bajada
-								</Button>
-							)
-							: (
-								<>
-									{App.isAdmin() && (
-										<Button
-											onClick={() => handleDeleteCart(cart.id)}
-											className='bg-danger border-0'
-										>
-											Eliminar
-										</Button>
-									)}
-									{App.isDealer() && (
-										<Button
-											onClick={() => navigate(`/bajadas/${cart.id}`)}
-										>
-											Devuelve
-										</Button>
-									)}
-									<Button
-										onClick={() => navigate(`/bajadas/${cart.id}`)}
-										className='ms-3'
-									>
-										Editar bajada
-									</Button>
-								</>
-							)
-						)
-						: (
+					{!getIsSkippedCart(cart.status) ? (
+						cart.status.toLocaleLowerCase() === CartStatuses.Pending.toLocaleLowerCase() ? (
 							<Button
-								className='bg-danger border-0'
-								onClick={() => handleOpenRestoreCartStatus(cart.id)}
+								onClick={() => handleSubmit({ id: cart.id })}
 							>
-								Cancelar estado
+								Confirmar bajada
 							</Button>
-						)
-					}
+						) : (
+							<>
+								{App.isAdmin() && (
+									<Button onClick={() => handleDeleteCart(cart.id)} className='bg-danger border-0'>
+										Eliminar
+									</Button>
+								)}
+								{App.isDealer() && (
+									<Button onClick={() => navigate(`/planillas/bajada/${cart.id}`)}>
+										Devuelve
+									</Button>
+								)}
+								<Button onClick={() => navigate(`/planillas/bajada/${cart.id}`)} className='ms-3'>
+									Editar bajada
+								</Button>
+							</>
+						)) : (
+						<Button className='bg-danger border-0' onClick={() => handleOpenRestoreCartStatus(cart.id)}>
+							Cancelar estado
+						</Button>
+					)}
 				</Col>
 			</Row>
 		</>

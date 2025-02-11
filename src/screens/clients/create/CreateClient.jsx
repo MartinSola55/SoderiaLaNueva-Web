@@ -13,7 +13,7 @@ const CreateClient = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [form, setForm] = useState(InitialFormStates.Client);
 
     // Effects
@@ -29,7 +29,7 @@ const CreateClient = () => {
 
     // Handlers
     const handleSubmit = async () => {
-        if (submiting)
+        if (submitting)
             return;
 
         if (!form.name || !form.address || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
@@ -37,15 +37,15 @@ const CreateClient = () => {
             return;
         }
 
-		if (form.products.every(x => x.quantity === '')){
-			Toast.warning("El cliente debe tener al menos un producto asociado.");
+        if (form.products.every(x => x.quantity === '')) {
+            Toast.warning("El cliente debe tener al menos un producto asociado.");
             return;
-		}
+        }
 
-        setSubmiting(true);
+        setSubmitting(true);
         createClient(form,
             () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
-            () => { setSubmiting(false) }
+            () => { setSubmitting(false) }
         );
     };
 
@@ -58,9 +58,9 @@ const CreateClient = () => {
                         <ClientInfo
                             form={form}
                             loading={loading}
-                            submiting={submiting}
+                            submitting={submitting}
                             onSubmit={handleSubmit}
-							isWatching={false}
+                            isWatching={false}
                             onInputChange={(v, n) => handleInputChange(v, n, setForm)}
                         />
                     </Col>
@@ -68,7 +68,7 @@ const CreateClient = () => {
                         <ClientProductsTable
                             products={form.products}
                             loading={loading}
-							isWatching={false}
+                            isWatching={false}
                             onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
                         />
                     </Col>

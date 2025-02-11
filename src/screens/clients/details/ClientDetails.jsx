@@ -9,42 +9,48 @@ import App from '../../../app/App';
 import { Messages } from '../../../constants/Messages';
 
 const ClientDetails = () => {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    const params = useParams();
-    const id = params.id;
+	const params = useParams();
+	const id = params.id;
 
-    const [loading, setLoading] = useState(false);
-    const [form, setForm] = useState(InitialFormStates.Client);
-    const [products, setProducts] = useState([]);
-    const [subscriptions, setSubscriptions] = useState([]);
-    const [submiting, setSubmiting] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [form, setForm] = useState(InitialFormStates.Client);
+	const [products, setProducts] = useState([]);
+	const [subscriptions, setSubscriptions] = useState([]);
+	const [submitting, setSubmitting] = useState(false);
 
-    // Effects
-    useEffect(() => {
-        if (!id)
-            return;
+	// Effects
+	useEffect(() => {
+		if (!id)
+			return;
 
-        getProducts((products) => {
-            setProducts(products);
-        });
-        getSubscriptions((subscriptions) => {
-            setSubscriptions(subscriptions);
-        });
-        getClient(id, (client) => {
-            setForm(client);
-            setLoading(false);
-        });
-    }, [id]);
+		getProducts((products) => {
+			setProducts(products);
+		});
+		getSubscriptions((subscriptions) => {
+			setSubscriptions(subscriptions);
+		});
+		getClient(
+			id,
+			// onSuccess
+			(client) => {
+				setForm(client);
+				setLoading(false);
+			},
+			// onError
+			() => { navigate('/notFound') }
+		);
+	}, [id, navigate]);
 
-    // Render
-    if (!App.isAdmin() || !id) {
-        return navigate('/notAllowed');
-    }
+	// Render
+	if (!App.isAdmin() || !id) {
+		return navigate('/notAllowed');
+	}
 
 	// Handlers
 	const handleClientInfoSubmit = async () => {
-		if (submiting)
+		if (submitting)
 			return;
 
 		if (!form.name || !form.address || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
@@ -52,57 +58,57 @@ const ClientDetails = () => {
 			return;
 		}
 
-		setSubmiting(true);
+		setSubmitting(true);
 		updateClient(form,
-			() => { setSubmiting(false) },
-			() => { setSubmiting(false) }
+			() => { setSubmitting(false) },
+			() => { setSubmitting(false) }
 		);
 	};
 
 	const handleClientProductsSubmit = async () => {
-		if (submiting)
+		if (submitting)
 			return;
 
-		setSubmiting(true);
+		setSubmitting(true);
 		updateClientProducts(form,
-			() => { setSubmiting(false) },
-			() => { setSubmiting(false) }
+			() => { setSubmitting(false) },
+			() => { setSubmitting(false) }
 		);
 	};
 
 	const handleClientSubscriptionProductsSubmit = async () => {
-		if (submiting)
+		if (submitting)
 			return;
 
-		setSubmiting(true);
+		setSubmitting(true);
 		updateClientSubscriptions(form,
-			() => { setSubmiting(false) },
-			() => { setSubmiting(false) }
+			() => { setSubmitting(false) },
+			() => { setSubmitting(false) }
 		);
 	};
 
-    return (
-        <>
-            <BreadCrumb items={getBreadcrumbItems('Detalles')} title='Clientes' />
-            <Col xs={11} className='container'>
-                <Row>
-                    <Col sm={6}>
-                        <ClientInfo
-                            isWatching={true}
-                            form={form}
-                            loading={loading}
-							submiting={submiting}
+	return (
+		<>
+			<BreadCrumb items={getBreadcrumbItems('Detalles')} title='Clientes' />
+			<Col xs={11} className='container'>
+				<Row>
+					<Col sm={6}>
+						<ClientInfo
+							isWatching={true}
+							form={form}
+							loading={loading}
+							submitting={submitting}
 							onSubmit={handleClientInfoSubmit}
-							onInputChange={(v, n)=> handleInputChange(v, n, setForm)}
-                        />
-                    </Col>
+							onInputChange={(v, n) => handleInputChange(v, n, setForm)}
+						/>
+					</Col>
 					<Col sm={6}>
 						<Row className='h-100'>
 							<Col xs={12}>
 								<ClientProductsTable
 									isWatching={true}
 									products={buildProductsTable(products, form.products)}
-									submiting={submiting}
+									submitting={submitting}
 									loading={loading}
 									onSubmit={handleClientProductsSubmit}
 									onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
@@ -112,7 +118,7 @@ const ClientDetails = () => {
 								<ClientSubscriptionProductsTable
 									isWatching={true}
 									subscriptions={buildSubscriptionsProductsTable(subscriptions, form.subscriptions)}
-									submiting={submiting}
+									submitting={submitting}
 									loading={loading}
 									onSubmit={handleClientSubscriptionProductsSubmit}
 									onSubscriptionsChange={(props, value) => handleSubscriptionsChange(props, value, form, setForm)}
@@ -121,22 +127,22 @@ const ClientDetails = () => {
 
 						</Row>
 					</Col>
-                    <Col lg={6}>
-                        <ClientProductHistoryTable
-                            products={form.productHistory}
-                            loading={loading}
-                        />
-                    </Col>
-                    <Col lg={6}>
-                        <ClientProductSalesTable
-                            products={buildProductsSalesTable(form.salesHistory)}
-                            loading={loading}
-                        />
-                    </Col>
-                </Row>
-            </Col>
-        </>
-    );
+					<Col lg={6}>
+						<ClientProductHistoryTable
+							products={form.productHistory}
+							loading={loading}
+						/>
+					</Col>
+					<Col lg={6}>
+						<ClientProductSalesTable
+							products={buildProductsSalesTable(form.salesHistory)}
+							loading={loading}
+						/>
+					</Col>
+				</Row>
+			</Col>
+		</>
+	);
 };
 
 export default ClientDetails;

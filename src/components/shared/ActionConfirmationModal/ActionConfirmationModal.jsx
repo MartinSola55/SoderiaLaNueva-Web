@@ -65,7 +65,7 @@ const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {
                 <Button link onClick={handleClose}>
                     Cancelar
                 </Button>
-                <Button variant='danger' onClick={handleConfirm} disabled={disabled}>
+                <Button variant='primary' onClick={handleConfirm} disabled={disabled}>
                     {disabled ? <Loader /> : 'Confirmar'}
                 </Button>
             </Modal.Footer>

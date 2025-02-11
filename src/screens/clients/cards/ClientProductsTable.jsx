@@ -8,11 +8,11 @@ export const ClientProductsTable = ({
     loading,
     isWatching,
     onProductsChange,
-	onSubmit,
-	submiting
+    onSubmit,
+    submitting
 }) => {
-	const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
-	
+    const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
+
     const productsColumns = [
         {
             name: 'name',
@@ -42,26 +42,26 @@ export const ClientProductsTable = ({
                     </Col>
                 </Row>
             }
-			footer={
+            footer={
                 <div className={`d-flex justify-content-${interalIsWatching ? 'end' : 'between'}`}>
-					{isWatching && (
-						!interalIsWatching ? (
-							<>
-								<Button variant='danger' onClick={() => setInteralIsWatching(true)}>
-									Cancelar
-								</Button>
-								<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submiting}>
-									{submiting ? <Loader /> : 'Guardar'}
-								</Button>
-							</>
-						) : (
-							<>
-								<Button onClick={() => {setInteralIsWatching(false)}}>
-									Editar
-								</Button>
-							</>
-						)
-					)}
+                    {isWatching && (
+                        !interalIsWatching ? (
+                            <>
+                                <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                                    Cancelar
+                                </Button>
+                                <Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>
+                                    {submitting ? <Loader /> : 'Guardar'}
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button onClick={() => { setInteralIsWatching(false) }}>
+                                    Editar
+                                </Button>
+                            </>
+                        )
+                    )}
                 </div>
             }
         />

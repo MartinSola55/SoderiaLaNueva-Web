@@ -2,13 +2,13 @@ import { Col } from "react-bootstrap"
 import { Dropdown, Input, ProductTypesDropdown } from "../../../components"
 import App from "../../../app/App";
 
-export const DynamicRouteFilters= ({filters, cartStatuses, cartTransfersTypes, cartPaymentStatuses, cartServiceTypes, setFilters}) => {
+export const DynamicRouteFilters = ({ filters, cartStatuses, cartTransfersTypes, cartPaymentStatuses, cartServiceTypes, setFilters }) => {
 	const handleFilterRows = (value, name) => {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            [name]: value,
-        }));
-    };
+		setFilters((prevFilters) => ({
+			...prevFilters,
+			[name]: value,
+		}));
+	};
 
 	return (
 		<>
@@ -59,11 +59,11 @@ export const DynamicRouteFilters= ({filters, cartStatuses, cartTransfersTypes, c
 					/>
 				</Col>
 			)}
-			<Col xs={12} className='pe-3 mb-3'>
+			<Col xs={12} md={6} lg={4} className='pe-3 mb-3'>
 				<Input
 					borderless
 					placeholder='Buscar'
-					helpText='Nombre'
+					helpText='Nombre del cliente'
 					value={filters.text}
 					onChange={(v) => handleFilterRows(v.toLowerCase(), 'text')}
 				/>

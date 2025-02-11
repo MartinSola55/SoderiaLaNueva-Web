@@ -14,7 +14,7 @@ const ChangePasswordModal = forwardRef((_, ref) => {
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
     const [userId, setUserId] = useState(null);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     useImperativeHandle(ref, () => ({
         open,
@@ -36,16 +36,16 @@ const ChangePasswordModal = forwardRef((_, ref) => {
         if (password !== passwordCheck)
             return Toast.warning(Messages.Validation.passwordCheck);
 
-        setSubmiting(true);
+        setSubmitting(true);
 
-        API.post('User/UpdatePassword', { id: userId, password })
+        API.post('user/updatePassword', { id: userId, password })
             .then((r) => {
-                setSubmiting(false);
+                setSubmitting(false);
                 Toast.success(r.message);
                 handleClose();
             })
             .catch((r) => {
-                setSubmiting(false);
+                setSubmitting(false);
                 Toast.error(r.error?.message);
             });
     };
@@ -99,8 +99,8 @@ const ChangePasswordModal = forwardRef((_, ref) => {
                 <Button variant='danger' onClick={handleClose}>
                     Cancelar
                 </Button>
-                <Button onClick={handleConfirm} disabled={submiting} >
-                    {submiting ? <Loader /> : 'Confirmar'}
+                <Button onClick={handleConfirm} disabled={submitting} >
+                    {submitting ? <Loader /> : 'Confirmar'}
                 </Button>
             </Modal.Footer>
         </Modal>

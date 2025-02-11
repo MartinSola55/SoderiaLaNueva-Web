@@ -18,7 +18,7 @@ const RolesDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('User/GetComboRoles').then((r) => {
+        API.get('user/getComboRoles').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);

@@ -8,31 +8,31 @@ import API from '../../../app/API';
 
 // eslint-disable-next-line react/display-name
 const AddClientModal = forwardRef(({ disabled }, ref) => {
-	const paymentMethodsTableColumns = [
-		...paymentMethodsColumns,
-		{
-			name: 'amount',
-			text: 'Cantidad',
-			component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)}/>),
-			textCenter: true,
-		},
-	];
+    const paymentMethodsTableColumns = [
+        ...paymentMethodsColumns,
+        {
+            name: 'amount',
+            text: 'Cantidad',
+            component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)} />),
+            textCenter: true,
+        },
+    ];
 
-	const productColumns = [
-		{
-			name: 'description',
-			text: 'Producto',
-			textCenter: true,
-		},
-		{
-			name: 'quantity',
-			text: 'Cantidad',
-			component: (props) => <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />,
-			className: 'text-center',
-		},
-	];
+    const productColumns = [
+        {
+            name: 'description',
+            text: 'Producto',
+            textCenter: true,
+        },
+        {
+            name: 'quantity',
+            text: 'Cantidad',
+            component: (props) => <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />,
+            className: 'text-center',
+        },
+    ];
 
-	const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
     const [callbacks, setCallbacks] = useState(null);
     const [name, setName] = useState('');
     const [products, setProducts] = useState([]);
@@ -51,7 +51,7 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
         });
         setIsVisible(true);
         setName(name);
-		API.get('Client/GetClientProducts', { id }).then((r) => {
+        API.get('client/getClientProducts', { id }).then((r) => {
             setProducts(formatCartProducts(r.data.products));
         });
     };
@@ -75,20 +75,20 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
 
     const handleProductsChange = (props, v) => {
         setProducts(products.map(x => {
-			if (x.id === props.row.id)
-				return {
-					...x,
-					quantity: v,
-				}
-			return x;
-		}))
+            if (x.id === props.row.id)
+                return {
+                    ...x,
+                    quantity: v,
+                }
+            return x;
+        }))
     };
 
-	useEffect(() => {
-		API.get('Cart/GetPaymentStatusesCombo').then((r) => {
+    useEffect(() => {
+        API.get('cart/getPaymentStatusesCombo').then((r) => {
             setPaymentMethods(formatPaymentMethods(r.data.items));
         });
-	}, [setPaymentMethods])
+    }, [setPaymentMethods])
 
     if (!isVisible) return null;
 
@@ -105,19 +105,19 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
             </Modal.Header>
             <Modal.Body>
                 <Row>
-					<Col xs={12}>
-						<Table
-							className='mt-1'
-							rows={products}
-							columns={productColumns}
-						/>
-					</Col>
+                    <Col xs={12}>
+                        <Table
+                            className='mt-1'
+                            rows={products}
+                            columns={productColumns}
+                        />
+                    </Col>
                     <Col xs={12} className='mb-3'>
-						<h4>Total: {formatCurrency(products.reduce((sum, x) => sum + (x.quantity * x.price), 0))}</h4>
-						<Table
-							columns={paymentMethodsTableColumns}
-							rows={paymentMethods}
-						/>
+                        <h4>Total: {formatCurrency(products.reduce((sum, x) => sum + (x.quantity * x.price), 0))}</h4>
+                        <Table
+                            columns={paymentMethodsTableColumns}
+                            rows={paymentMethods}
+                        />
                     </Col>
                 </Row>
             </Modal.Body>
@@ -125,9 +125,9 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
                 <Button variant='danger' onClick={handleClose}>
                     Cancelar
                 </Button>
-				<Button onClick={handleConfirm} disabled={disabled}>
-					{disabled ? <Loader /> : 'Confirmar bajada'}
-				</Button>
+                <Button onClick={handleConfirm} disabled={disabled}>
+                    {disabled ? <Loader /> : 'Confirmar bajada'}
+                </Button>
             </Modal.Footer>
         </Modal>
     );

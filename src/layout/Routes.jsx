@@ -197,7 +197,7 @@ export const AppRoutes = () => (
                     />
                 </Route>
 
-                {/* Routes Admin*/}
+                {/* Planillas Admin y Dealer */}
                 <Route path='/planillas' element={<AdminRoute />}>
                     <Route
                         path='/planillas/list'
@@ -231,47 +231,43 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
+
+                    <Route
+                        path='/planillas/bajada/:id'
+                        element={
+                            <DefaultLayout>
+                                <CreateCart isEditing />
+                            </DefaultLayout>
+                        }
+                    />
                 </Route>
 
-				{/* Planillas Admin y Dealer */}
                 <Route path='/planillas' element={<PrivateRoute />}>
-					<Route
-						path='/planillas/abierta/:id'
-						element={
-							<DefaultLayout>
-								<DynamicRouteDetails />
-							</DefaultLayout>
-						}
-					/>
-					<Route
-						path='/planillas/agregarFueraReparto/'
-						element={
-							<DefaultLayout>
-								<AddClientList />
-							</DefaultLayout>
-						}
-					/>
+                    <Route
+                        path='/planillas/abierta/:id'
+                        element={
+                            <DefaultLayout>
+                                <DynamicRouteDetails />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/planillas/agregarFueraReparto/'
+                        element={
+                            <DefaultLayout>
+                                <AddClientList />
+                            </DefaultLayout>
+                        }
+                    />
                 </Route>
 
                 {/* Routes Dealer*/}
                 <Route path='/planillas' element={<DealerRoute />}>
-					<Route
-						path='/planillas/misPlanillas'
-						element={
-							<DefaultLayout>
-								<DealerRouteList />
-							</DefaultLayout>
-						}
-					/>
-                </Route>
-
-                {/* Carts */}
-                <Route path='/bajadas' element={<AdminRoute />}>
                     <Route
-                        path='/bajadas/:id'
+                        path='/planillas/misPlanillas'
                         element={
                             <DefaultLayout>
-                                <CreateCart isEditing />
+                                <DealerRouteList />
                             </DefaultLayout>
                         }
                     />
@@ -327,6 +323,7 @@ export const AppRoutes = () => (
             </Route>
             <Route path='*' element={<NotFound />} />
             <Route path='/notAllowed' element={<NotAllowed />} />
+            <Route path='/notFound' element={<NotFound />} />
             <Route path='/login' element={<Login />} />
         </Routes>
     </Suspense>

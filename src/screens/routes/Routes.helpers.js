@@ -11,25 +11,25 @@ export const getAllRoutes = (dayFilter, onSuccess) => {
 		deliveryDay: dayFilter,
 	};
 
-    API.get('route/getAllStaticRoutes', rq).then((r) => {
-        const { totalCount } = r.data;
-        const routes = r.data.routes.map((x) => {
+	API.get('route/getAllStaticRoutes', rq).then((r) => {
+		const { totalCount } = r.data;
+		const routes = r.data.routes.map((x) => {
 			return {
 				id: x.id,
 				dealer: x.dealer,
 				totalCarts: x.totalCarts,
 				endpoint: 'Route',
 			};
-        });
+		});
 
-        onSuccess({ routes, totalCount })
-    });
+		onSuccess({ routes, totalCount })
+	});
 };
 
 // Dealer Routes List
 export const getAllDealerRoutes = (onSuccess) => {
-    API.get('route/getAllDealerStaticRoutes').then((r) => {
-        const routes = r.data.routes.map((x) => {
+	API.get('route/getAllDealerStaticRoutes').then((r) => {
+		const routes = r.data.routes.map((x) => {
 			return {
 				id: x.id,
 				dealer: x.dealer,
@@ -37,10 +37,10 @@ export const getAllDealerRoutes = (onSuccess) => {
 				deliveryDay: formatDeliveryDay(x.deliveryDay),
 				endpoint: 'Route',
 			};
-        });
+		});
 
-        onSuccess({ routes })
-    });
+		onSuccess({ routes })
+	});
 };
 
 // Create Route
@@ -48,19 +48,19 @@ export const getAllDealers = (currentPage, onSuccess) => {
 	const rq = buildGenericGetAllRq(null, currentPage);
 
 	rq.roles = [Roles.Dealer];
-	
-    API.post('User/GetAll', rq).then((r) => {
-        const { totalCount } = r.data;
-        const dealers = r.data.users.map((x) => {
+
+	API.post('user/getAll', rq).then((r) => {
+		const { totalCount } = r.data;
+		const dealers = r.data.users.map((x) => {
 			return {
 				email: x.email,
 				fullName: x.fullName,
 				href: JSON.stringify({ id: x.id, fullName: x.fullName }),
 			};
-        });
+		});
 
-        onSuccess({ dealers, totalCount })
-    });
+		onSuccess({ dealers, totalCount })
+	});
 };
 
 // Dynamic Route General Data
@@ -106,16 +106,16 @@ export const getSoldProductsRows = (form) => {
 			return acc;
 		}, []);
 
-		return productsStock.map((ps) => {
-			const productSoldReturned = productsSoldReturnes.find(p => ps.id === p.productId);
+	return productsStock.map((ps) => {
+		const productSoldReturned = productsSoldReturnes.find(p => ps.id === p.productId);
 
-			return {
-				name: ps.name,	
-				soldQuantity: productSoldReturned ? productSoldReturned.soldQuantity : 0,
-				returnedQuantity: productSoldReturned ? productSoldReturned.returnedQuantity : 0,
-				stock: ps.stock,
-			};
-		});
+		return {
+			name: ps.name,
+			soldQuantity: productSoldReturned ? productSoldReturned.soldQuantity : 0,
+			returnedQuantity: productSoldReturned ? productSoldReturned.returnedQuantity : 0,
+			stock: ps.stock,
+		};
+	});
 };
 
 export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
@@ -129,20 +129,20 @@ export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
 			name: cart.client.products.find(x => x.productId === p.productTypeId)?.name
 		}
 	));
-	
+
 	const subscriptionProducts = rq.subscriptionProducts.map((p) => (
 		{
 			productTypeId: p.productTypeId,
 			quantity: p.quantity,
 		}
 	));
-	
+
 	const newProducts = products.map(p => {
 		const sp = subscriptionProducts.find(x => x.productTypeId === p.productTypeId);
 		return {
 			...p,
 			subscriptionQuantity: sp ? sp.quantity : 0,
-			returnedQuantity: sp ? sp.quantity + p.returnedQuantity : p.returnedQuantity 
+			returnedQuantity: sp ? sp.quantity + p.returnedQuantity : p.returnedQuantity
 		};
 	});
 
@@ -162,7 +162,7 @@ export const updateAfterSubmit = (form, id, rq, paymentMethods, setForm) => {
 		name: paymentMethods.find(y => y.id === x.id)?.label,
 		amount: x.amount
 	}))
-	
+
 	setForm(prevForm => ({
 		...prevForm,
 		carts: prevForm.carts.map(cart =>
@@ -185,14 +185,14 @@ export const getFilteredCarts = (carts, filters, cartProductRows) => {
 	const cartTransfersTypes = (cart) => {
 		if (filters.cartTransfersType.length === 0) return true;
 
-		return cart.paymentMethods.some(p => 
+		return cart.paymentMethods.some(p =>
 			filters.cartTransfersType.includes(p.productTypeId) && p.amount !== ''
 		);
 	};
 	const cartServiceTypes = (cart) => {
 		if (filters.cartServiceType.length === 0 || filters.cartServiceType.length === 2) return true;
 
-		return cart.products.some(p => 
+		return cart.products.some(p =>
 			filters.cartServiceType[0] === CartServiceType.Subscription ? (p.subscriptionQuantity !== '' && p.subscriptionQuantity !== 0) : (p.soldQuantity !== '' && p.soldQuantity !== 0)
 		);
 	};
@@ -220,7 +220,7 @@ export const confirmCart = (form, rq, cartProductRows, cartSubscriptionProductRo
 		})
 	};
 
-	API.post('Cart/Confirm', rq)
+	API.post('cart/confirm', rq)
 		.then((r) => {
 			Toast.success(r.message);
 			onSuccess(form, r.data.id, rq, paymentMethods);
@@ -236,20 +236,20 @@ export const confirmCart = (form, rq, cartProductRows, cartSubscriptionProductRo
 // Dynamic Route Card Details Card
 export const showTable = (cart, name, quantity) => {
 	const hasClientItems = name ? cart.client[name]?.length > 0 : true;
-	const hasValidProducts = 
-		cart.products.length === 0 || 
+	const hasValidProducts =
+		cart.products.length === 0 ||
 		cart.products.some(product => product[quantity] !== 0);
-	
+
 	return hasClientItems && hasValidProducts;
-};	 
-		
+};
+
 export const getTableStyleColumns = (cart) => {
 	return (showTable(cart, 'subscriptionProducts', 'subscriptionQuantity') && showTable(cart, null, 'soldQuantity')) ? 4 : 6
-};	
+};
 
 export const getIsSkippedCart = (status) => {
-	return status.toLocaleLowerCase() === CartStatuses.Absent.toLocaleLowerCase() 
-		|| status.toLocaleLowerCase() === CartStatuses.DidNotNeed.toLocaleLowerCase() 
+	return status.toLocaleLowerCase() === CartStatuses.Absent.toLocaleLowerCase()
+		|| status.toLocaleLowerCase() === CartStatuses.DidNotNeed.toLocaleLowerCase()
 		|| status.toLocaleLowerCase() === CartStatuses.Holiday.toLocaleLowerCase()
 }
 
@@ -278,10 +278,10 @@ export const onProductsChange = (props, value, setCartProductRows) => {
 							...p,
 							quantity: parseInt(value, 10),
 						};
-						}
+					}
 					return p;
 				});
-				
+
 				return {
 					...cart,
 					products: updatedProducts,
@@ -318,12 +318,12 @@ export const onSubscriptionProductsChange = (props, value, setCartSubscriptionPr
 
 // Edit Route
 export const getAllClientList = (currentPage, id, onSuccess) => {
-    API.post('Route/GetClientsList', { id: id, currentPage: currentPage } ).then((r) => {
-        const { totalCount } = r.data;
-        const clients = formatClients(r.data.items);
+	API.post('route/getClientsList', { id: id, currentPage: currentPage }).then((r) => {
+		const { totalCount } = r.data;
+		const clients = formatClients(r.data.items);
 
-        onSuccess({ clients, totalCount })
-    });
+		onSuccess({ clients, totalCount })
+	});
 };
 
 // Shared
