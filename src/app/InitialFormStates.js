@@ -21,7 +21,14 @@ export class InitialFormStates {
 
     static Client = {
         name: '',
-        address: '',
+        address: {
+            nameNumber: '',
+            state: '',
+            city: '',
+            country: '',
+            lat: '',
+            lon: '',
+        },
         phone: '',
         observations: '',
         dealerId: null,

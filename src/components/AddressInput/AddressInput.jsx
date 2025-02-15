@@ -1,13 +1,12 @@
-/* eslint-disable no-console */
 import { useState, useEffect, useCallback } from "react";
 import { fetchAddress } from "./AddressInput.data";
 import { formatAddress, debounce } from "./addressInput.helper";
 import Input from "../Input/Input";
+import Toast from "../Toast/Toast";
 import "./addressInput.scss";
 
 const AddressInput = ({ onAddressSelect, disabled, value }) => {
     const [address, setAddress] = useState(value || "");
-    const [cords, setCords] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -25,12 +24,13 @@ const AddressInput = ({ onAddressSelect, disabled, value }) => {
             const results = await fetchAddress(value);
             setSuggestions(results);
         } catch (error) {
-            console.error("Error fetching address:", error);
+            Toast.error("Error fetching address");
             setSuggestions([]);
         }
         setLoading(false);
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
 
     const handleInputChange = (value) => {
@@ -44,7 +44,6 @@ const AddressInput = ({ onAddressSelect, disabled, value }) => {
         setSuggestions([]);
         if (onAddressSelect) {
             onAddressSelect(suggestion);
-            setCords([suggestion.lat, suggestion.lon]);
         }
     };
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
@@ -30,11 +29,10 @@ const CreateClient = () => {
 
     // Handlers
     const handleSubmit = async () => {
-        console.log('form', form);
         if (submiting)
             return;
 
-        if (!form.name || !form.address || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
+        if (!form.name || !form.address.nameNumber || !form.address.city || !form.address.state || !form.address.country || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
@@ -54,6 +52,21 @@ const CreateClient = () => {
             };
         });
     };
+
+    const handleAddressChange = (address) => {
+        setForm((prevForm) => ({
+            ...prevForm,
+            address: {
+                ...prevForm.address,
+                nameNumber: address.nameNumber,
+                state: address.state,
+                city: address.city,
+                country: address.country,
+                lat: address.lat,
+                lon: address.lon,
+            }
+        }));
+    }
 
     const handleProductsChange = (props, value) => {
         const products = form.products.map((x) => {
@@ -85,6 +98,7 @@ const CreateClient = () => {
                             submiting={submiting}
                             onSubmit={handleSubmit}
                             onInputChange={handleInputChange}
+                            onAddressChange={handleAddressChange}
                         />
                     </Col>
                     <Col sm={6}>

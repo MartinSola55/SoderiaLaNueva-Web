@@ -1,4 +1,5 @@
 import mapboxgl from 'mapbox-gl';
+import Toast from '../Toast/Toast';
 
 export const fetchRoute = (coordinates, callback) => {
     const coordinatesStr = coordinates.map((c) => c.join(',')).join(';');
@@ -10,12 +11,12 @@ export const fetchRoute = (coordinates, callback) => {
             if (data.trips && data.trips[0]) {
                 callback(data.trips[0].geometry);
             } else {
-                alert('No route data found');
+                Toast.error('No route data found');
                 callback(null);
             }
         })
         .catch((error) => {
-            alert(error);
+            Toast.error(error);
             callback(null);
         });
 };

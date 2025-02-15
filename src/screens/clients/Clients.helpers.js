@@ -45,7 +45,7 @@ export const createClient = async (form, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            // Toast.error(r.error.message);
             onError();
         })
 };
@@ -73,6 +73,7 @@ export const getClients = (sort, currentPage, onSuccess) => {
         const formattedClients = clients.map((client) => {
             return {
                 ...client,
+                address: client.address.nameNumber,
                 debt: formatCurrency(client.debt),
                 deliveryDay: client.dealerName
                     ? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`

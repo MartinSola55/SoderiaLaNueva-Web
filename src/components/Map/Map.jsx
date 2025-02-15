@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import { initializeMapLayers, updateDropoffs } from './map.helper';
 import './map.scss';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiZWZlcm5hbmRlemNhcmlhZ2EiLCJhIjoiY202Nndzbmx6MDUzODJrb3A2eHVvb3lmdiJ9.aJRNY14s6I22MLq8jLBPYw';
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 const Map = ({ dropOffPoints }) => {
     const initialLocation = useMemo(() => [-68.10348998645422, -38.95008965955272], []);

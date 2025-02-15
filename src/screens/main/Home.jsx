@@ -23,7 +23,7 @@ const Home = () => {
                         <RoutesCard />
                     </Col>
                     <Col xs={12} lg={6}>
-                        <SoldProductsCard />
+                        <SoldProductsCard /> 
                     </Col>
                 </Row>
                 <Row>

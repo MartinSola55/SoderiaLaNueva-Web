@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
 import { Col, Row } from "react-bootstrap";
 import { Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdown, Input, InvoiceTypesDropdown, Label, Loader, Spinner, TaxConditionsDropdown } from "../../../components";
 import { useNavigate } from "react-router";
 import AddressInput from "../../../components/AddressInput/AddressInput";
-import { formatAddress } from './../../../components/AddressInput/addressInput.helper';
+import { formatAddress } from "../../../components/AddressInput/addressInput.helper";
 
 export const ClientInfo = ({
     form,
@@ -11,11 +10,22 @@ export const ClientInfo = ({
     submiting,
     isWatching,
     onSubmit,
-    onInputChange
+    onInputChange,
+    onAddressChange,
 }) => {
     const navigate = useNavigate();
 
-    console.log(form.address);
+    const handleAddressSelect = (address) => {
+        const addressData = {
+            nameNumber: address.address.road + ' ' + address.address.house_number,
+            state: address.address.state,
+            city: address.address.city,
+            country: address.address.country,
+            lat: address.lat,
+            lon: address.lon
+        }
+        onAddressChange(addressData);
+    }
 
     return (
         <Card
@@ -34,9 +44,9 @@ export const ClientInfo = ({
                         <Col xs={12} className='pe-3 mb-3'>
                             <Label required={!isWatching}>Dirección</Label>
                             <AddressInput
-                                onAddressSelect={(address) => onInputChange(formatAddress(address), 'address')}
-                                disabled={isWatching}
                                 value={formatAddress(form.address)}
+                                disabled={isWatching}
+                                onAddressSelect={handleAddressSelect}
                             />
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>

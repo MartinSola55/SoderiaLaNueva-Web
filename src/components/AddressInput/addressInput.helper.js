@@ -1,5 +1,5 @@
 export const formatAddress = (suggestion) => {
-    if (!suggestion || !suggestion.address) return "Dirección desconocida";
+    if (!suggestion || !suggestion.address) return;
 
     const { road, state, house_number, city, country } = suggestion.address;
 
