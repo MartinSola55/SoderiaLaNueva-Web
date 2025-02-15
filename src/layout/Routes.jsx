@@ -2,21 +2,21 @@ import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { lazy, Suspense } from 'react';
 import App from '../app/App.js';
 import { Spinner } from '../components/index.jsx';
-import ExpensesList from '../screens/expenses/ExpenseList.jsx';
-import TransferList from '../screens/transfers/TransferList.jsx';
-import SubscriptionList from '../screens/subscriptions/SubscriptionList.jsx';
-import CreateSubscription from '../screens/subscriptions/CreateSubscription.jsx';
-import CreateClient from '../screens/clients/create/CreateClient.jsx';
-import ClientList from '../screens/clients/ClientList.jsx';
-import RouteList from '../screens/routes/RouteList.jsx';
-import CreateRoute from '../screens/routes/CreateRoute.jsx';
-import EditRoute from '../screens/routes/EditRoute.jsx';
-import RouteDetails from '../screens/routes/StaticRouteDetails.jsx';
-import DynamicRouteDetails from '../screens/routes/DynamicRouteDetails.jsx';
-import CreateCart from '../screens/carts/CreateCart.jsx';
-import ClientDetails from '../screens/clients/details/ClientDetails.jsx';
 
 // Lazy loading de componentes
+const ExpensesList = lazy(() => import('../screens/expenses/ExpenseList.jsx'));
+const TransferList = lazy(() => import('../screens/transfers/TransferList.jsx'));
+const SubscriptionList = lazy(() => import('../screens/subscriptions/SubscriptionList.jsx'));
+const CreateSubscription = lazy(() => import('../screens/subscriptions/CreateSubscription.jsx'));
+const CreateClient = lazy(() => import('../screens/clients/create/CreateClient.jsx'));
+const ClientList = lazy(() => import('../screens/clients/ClientList.jsx'));
+const RouteList = lazy(() => import('../screens/routes/RouteList.jsx'));
+const EditRoute = lazy(() => import('../screens/routes/edit/EditRoute.jsx'));
+const RouteDetails = lazy(() => import('../screens/routes/staticRouteDetails/StaticRouteDetails.jsx'));
+const CreateCart = lazy(() => import('../screens/carts/CreateCart.jsx'));
+const ClientDetails = lazy(() => import('../screens/clients/details/ClientDetails.jsx'));
+const CreateRoute = lazy(() => import('../screens/routes/create/CreateRoute.jsx'));
+const DynamicRouteDetails = lazy(() => import('../screens/routes/dynamicRouteDetails/DynamicRouteDetails.jsx'));
 const Login = lazy(() => import('../screens/public/Login.jsx'));
 const DefaultLayout = lazy(() => import('./DefaultLayout'));
 const NotFound = lazy(() => import('../screens/public/NotFound.jsx'));
@@ -26,10 +26,14 @@ const CreateUser = lazy(() => import('../screens/users/CreateUser.jsx'));
 const UserList = lazy(() => import('../screens/users/UserList.jsx'));
 const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx'));
 const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
+const DealerRouteList = lazy(() => import('../screens/routes/DealerRouteList.jsx'));
+const AddClientList = lazy(() => import('../screens/routes/dynamicRouteDetails/AddClientList.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 
 const AdminRoute = () => (App.isAdmin() ? <Outlet /> : <Navigate to='/notAllowed' />);
+
+const DealerRoute = () => (App.isDealer() ? <Outlet /> : <Navigate to='/notAllowed' />);
 
 export const AppRoutes = () => (
     <Suspense
@@ -161,7 +165,7 @@ export const AppRoutes = () => (
                     />
                 </Route>
 
-                {/* Clients */}
+                {/* Clients Admin*/}
                 <Route path='/clientes' element={<AdminRoute />}>
                     <Route
                         path='/clientes/list'
@@ -179,6 +183,10 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
+                </Route>
+
+                {/* Clients Admin and Dealer*/}
+                <Route path='/clientes' element={<PrivateRoute />}>
                     <Route
                         path='/clientes/new'
                         element={
@@ -189,7 +197,7 @@ export const AppRoutes = () => (
                     />
                 </Route>
 
-                {/* Routes */}
+                {/* Planillas Admin y Dealer */}
                 <Route path='/planillas' element={<AdminRoute />}>
                     <Route
                         path='/planillas/list'
@@ -199,28 +207,11 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
-                    {/* // TODO */}
-                    {/* <Route
-                        path='/planillas/:id'
-                        element={
-                            <DefaultLayout>
-                                <EditRoute isWatching />
-                            </DefaultLayout>
-                        }
-                    /> */}
                     <Route
                         path='/planillas/:id'
                         element={
                             <DefaultLayout>
                                 <RouteDetails />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
-                        path='/planillas/abierta/:id'
-                        element={
-                            <DefaultLayout>
-                                <DynamicRouteDetails />
                             </DefaultLayout>
                         }
                     />
@@ -240,12 +231,9 @@ export const AppRoutes = () => (
                             </DefaultLayout>
                         }
                     />
-                </Route>
 
-                {/* Carts */}
-                <Route path='/bajadas' element={<AdminRoute />}>
                     <Route
-                        path='/bajadas/:id'
+                        path='/planillas/bajada/:id'
                         element={
                             <DefaultLayout>
                                 <CreateCart isEditing />
@@ -254,37 +242,44 @@ export const AppRoutes = () => (
                     />
                 </Route>
 
+                <Route path='/planillas' element={<PrivateRoute />}>
+                    <Route
+                        path='/planillas/abierta/:id'
+                        element={
+                            <DefaultLayout>
+                                <DynamicRouteDetails />
+                            </DefaultLayout>
+                        }
+                    />
+                    <Route
+                        path='/planillas/agregarFueraReparto/'
+                        element={
+                            <DefaultLayout>
+                                <AddClientList />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
+                {/* Routes Dealer*/}
+                <Route path='/planillas' element={<DealerRoute />}>
+                    <Route
+                        path='/planillas/misPlanillas'
+                        element={
+                            <DefaultLayout>
+                                <DealerRouteList />
+                            </DefaultLayout>
+                        }
+                    />
+                </Route>
+
                 {/* Gastos */}
-                <Route path='/gastos' element={<AdminRoute />}>
+                <Route path='/gastos'>
                     <Route
                         path='/gastos/list'
                         element={
                             <DefaultLayout>
                                 <ExpensesList />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
-                        path='/gastos/:id'
-                        element={
-                            <DefaultLayout>
-                                <CreateProduct isWatching />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
-                        path='/gastos/edit/:id'
-                        element={
-                            <DefaultLayout>
-                                <CreateProduct isEditing />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
-                        path='/gastos/new'
-                        element={
-                            <DefaultLayout>
-                                <CreateProduct />
                             </DefaultLayout>
                         }
                     />
@@ -328,6 +323,7 @@ export const AppRoutes = () => (
             </Route>
             <Route path='*' element={<NotFound />} />
             <Route path='/notAllowed' element={<NotAllowed />} />
+            <Route path='/notFound' element={<NotFound />} />
             <Route path='/login' element={<Login />} />
         </Routes>
     </Suspense>

@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
 import { buildGenericGetAllRq } from '../../app/Helpers';
+import { columns, sortUserItems } from './User.data';
 
 const breadcrumbItems = [
     {
@@ -24,46 +25,17 @@ const breadcrumbItems = [
     },
 ];
 
+const userColumns = [
+    ...columns,
+    {
+        name: 'actions',
+        text: 'Acciones',
+        component: (props) => < ActionButtons entity='usuario' {...props} />,
+        className: 'text-center',
+    },
+];
+
 const UserList = () => {
-    const columns = [
-        {
-            name: 'fullName',
-            text: 'Nombre y apellido',
-            textCenter: true,
-        },
-        {
-            name: 'email',
-            text: 'Email',
-            textCenter: true,
-        },
-        {
-            name: 'phoneNumber',
-            text: 'Numero de teléfono',
-            textCenter: true,
-        },
-        {
-            name: 'role',
-            text: 'Rol',
-            textCenter: true,
-        },
-        {
-            name: 'createdAt',
-            text: 'Fecha de ingreso',
-            textCenter: true,
-        },
-        {
-            name: 'actions',
-            text: 'Acciones',
-            component: (props) => <ActionButtons entity='usuario' {...props} />,
-            className: 'text-center',
-        },
-    ];
-
-    const sortUserItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
-    ];
-
     const navigate = useNavigate();
 
     const [rows, setRows] = useState([]);
@@ -95,7 +67,7 @@ const UserList = () => {
 
         rq.roles = [Roles.Admin, Roles.Dealer];
 
-        API.post('User/GetAll', rq).then((r) => {
+        API.post('user/getAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.users.map((user) => {
@@ -149,7 +121,7 @@ const UserList = () => {
                                 </Row>
                                 <Table
                                     className='mb-5'
-                                    columns={columns}
+                                    columns={userColumns}
                                     rows={rows.filter(
                                         (r) =>
                                             r.fullName.toLowerCase().includes(filter) ||

@@ -30,7 +30,7 @@ const DeleteConfirmationModal = forwardRef(({ disabled, item, message, onConfirm
                 onConfirm && onConfirm(id);
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             });
     };
 

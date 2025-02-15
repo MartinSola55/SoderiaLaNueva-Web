@@ -17,7 +17,7 @@ const colorStyles = {
     option: (styles, { isDisabled, isFocused, isSelected }) => {
         return {
             ...styles,
-            backgroundColor: isDisabled ? '#ededed' : isSelected ? '#8fbc8f78' : isFocused ? 'rgba(0, 160, 0, 0.075)' : null,
+            backgroundColor: isDisabled ? '#ededed' : isSelected ? '#5684bc78' : isFocused ? 'rgba(0, 100, 160, 0.07)' : null,
             color: isSelected ? 'black' : '#646f75',
             cursor: isDisabled ? 'not-allowed' : 'default',
         };
@@ -29,13 +29,13 @@ const Dropdown = forwardRef(({
     items,
     name = null,
     className = null,
+    isMulti = false,
     value = isMulti ? [] : null,
     required = false,
     disabled = false,
     placeholder = 'Seleccione una opción',
     searchable = true,
     clearable = false,
-    isMulti = false,
     label = null,
     helpText = null,
     helpColor = undefined,

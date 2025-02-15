@@ -37,7 +37,7 @@ const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {
                 if (callbacks?.onSuccess) callbacks?.onSuccess(r);
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             });
     };
 
@@ -65,7 +65,7 @@ const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {
                 <Button link onClick={handleClose}>
                     Cancelar
                 </Button>
-                <Button variant='danger' onClick={handleConfirm} disabled={disabled}>
+                <Button variant='primary' onClick={handleConfirm} disabled={disabled}>
                     {disabled ? <Loader /> : 'Confirmar'}
                 </Button>
             </Modal.Footer>

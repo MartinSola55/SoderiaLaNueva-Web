@@ -5,7 +5,7 @@ import { BreadCrumb } from '../../../components';
 import Toast from '../../../components/Toast/Toast';
 import { Messages } from '../../../constants/Messages';
 import { InitialFormStates } from '../../../app/InitialFormStates';
-import { createClient, getBreadcrumbItems, getProducts } from '../Clients.helpers';
+import { createClient, getBreadcrumbItems, getProducts, handleInputChange, handleProductsChange } from '../Clients.helpers';
 import { ClientInfo, ClientProductsTable } from '../cards';
 import App from '../../../app/App';
 
@@ -13,7 +13,7 @@ const CreateClient = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [form, setForm] = useState(InitialFormStates.Client);
 
     // Effects
@@ -29,7 +29,7 @@ const CreateClient = () => {
 
     // Handlers
     const handleSubmit = async () => {
-        if (submiting)
+        if (submitting)
             return;
 
         if (!form.name || !form.address.nameNumber || !form.address.city || !form.address.state || !form.address.country || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
@@ -37,10 +37,15 @@ const CreateClient = () => {
             return;
         }
 
-        setSubmiting(true);
+        if (form.products.every(x => x.quantity === '')) {
+            Toast.warning("El cliente debe tener al menos un producto asociado.");
+            return;
+        }
+
+        setSubmitting(true);
         createClient(form,
-            () => { navigate('/clientes/list') },
-            () => { setSubmiting(false) }
+            () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
+            () => { setSubmitting(false) }
         );
     };
 
@@ -95,9 +100,10 @@ const CreateClient = () => {
                         <ClientInfo
                             form={form}
                             loading={loading}
-                            submiting={submiting}
+                            submitting={submitting}
                             onSubmit={handleSubmit}
-                            onInputChange={handleInputChange}
+                            isWatching={false}
+                            onInputChange={(v, n) => handleInputChange(v, n, setForm)}
                             onAddressChange={handleAddressChange}
                         />
                     </Col>
@@ -105,7 +111,8 @@ const CreateClient = () => {
                         <ClientProductsTable
                             products={form.products}
                             loading={loading}
-                            onProductsChange={handleProductsChange}
+                            isWatching={false}
+                            onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
                         />
                     </Col>
                 </Row>

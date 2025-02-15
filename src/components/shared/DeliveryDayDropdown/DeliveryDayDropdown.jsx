@@ -43,6 +43,7 @@ const MemoDropdown = memo(DeliveryDayDropdown, (prevProps, nextProps) => {
         nextProps.label === prevProps.label &&
         nextProps.required === prevProps.required &&
         nextProps.placeholder === prevProps.placeholder &&
+        nextProps.disabled === prevProps.disabled &&
         nextProps.isMulti === prevProps.isMulti
     );
 });

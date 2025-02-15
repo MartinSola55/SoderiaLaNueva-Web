@@ -65,6 +65,28 @@ export const routesCols = [
     }
 ];
 
+export const dealerRoutesCols = [
+    {
+        name: 'dealer',
+        text: 'Nombre',
+        boldRow: true,
+    },
+    {
+        name: 'completedCarts',
+        text: 'Envíos completados',
+        formatter: formatRouteCarts
+    },
+    {
+		name: 'totalCollected',
+        text: 'Recaudado',
+        formatter: formatCurrency
+    },
+	{
+		name: 'createdAt',
+		text: 'Fecha'
+	},
+];
+
 export const balanceCols = [
     {
         name: 'name',

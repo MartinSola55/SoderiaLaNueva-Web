@@ -9,8 +9,12 @@
             padding: 12px;
             font-weight: 500;
             font-size: 16px;
+        }
+    }
 
-            &:first-child {
+	&.admin-routes-table {
+        thead {
+            th:first-child {
                 width: 60px;
             }
         }

@@ -1,19 +1,22 @@
 import { Col, Row } from "react-bootstrap";
 import { Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdown, Input, InvoiceTypesDropdown, Label, Loader, Spinner, TaxConditionsDropdown } from "../../../components";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import { handleOnSubmit } from "../Clients.helpers";
 import AddressInput from "../../../components/AddressInput/AddressInput";
 import { formatAddress } from "../../../components/AddressInput/addressInput.helper";
 
 export const ClientInfo = ({
     form,
     loading,
-    submiting,
+    submitting,
     isWatching,
     onSubmit,
     onInputChange,
     onAddressChange,
 }) => {
     const navigate = useNavigate();
+    const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
 
     const handleAddressSelect = (address) => {
         const addressData = {
@@ -34,26 +37,26 @@ export const ClientInfo = ({
                 <>
                     <Row className='align-items-center'>
                         <Col xs={12} className='pe-3 mb-3'>
-                            <Label required={!isWatching}>Nombre del cliente</Label>
+                            <Label required={!interalIsWatching}>Nombre del cliente</Label>
                             <Input
                                 value={form.name}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onChange={(value) => onInputChange(value, 'name')}
                             />
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>
-                            <Label required={!isWatching}>Dirección</Label>
+                            <Label required={!interalIsWatching}>Dirección</Label>
                             <AddressInput
                                 value={formatAddress(form.address)}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onAddressSelect={handleAddressSelect}
                             />
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>
-                            <Label required={!isWatching}>Teléfono</Label>
+                            <Label required={!interalIsWatching}>Teléfono</Label>
                             <Input
                                 value={form.phone}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onChange={(value) => onInputChange(value, 'phone')}
                             />
                         </Col>
@@ -62,7 +65,7 @@ export const ClientInfo = ({
                             <Input
                                 tag='textarea'
                                 value={form.observations}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onChange={(value) => onInputChange(value, 'observations')}
                             />
                         </Col>
@@ -70,7 +73,7 @@ export const ClientInfo = ({
                             <Label>Repartidor</Label>
                             <DealerDropdown
                                 value={form.dealerId}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onChange={(value) => onInputChange(value, 'dealerId')}
                             />
                         </Col>
@@ -78,47 +81,57 @@ export const ClientInfo = ({
                             <Label>Día de reparto</Label>
                             <DeliveryDayDropdown
                                 value={form.deliveryDay}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onChange={(value) => onInputChange(value, 'deliveryDay')}
                             />
                         </Col>
+                        {isWatching && (
+                            <Col xs={12} className='pe-3 mb-3'>
+                                <Label>Deuda</Label>
+                                <Input
+                                    value={form.debt}
+                                    disabled={interalIsWatching}
+                                    onChange={(value) => onInputChange(value, 'debt')}
+                                />
+                            </Col>
+                        )}
                         <Col xs={12} className='pe-3 mb-3'>
                             <CheckBox
                                 label='¿Quiere factura?'
                                 name='hasInvoice'
                                 value={form.hasInvoice}
                                 checked={form.hasInvoice}
-                                disabled={isWatching}
+                                disabled={interalIsWatching}
                                 onChange={(value) => onInputChange(value, 'hasInvoice')}
                             />
                         </Col>
                         {form.hasInvoice && (
                             <>
                                 <Col xs={12} className='pe-3 mb-3'>
-                                    <Label required={!isWatching}>Tipo de factura</Label>
+                                    <Label required={!interalIsWatching}>Tipo de factura</Label>
                                     <InvoiceTypesDropdown
-                                        required={!isWatching}
+                                        required={!interalIsWatching}
                                         value={form.invoiceType}
-                                        disabled={isWatching}
+                                        disabled={interalIsWatching}
                                         onChange={(value) => onInputChange(value, 'invoiceType')}
                                     />
                                 </Col>
                                 <Col xs={12} className='pe-3 mb-3'>
-                                    <Label required={!isWatching}>
+                                    <Label required={!interalIsWatching}>
                                         Condición frente al IVA
                                     </Label>
                                     <TaxConditionsDropdown
-                                        required={!isWatching}
+                                        required={!interalIsWatching}
                                         value={form.taxCondition}
-                                        disabled={isWatching}
+                                        disabled={interalIsWatching}
                                         onChange={(value) => onInputChange(value, 'taxCondition')}
                                     />
                                 </Col>
                                 <Col xs={12} className='pe-3 mb-3'>
-                                    <Label required={!isWatching}>CUIT</Label>
+                                    <Label required={!interalIsWatching}>CUIT</Label>
                                     <Input
                                         value={form.cuit}
-                                        disabled={isWatching}
+                                        disabled={interalIsWatching}
                                         onChange={(value) => onInputChange(value, 'cuit')}
                                     />
                                 </Col>
@@ -128,14 +141,27 @@ export const ClientInfo = ({
                 </>
             }
             footer={
-                <div className='d-flex justify-content-between'>
-                    <Button variant='secondary' className='me-2' onClick={() => navigate('/clientes/list')}>
-                        Volver
-                    </Button>
-                    {!isWatching && (
-                        <Button onClick={onSubmit} disabled={submiting}>
-                            {submiting ? <Loader /> : 'Guardar'}
-                        </Button>
+                <div className={`d-flex justify-content-${isWatching ? 'between' : 'end'}`}>
+                    {!interalIsWatching ? (
+                        <>
+                            {isWatching && (
+                                <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                                    Cancelar
+                                </Button>
+                            )}
+                            <Button onClick={() => !isWatching ? onSubmit() : handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>
+                                {submitting ? <Loader /> : 'Guardar'}
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button variant='secondary' className='me-2' onClick={() => navigate('/clientes/list')}>
+                                Volver
+                            </Button>
+                            <Button onClick={() => { setInteralIsWatching(false) }}>
+                                Editar
+                            </Button>
+                        </>
                     )}
                 </div>
             }

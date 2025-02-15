@@ -87,6 +87,33 @@ const NavBar = () => {
                         <hr className='mx-3 my-3' style={{ color: 'white' }} />
                     </>
                 )}
+				{App.isDealer() && (
+					<>
+                        <li className='mt-3'>
+                            <Tooltip text='Mis planillas' placement='right'>
+                                <Link to='/planillas/misPlanillas'>
+                                    <FontAwesomeIcon icon={faClipboard} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+						<hr className='mx-3 my-3' style={{ color: 'white' }} />
+						<li className='mt-3'>
+                            <Tooltip text='Agregar cliente' placement='right'>
+                                <Link to='/clientes/new'>
+                                    <FontAwesomeIcon icon={faUserCircle} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+                        <hr className='mx-3 my-3' style={{ color: 'white' }} />
+						<li className='mt-3'>
+                            <Tooltip text='Gastos' placement='right'>
+                                <Link to='/gastos/list'>
+                                    <FontAwesomeIcon icon={faMoneyBill} />
+                                </Link>
+                            </Tooltip>
+                        </li>
+					</>
+				)}
             </ul>
         </aside>
     );

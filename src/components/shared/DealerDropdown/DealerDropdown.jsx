@@ -19,7 +19,7 @@ const DealerDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('user/getComboDealers').then((r) => {
+        API.get('dealer/getComboDealers').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [roles, items]);
@@ -49,7 +49,8 @@ const MemoDropdown = memo(DealerDropdown, (prevProps, nextProps) => {
         nextProps.label === prevProps.label &&
         nextProps.required === prevProps.required &&
         nextProps.placeholder === prevProps.placeholder &&
-        nextProps.isMulti === prevProps.isMulti
+        nextProps.isMulti === prevProps.isMulti &&
+        nextProps.disabled === prevProps.disabled
     );
 });
 

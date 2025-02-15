@@ -2,9 +2,7 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../components';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import API from '../../app/API';
-import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
-import App from '../../app/App';
 import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
 import TableFilters from '../../components/shared/TableFilters/TableFilters';
 import ExpenseModal from './ExpenseModal';
@@ -39,7 +37,7 @@ const ExpenseList = () => {
             name: 'actions',
             text: 'Acciones',
             component: (props) => (
-                <ActionButtonsExpense onEdit={handleOpenExpense} entity='gasto' {...props} />
+                <ActionButtonsExpense canDelete={true} onEdit={handleOpenExpense} entity='gasto' {...props} />
             ),
             className: 'text-center',
         },
@@ -50,16 +48,14 @@ const ExpenseList = () => {
         { value: 'createdAt-desc', label: 'Creado - Desc.' },
     ];
 
-    const navigate = useNavigate();
-
     //States
     const [rows, setRows] = useState([]);
     const [filter, setFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
-    const [dateRange, setDateRange] = useState({ from: null, to: null });
-    const [submiting, setSubmiting] = useState(false);
+    const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
+    const [submitting, setSubmitting] = useState(false);
 
     // Refs
     const expenseRef = useRef(null);
@@ -82,7 +78,7 @@ const ExpenseList = () => {
     };
 
     const handleSubmit = async (expense, id) => {
-        if (submiting) return;
+        if (submitting) return;
 
         if (!expense.dealerId || !expense.description || !expense.amount) {
             Toast.warning(Messages.Validation.requiredFields);
@@ -94,7 +90,7 @@ const ExpenseList = () => {
             return;
         }
 
-        setSubmiting(true);
+        setSubmitting(true);
 
         const rq = {
             dealerId: expense.dealerId,
@@ -106,17 +102,17 @@ const ExpenseList = () => {
             rq.id = id;
         }
 
-        API.post(`Expense/${id ? 'Update' : 'Create'}`, rq)
+        API.post(`expense/${id ? 'update' : 'create'}`, rq)
             .then((r) => {
                 Toast.success(r.message);
                 expenseRef.current?.close();
                 getExpenses();
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
-                setSubmiting(false);
+                setSubmitting(false);
             });
     };
 
@@ -139,7 +135,7 @@ const ExpenseList = () => {
     const getExpenses = useCallback(() => {
         const rq = buildGenericGetAllRq(sort, currentPage, dateRange);
 
-        API.post('Expense/GetAll', rq).then((r) => {
+        API.post('expense/getAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.expenses.map((expense) => {
@@ -165,19 +161,13 @@ const ExpenseList = () => {
 
     // Effects
     useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
-
-    useEffect(() => {
         getExpenses();
     }, [currentPage, dateRange, getExpenses, sort]);
 
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Gastos' />
-            <ExpenseModal disabled={submiting} ref={expenseRef} />
+            <ExpenseModal disabled={submitting} ref={expenseRef} />
             <div>
                 <Col xs={11} className='container'>
                     <Card

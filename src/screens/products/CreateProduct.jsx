@@ -17,32 +17,36 @@ const CreateProduct = ({ isWatching = false }) => {
 
     // State
     const [form, setForm] = useState(InitialFormStates.Product);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
 
     // Effects
     useEffect(() => {
         if (id) {
-            API.get('product/getOneById', { id }).then((r) => {
-                setForm(r.data);
-                setLoading(false);
-            });
+            API.get('product/getOneById', { id })
+                .then((r) => {
+                    setForm(r.data);
+                    setLoading(false);
+                })
+                .catch(() => {
+                    navigate('/notFound');
+                });
         }
-    }, [id]);
+    }, [id, navigate]);
 
     // Handlers
     const handleSubmit = async () => {
-        if (submiting) return;
+        if (submitting) return;
 
         if (!form.name || !form.price || !form.typeId) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
 
-        setSubmiting(true);
+        setSubmitting(true);
         saveProduct(form, id,
             () => { navigate('/productos/list') },
-            () => { setSubmiting(false) }
+            () => { setSubmitting(false) }
         );
     };
 
@@ -114,8 +118,8 @@ const CreateProduct = ({ isWatching = false }) => {
                                     Volver
                                 </Button>
                                 {!isWatching && (
-                                    <Button onClick={handleSubmit} disabled={submiting}>
-                                        {submiting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
+                                    <Button onClick={handleSubmit} disabled={submitting}>
+                                        {submitting ? <Loader /> : id ? 'Actualizar' : 'Crear'}
                                     </Button>
                                 )}
                             </div>

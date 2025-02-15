@@ -54,10 +54,14 @@ export const getClientSubscriptions = (subscriptionId, onSuccess) => {
     });
 };
 
-export const getSubscription = (id, onSuccess) => {
-    API.get('subscription/getOneById', { id }).then((r) => {
-        onSuccess(r.data);
-    });
+export const getSubscription = (id, onSuccess, onError) => {
+    API.get('subscription/getOneById', { id })
+        .then((r) => {
+            onSuccess(r.data);
+        })
+        .catch(() => {
+            onError();
+        });
 };
 
 export const getProductTypes = (onSuccess) => {
@@ -92,7 +96,7 @@ export const saveSubscription = (form, id, onSuccess, onError) => {
             onSuccess();
         })
         .catch((r) => {
-            Toast.error(r.error.message);
+            Toast.error(r.error?.message);
             onError();
         })
 };

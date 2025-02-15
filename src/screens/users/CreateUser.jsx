@@ -19,7 +19,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
     const id = (params && params.id) || null;
 
     const [form, setForm] = useState(initialForm);
-    const [submiting, setSubmiting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(id ? true : false);
 
     const breadcrumbItems = [
@@ -40,19 +40,23 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
     // Get form data
     useEffect(() => {
         if (id) {
-            API.get('User/GetOneById', { id }).then((r) => {
-                setForm(() => ({
-                    ...r.data,
-                    date: Dates.getTomorrow(r.data.date),
-                    phoneNumber: r.data.phoneNumber || '',
-                }));
-                setLoading(false);
-            });
+            API.get('user/getOneById', { id })
+                .then((r) => {
+                    setForm(() => ({
+                        ...r.data,
+                        date: Dates.getTomorrow(r.data.date),
+                        phoneNumber: r.data.phoneNumber || '',
+                    }));
+                    setLoading(false);
+                })
+                .catch(() => {
+                    navigate('/notFound');
+                });
         }
-    }, [id, viewProfileDetails]);
+    }, [id, navigate, viewProfileDetails]);
 
     const handleSubmit = async () => {
-        if (submiting) return;
+        if (submitting) return;
 
         if (
             !form.fullName ||
@@ -65,7 +69,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
             return;
         }
 
-        setSubmiting(true);
+        setSubmitting(true);
 
         const rq = {
             fullName: form.fullName,
@@ -79,16 +83,16 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
             rq.id = id;
         }
 
-        API.post(`User/${id ? 'Update' : 'Create'}`, rq)
+        API.post(`user/${id ? 'update' : 'create'}`, rq)
             .then((r) => {
                 Toast.success(r.message);
                 navigate('/usuarios/list');
             })
             .catch((r) => {
-                Toast.error(r.error.message);
+                Toast.error(r.error?.message);
             })
             .finally(() => {
-                setSubmiting(false);
+                setSubmitting(false);
             });
     };
 
@@ -203,8 +207,8 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                             Cambiar contraseña
                                         </Button>
                                     )}
-                                    <Button onClick={handleSubmit} disabled={submiting}>
-                                        {submiting ? <Loader /> : id ? 'Actualizar' : 'Enviar'}
+                                    <Button onClick={handleSubmit} disabled={submitting}>
+                                        {submitting ? <Loader /> : id ? 'Actualizar' : 'Enviar'}
                                     </Button>
                                 </div>
                             )
