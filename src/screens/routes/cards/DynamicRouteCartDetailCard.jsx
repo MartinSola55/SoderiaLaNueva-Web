@@ -138,7 +138,7 @@ export const DynamicRouteCartDetailCard = ({
 						<FontAwesomeIcon
 							icon={faHouse}
 						/>
-						{` ${cart.client.address} - `}
+						{` ${cart.client.address.nameNumber} - `}
 						<FontAwesomeIcon
 							icon={faPhone}
 						/>

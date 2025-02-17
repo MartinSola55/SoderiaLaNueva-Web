@@ -28,7 +28,7 @@ export const clientCols = [
         textCenter: true,
     },
     {
-        name: 'address',
+        name: 'address.nameNumber',
         text: 'Dirección',
         textCenter: true,
     },

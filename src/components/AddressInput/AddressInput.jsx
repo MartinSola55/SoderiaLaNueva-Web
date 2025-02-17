@@ -42,8 +42,18 @@ const AddressInput = ({ onAddressSelect, disabled, value }) => {
         const formattedAddress = formatAddress(suggestion);
         setAddress(formattedAddress);
         setSuggestions([]);
+
+        const addressData = {
+            nameNumber: suggestion.address.road + ' ' + suggestion.address.house_number,
+            state: suggestion.address.state,
+            city: suggestion.address.city,
+            country: suggestion.address.country,
+            lat: suggestion.lat,
+            lon: suggestion.lon
+        }
+
         if (onAddressSelect) {
-            onAddressSelect(suggestion);
+            onAddressSelect(addressData);
         }
     };
 

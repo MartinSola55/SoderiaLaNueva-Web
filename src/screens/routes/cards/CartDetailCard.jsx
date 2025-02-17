@@ -26,7 +26,7 @@ export const CartDetailCard = ({ idx, cart, lastProductsRef }) => {
 							)}
 							<p className={`mb-1 ${getDebtTextColor(cart.debt)}`}>{formatDebt(cart.debt)}</p>
 							<p className='mb-1'>
-								<FontAwesomeIcon icon={faHouse} />{' '}{cart.address} -{' '}<FontAwesomeIcon icon={faPhone} />{' '}
+								<FontAwesomeIcon icon={faHouse} />{' '}{cart.address.nameNumber} -{' '}<FontAwesomeIcon icon={faPhone} />{' '}
 								{cart.phone}
 							</p>
 						</Col>

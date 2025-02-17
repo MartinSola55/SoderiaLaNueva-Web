@@ -42,6 +42,7 @@ export const getClientProducts = (productId, onSuccess) => {
         const clients = r.data.clients.map((x) => {
             return {
                 ...x,
+                address: x.address.nameNumber,
                 route: buildDealerRouteName(x.dealerName, x.deliveryDay),
             };
         });

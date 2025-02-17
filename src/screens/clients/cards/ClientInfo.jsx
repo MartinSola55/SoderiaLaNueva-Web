@@ -13,22 +13,10 @@ export const ClientInfo = ({
     isWatching,
     onSubmit,
     onInputChange,
-    onAddressChange,
+    onAddressChange = () => { },
 }) => {
     const navigate = useNavigate();
     const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
-
-    const handleAddressSelect = (address) => {
-        const addressData = {
-            nameNumber: address.address.road + ' ' + address.address.house_number,
-            state: address.address.state,
-            city: address.address.city,
-            country: address.address.country,
-            lat: address.lat,
-            lon: address.lon
-        }
-        onAddressChange(addressData);
-    }
 
     return (
         <Card
@@ -49,7 +37,7 @@ export const ClientInfo = ({
                             <AddressInput
                                 value={formatAddress(form.address)}
                                 disabled={interalIsWatching}
-                                onAddressSelect={handleAddressSelect}
+                                onAddressSelect={onAddressChange}
                             />
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>

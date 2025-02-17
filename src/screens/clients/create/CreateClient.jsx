@@ -5,7 +5,7 @@ import { BreadCrumb } from '../../../components';
 import Toast from '../../../components/Toast/Toast';
 import { Messages } from '../../../constants/Messages';
 import { InitialFormStates } from '../../../app/InitialFormStates';
-import { createClient, getBreadcrumbItems, getProducts, handleInputChange, handleProductsChange } from '../Clients.helpers';
+import { createClient, getBreadcrumbItems, getProducts } from '../Clients.helpers';
 import { ClientInfo, ClientProductsTable } from '../cards';
 import App from '../../../app/App';
 

@@ -1,4 +1,7 @@
 export const formatAddress = (suggestion) => {
+    if (suggestion.nameNumber)
+        return suggestion.nameNumber + ', ' + suggestion.city + ', ' + suggestion.state + ', ' + suggestion.country;
+    
     if (!suggestion || !suggestion.address) return;
 
     const { road, state, house_number, city, country } = suggestion.address;

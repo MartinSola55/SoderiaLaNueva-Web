@@ -76,7 +76,14 @@ export const updateClient = async (form, onSuccess, onError) => {
     const rq = {
         id: form.id,
         name: form.name,
-        address: form.address,
+        address: {
+            nameNumber: form.address.nameNumber,
+            state: form.address.state,
+            city: form.address.city,
+            country: form.address.country,
+            lat: form.address.lat,
+            lon: form.address.lon,
+        },
         phone: form.phone,
         observations: form.observations,
         dealerId: form.dealerId,
