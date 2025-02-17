@@ -61,7 +61,7 @@ const DynamicRouteDetails = () => {
                 setCartTransfersTypes(formatOptions(r.data.cartTransfersTypes));
                 setCartPaymentStatuses(formatOptions(r.data.cartPaymentStatuses));
             });
-        API.get('cart/getPaymentStatusesCombo')
+        API.get('cart/getPaymentMethodsCombo')
             .then((r) => {
                 setPaymentMethods(formatPaymentMethods(r.data.items));
             });

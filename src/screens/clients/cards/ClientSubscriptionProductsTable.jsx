@@ -41,7 +41,7 @@ export const ClientSubscriptionProductsTable = ({
                 <div className={`d-flex justify-content-${interalIsWatching ? 'end' : 'between'}`}>
                     {!interalIsWatching ? (
                         <>
-                            <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                            <Button link onClick={() => setInteralIsWatching(true)}>
                                 Cancelar
                             </Button>
                             <Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>

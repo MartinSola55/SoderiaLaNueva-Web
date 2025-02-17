@@ -1,5 +1,5 @@
 import API from "../../app/API";
-import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "../../app/Helpers";
+import { buildGenericGetAllRq, formatDeliveryDay } from "../../app/Helpers";
 import { Toast } from "../../components";
 
 export const getBreadcrumbItems = (label) => {
@@ -20,6 +20,7 @@ export const getBreadcrumbItems = (label) => {
 
     return items;
 };
+
 export const getAddClientBreadcrumbItems = (label, routeId) => {
     const items = [
         {
@@ -179,7 +180,6 @@ export const getClients = (sort, currentPage, filterClients = [], onSuccess) => 
         const formattedClients = clients.map((client) => {
             return {
                 ...client,
-                debt: formatCurrency(client.debt),
                 deliveryDay: client.dealerName
                     ? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`
                     : ' Sin repartidor asignado - Sin día asignado ',

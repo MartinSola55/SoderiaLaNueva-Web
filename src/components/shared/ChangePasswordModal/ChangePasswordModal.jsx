@@ -96,7 +96,7 @@ const ChangePasswordModal = forwardRef((_, ref) => {
                 />
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='danger' onClick={handleClose}>
+                <Button link onClick={handleClose}>
                     Cancelar
                 </Button>
                 <Button onClick={handleConfirm} disabled={submitting} >

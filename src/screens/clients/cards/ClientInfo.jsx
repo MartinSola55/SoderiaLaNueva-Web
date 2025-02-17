@@ -130,7 +130,7 @@ export const ClientInfo = ({
                     {!interalIsWatching ? (
                         <>
                             {isWatching && (
-                                <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                                <Button link onClick={() => setInteralIsWatching(true)}>
                                     Cancelar
                                 </Button>
                             )}

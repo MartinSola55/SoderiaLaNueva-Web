@@ -96,13 +96,13 @@ export const formatDebt = (value) => {
     if (parseFloat(value) === 0)
         return 'Sin deuda';
 
-    return `${value > 0 ? 'A favor' : 'Deuda'}: $${value}`;
+    return `${value > 0 ? 'A favor' : 'Deuda'}: $${Math.abs(value)}`;
 };
 
 export const getDebtTextColor = (value) => {
-	if (value < 0) return 'text-danger'
-	if (value > 0) return 'text-success'
-	return ''
+    if (value < 0) return 'text-danger'
+    if (value > 0) return 'text-success'
+    return ''
 };
 
 export const buildDealerRouteName = (dealerName, day) => {
@@ -185,17 +185,17 @@ const formatDate = (dateString) => {
 };
 
 export const openActionConfirmationModal = (ref, rq, url, title, description, onSuccess) => {
-	ref.current?.open(
-		rq,
-		url,
-		title,
-		description,
-		onSuccess,
-	);
+    ref.current?.open(
+        rq,
+        url,
+        title,
+        description,
+        onSuccess,
+    );
 };
 
 export const handleOpenLastProducts = (lastProductsRef, lastProducts = []) => {
-	lastProductsRef.current?.open(() => { }, lastProducts);
+    lastProductsRef.current?.open(() => { }, lastProducts);
 };
 
 export class Dates {
@@ -231,4 +231,14 @@ export class Dates {
         newDate.setHours(0, 0, 0, 0);
         return newDate.toISOString();
     };
-}
+};
+
+export const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
+    };
+};

@@ -1,62 +1,29 @@
-import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    Input,
-    Table,
-    TableSort,
-    Toast,
-} from '../../components';
 import { useEffect, useState } from 'react';
-import API from '../../app/API';
+import { Col, Row } from 'react-bootstrap';
+import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '../../components';
+import App from '../../app/App';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
-import App from '../../app/App';
-import { buildGenericGetAllRq, Dates, formatCurrency } from '../../app/Helpers';
+import { Dates } from '../../app/Helpers';
 import TableFilters from '../../components/shared/TableFilters/TableFilters';
-
-const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Transferencias',
-    },
-];
+import { sortTransferItems, transferColumns } from './Transfers.data';
+import { getBreadcrumbItems, getTransfers } from './Transfers.helpers';
 
 const TransferList = () => {
     const columns = [
-        {
-            name: 'Clientname',
-            text: 'Cliente',
-            textCenter: true,
-        },
-        {
-            name: 'dealerName',
-            text: 'Repartidor',
-            textCenter: true,
-        },
-        {
-            name: 'amount',
-            text: 'Monto',
-            textCenter: true,
-        },
-        {
-            name: 'createdAt',
-            text: 'Fecha realizada',
-            textCenter: true,
-        },
+        ...transferColumns,
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => <ActionButtons entity='transferencia' {...props} />,
             className: 'text-center',
+            component: (props) =>
+                <ActionButtons
+                    navigateTo={false}
+                    showEdit={false}
+                    entity='gasto'
+                    // onWatch={handleOpenTransfer}
+                    {...props} />
         },
-    ];
-
-    const sortTransferItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
     ];
 
     const navigate = useNavigate();
@@ -68,6 +35,23 @@ const TransferList = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
     const [dateRange, setDateRange] = useState({ from: Dates.getToday(), to: Dates.getToday() });
+
+    // Effects
+    useEffect(() => {
+        if (!App.isAdmin()) {
+            return navigate('/notAllowed');
+        }
+    }, [navigate]);
+
+    useEffect(() => {
+        getTransfers(sort, currentPage, dateRange, ({ transfers, totalCount }) => {
+            setTotalCount(totalCount);
+            setRows(transfers);
+            if (transfers.length === 0) {
+                Toast.warning(Messages.Error.noRows);
+            }
+        });
+    }, [currentPage, dateRange, sort]);
 
     // Handlers
     const handleFilterRows = (value) => {
@@ -86,43 +70,13 @@ const TransferList = () => {
         setDateRange(null);
     };
 
-    // Effects
-    useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
-
-    useEffect(() => {
-        const rq = buildGenericGetAllRq(sort, currentPage);
-
-        API.post('transfer/getAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.transfers.map((transfer) => {
-                    return {
-                        id: transfer.id,
-                        clientName: transfer.clientName,
-                        amount: formatCurrency(transfer.amount),
-                        dealerName: transfer.dealerName,
-                        createdAt: transfer.createdAt,
-                        endpoint: 'Transfer',
-                    };
-                }),
-            );
-            if (r.data.transfers.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, sort]);
-
     const updateDeletedRow = (id) => {
         setRows((prevRow) => prevRow.filter((row) => row.id !== id));
     };
 
     return (
         <>
-            <BreadCrumb items={breadcrumbItems} title='Transferencias' />
+            <BreadCrumb items={getBreadcrumbItems()} title='Transferencias' />
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -141,7 +95,7 @@ const TransferList = () => {
                                         onRangeChange={setDateRange}
                                         onReset={handleResetFilters}
                                     />
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
                                             borderless
                                             placeholder='Buscar'
@@ -169,10 +123,7 @@ const TransferList = () => {
                         }
                         footer={
                             <div className='d-flex justify-content-end'>
-                                <Button
-                                    onClick={() => navigate('/transferencias/new')}
-                                    variant='primary'
-                                >
+                                <Button onClick={() => navigate('/transferencias/new')} variant='primary'>
                                     Nueva transferencia
                                 </Button>
                             </div>

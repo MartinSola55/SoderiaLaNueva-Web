@@ -15,7 +15,10 @@ const ActionButtons = ({
     showEdit = true,
     entity = "entidad",
     female = false,
-    onUpdate = () => { }
+    navigateTo = true,
+    onUpdate = () => { },
+    onWatch = () => { },
+    onEdit = () => { },
 }) => {
     const navigate = useNavigate();
     const id = row.id;
@@ -24,11 +27,17 @@ const ActionButtons = ({
     const modalRef = useRef();
 
     const handleWatch = () => {
-        navigate(window.location.pathname.replace(/\/[^/]+$/, `/${id}`));
+        if (navigateTo)
+            navigate(window.location.pathname.replace(/\/[^/]+$/, `/${id}`));
+        else
+            onWatch(id);
     };
 
     const handleEdit = () => {
-        navigate(window.location.pathname.replace(/\/[^/]+$/, `/edit/${id}`));
+        if (navigateTo)
+            navigate(window.location.pathname.replace(/\/[^/]+$/, `/edit/${id}`));
+        else
+            onEdit(id);
     };
 
     const handleDelete = () => {

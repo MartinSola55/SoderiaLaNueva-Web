@@ -47,7 +47,7 @@ export const ClientProductsTable = ({
                     {isWatching && (
                         !interalIsWatching ? (
                             <>
-                                <Button variant='danger' onClick={() => setInteralIsWatching(true)}>
+                                <Button link onClick={() => setInteralIsWatching(true)}>
                                     Cancelar
                                 </Button>
                                 <Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>

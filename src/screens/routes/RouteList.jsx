@@ -19,61 +19,60 @@ const breadcrumbItems = [
 const RouteList = () => {
     const navigate = useNavigate();
 
-	const routeColumns = [
-		...listColumns,
-		{
-			name: 'actions',
-			text: 'Acciones',
-			component: (props) => <ActionButtons entity='planilla' {...props} />,
-			className: 'text-center',
-		},
-	];
-	
+    const routeColumns = [
+        ...listColumns,
+        {
+            name: 'actions',
+            text: 'Acciones',
+            component: (props) => <ActionButtons entity='planilla' {...props} />,
+            className: 'text-center',
+        },
+    ];
+
     const [rows, setRows] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [dayFilter, setDayFilter] = useState(getDayIndex());
 
-	// Refs
-	const actionConfirmationRef = useRef(null);
+    // Refs
+    const actionConfirmationRef = useRef(null);
 
-	// Effects
+    // Effects
     useEffect(() => {
         if (!App.isAdmin()) {
             return navigate('/notAllowed');
         }
     }, [navigate]);
 
-	// Todo: paginar esto??
-	useEffect(() => {
-		getAllRoutes(dayFilter, ({ routes, totalCount }) => {
-			setTotalCount(totalCount);
-			setRows(routes);
+    useEffect(() => {
+        getAllRoutes(dayFilter, ({ routes, totalCount }) => {
+            setTotalCount(totalCount);
+            setRows(routes);
 
-			if (routes.length === 0) {
-				Toast.warning(Messages.Error.noRows);
-			}
-		});
+            if (routes.length === 0) {
+                Toast.warning(Messages.Error.noRows);
+            }
+        });
     }, [currentPage, dayFilter]);
 
-	// Handlers
-	const handlePageChange = (page) => {
-		setCurrentPage(page);
-	};
+    // Handlers
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
-	const handleDayFilterChange = (v) => {
-		setDayFilter(v);
-	};
+    const handleDayFilterChange = (v) => {
+        setDayFilter(v);
+    };
 
-	const handleRenewAllSubscriptions = () => {
-		actionConfirmationRef.current?.open(
-			{},
-			'Subscription/RenewAll',
-			'Esta acción no se puede revertir',
-			'¿Seguro deseas renovar TODOS los abonos? Esto incluye los clientes de todo el sistema. Si un abono ya se renovó, no se volverá a renovar',
-			() => { },
-		);
-	};
+    const handleRenewAllSubscriptions = () => {
+        actionConfirmationRef.current?.open(
+            {},
+            'Subscription/RenewAll',
+            'Esta acción no se puede revertir',
+            '¿Seguro deseas renovar TODOS los abonos? Esto incluye los clientes de todo el sistema. Si un abono ya se renovó, no se volverá a renovar',
+            () => { },
+        );
+    };
 
     const updateDeletedRow = (id) => {
         setRows((prevRow) => prevRow.filter((row) => row.id !== id));

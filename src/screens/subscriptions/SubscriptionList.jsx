@@ -29,6 +29,7 @@ const SubscriptionList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Effects
     useEffect(() => {
@@ -46,8 +47,10 @@ const SubscriptionList = () => {
         if (!selectedSubs)
             return;
 
+        setLoading(true);
         getClientSubscriptions(selectedSubs, (clients) => {
             setClients(clients);
+            setLoading(false);
         });
     }, [selectedSubs]);
 
@@ -147,9 +150,10 @@ const SubscriptionList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={clientCols}
-                                    rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter))}
-                                    emptyTableMessage={selectedSubs && 'No se encontraron clientes asociados a este abono'}
+                                    rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter.toLowerCase()))}
+                                    emptyTableMessage={!clients.length && 'No se encontraron clientes asociados a este abono'}
                                     pagination={true}
+                                    loading={loading}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
                                     onPageChange={handlePageChange}

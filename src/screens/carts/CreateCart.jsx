@@ -39,6 +39,7 @@ const CreateCart = ({ isWatching = false }) => {
             name: 'name',
             text: 'Producto',
             textCenter: true,
+            formatter: ({ row }) => { return `${row.name} - ${row.price}` }
         },
         {
             name: 'soldQuantity',
@@ -100,7 +101,7 @@ const CreateCart = ({ isWatching = false }) => {
                 setLoading(false);
             });
         }
-        API.get('cart/getPaymentStatusesCombo').then((r) => {
+        API.get('cart/getPaymentMethodsCombo').then((r) => {
             setPaymentMethods(formatPaymentMethods(r.data.items));
         });
     }, [id]);

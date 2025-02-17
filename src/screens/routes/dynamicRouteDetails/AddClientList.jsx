@@ -1,6 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
-import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../../components';
+import { BreadCrumb, Card, CellButton, Input, Table, TableSort, Toast } from '../../../components';
 import { useEffect, useRef, useState } from 'react';
 import { Messages } from '../../../constants/Messages';
 import { getAddClientBreadcrumbItems, getClients } from '../../clients/Clients.helpers';
@@ -8,7 +8,6 @@ import { clientColumns, sortClientItems } from '../../clients/Clients.data';
 import { useLocation } from 'react-router';
 import AddClientModal from './AddClientModal';
 import API from '../../../app/API';
-import CellButton from '../../../components/shared/CellInputs/CellButton';
 
 const AddClientList = () => {
     const columns = [
