@@ -18,7 +18,7 @@ const PaymentMethodsDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('cart/getPaymentStatusesCombo').then((r) => {
+        API.get('cart/getPaymentMethodsCombo').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);

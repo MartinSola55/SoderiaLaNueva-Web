@@ -29,6 +29,7 @@ const ProductList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // Effects
     useEffect(() => {
@@ -46,8 +47,10 @@ const ProductList = () => {
         if (!selectedProduct)
             return;
 
+        setLoading(true);
         getClientProducts(selectedProduct, (clients) => {
             setClients(clients);
+            setLoading(false);
         });
     }, [selectedProduct]);
 
@@ -150,10 +153,11 @@ const ProductList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={clientCols}
-                                    rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter))}
-                                    emptyTableMessage={selectedProduct && 'No se encontraron clientes asociados a este producto'}
+                                    rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter.toLowerCase()))}
+                                    emptyTableMessage={!clients.length && 'No se encontraron clientes asociados a este producto'}
                                     currentPage={currentPage}
                                     totalCount={totalCount}
+                                    loading={loading}
                                     onPageChange={handlePageChange}
                                     onUpdate={updateDeletedRow}
                                 />

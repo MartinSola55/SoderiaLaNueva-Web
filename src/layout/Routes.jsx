@@ -2,6 +2,7 @@ import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { lazy, Suspense } from 'react';
 import App from '../app/App.js';
 import { Spinner } from '../components/index.jsx';
+import { CreateTransfer } from '../screens/transfers/CreateTransfer.jsx';
 
 // Lazy loading de componentes
 const ExpensesList = lazy(() => import('../screens/expenses/ExpenseList.jsx'));
@@ -296,26 +297,10 @@ export const AppRoutes = () => (
                         }
                     />
                     <Route
-                        path='/transferencias/:id'
-                        element={
-                            <DefaultLayout>
-                                <CreateProduct isWatching />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
-                        path='/transferencias/edit/:id'
-                        element={
-                            <DefaultLayout>
-                                <CreateProduct isEditing />
-                            </DefaultLayout>
-                        }
-                    />
-                    <Route
                         path='/transferencias/new'
                         element={
                             <DefaultLayout>
-                                <CreateProduct />
+                                <CreateTransfer />
                             </DefaultLayout>
                         }
                     />

@@ -1,12 +1,10 @@
 import { Button, Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../components';
+import { ActionButtons, BreadCrumb, Card, ExpenseModal, Input, Table, TableSort, Toast } from '../../components';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import API from '../../app/API';
 import { Messages } from '../../constants/Messages';
 import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
 import TableFilters from '../../components/shared/TableFilters/TableFilters';
-import ExpenseModal from './ExpenseModal';
-import ActionButtonsExpense from './ActionButtonsExpenses/ActionButtonsExpense';
 
 const breadcrumbItems = [
     {
@@ -19,6 +17,11 @@ const ExpenseList = () => {
     // Consts
     const columns = [
         {
+            name: 'dealerName',
+            text: 'Repartidor',
+            textCenter: true,
+        },
+        {
             name: 'description',
             text: 'Descripción',
             textCenter: true,
@@ -27,6 +30,7 @@ const ExpenseList = () => {
             name: 'amount',
             text: 'Monto',
             textCenter: true,
+            formatter: formatCurrency,
         },
         {
             name: 'createdAt',
@@ -36,16 +40,20 @@ const ExpenseList = () => {
         {
             name: 'actions',
             text: 'Acciones',
-            component: (props) => (
-                <ActionButtonsExpense canDelete={true} onEdit={handleOpenExpense} entity='gasto' {...props} />
-            ),
+            component: (props) =>
+                <ActionButtons
+                    navigateTo={false}
+                    entity='gasto'
+                    onEdit={(id) => handleOpenExpense(id, false)}
+                    onWatch={(id) => handleOpenExpense(id, true)}
+                    {...props} />,
             className: 'text-center',
         },
     ];
 
     const sortExpenseItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
+        { value: 'createdAt-asc', label: 'Fecha - Asc.' },
+        { value: 'createdAt-desc', label: 'Fecha - Desc.' },
     ];
 
     //States
@@ -55,14 +63,13 @@ const ExpenseList = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
     const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
-    const [submitting, setSubmitting] = useState(false);
 
     // Refs
-    const expenseRef = useRef(null);
+    const expenseModalRef = useRef(null);
 
     // Handlers
     const handleFilterRows = (value) => {
-        setFilter(value.toLowerCase());
+        setFilter(value);
     };
 
     const handlePageChange = (page) => {
@@ -77,58 +84,28 @@ const ExpenseList = () => {
         setDateRange(null);
     };
 
-    const handleSubmit = async (expense, id) => {
-        if (submitting) return;
-
-        if (!expense.dealerId || !expense.description || !expense.amount) {
-            Toast.warning(Messages.Validation.requiredFields);
-            return;
-        }
-
-        if (expense.amount && expense.amount <= 0) {
-            Toast.warning('El monto debe ser superior a cero.');
-            return;
-        }
-
-        setSubmitting(true);
-
-        const rq = {
-            dealerId: expense.dealerId,
-            description: expense.description,
-            amount: expense.amount,
-        };
-
-        if (id) {
-            rq.id = id;
-        }
-
-        API.post(`expense/${id ? 'update' : 'create'}`, rq)
-            .then((r) => {
-                Toast.success(r.message);
-                expenseRef.current?.close();
-                getExpenses();
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
-            })
-            .finally(() => {
-                setSubmitting(false);
-            });
-    };
-
     const handleOpenExpense = (id, isWatching) => {
         const row = rows.find((r) => r.id === id);
         const expense = {
+            id: row.id,
             dealerId: row.dealerId,
             description: row.description,
-            amount: parseFloat(row.amount.replace(/[^0-9,]/g, '').replace(',', '.')),
+            amount: row.amount,
         };
-        expenseRef.current.open(
-            (v) => handleSubmit(v, id),
-            () => { },
+        expenseModalRef.current.open(
+            () => getExpenses(),
             expense,
             isWatching ? 'Ver' : 'Editar',
             isWatching,
+        );
+    };
+
+    const handleAddExpense = () => {
+        expenseModalRef.current.open(
+            () => getExpenses(),
+            null,
+            'Agregar',
+            false,
         );
     };
 
@@ -140,11 +117,7 @@ const ExpenseList = () => {
             setRows(
                 r.data.expenses.map((expense) => {
                     return {
-                        id: expense.id,
-                        description: expense.description,
-                        amount: formatCurrency(expense.amount),
-                        createdAt: expense.createdAt,
-                        dealerId: expense.dealerId,
+                        ...expense,
                         endpoint: 'Expense',
                     };
                 }),
@@ -167,7 +140,7 @@ const ExpenseList = () => {
     return (
         <>
             <BreadCrumb items={breadcrumbItems} title='Gastos' />
-            <ExpenseModal disabled={submitting} ref={expenseRef} />
+            <ExpenseModal ref={expenseModalRef} />
             <div>
                 <Col xs={11} className='container'>
                     <Card
@@ -186,11 +159,11 @@ const ExpenseList = () => {
                                         onRangeChange={setDateRange}
                                         onReset={handleResetFilters}
                                     />
-                                    <Col xs={12} className='pe-3 mb-3'>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
                                         <Input
                                             borderless
                                             placeholder='Buscar'
-                                            helpText='Descrición'
+                                            helpText='Descripción o repartidor'
                                             value={filter}
                                             onChange={handleFilterRows}
                                         />
@@ -199,8 +172,9 @@ const ExpenseList = () => {
                                 <Table
                                     className='mb-5'
                                     columns={columns}
-                                    rows={rows.filter((r) =>
-                                        r.description.toLowerCase().includes(filter),
+                                    rows={rows.filter((x) =>
+                                        x.description.toLowerCase().includes(filter.toLowerCase())
+                                        || x.dealerName.toLowerCase().includes(filter.toLowerCase())
                                     )}
                                     pagination={true}
                                     currentPage={currentPage}
@@ -213,15 +187,7 @@ const ExpenseList = () => {
                         footer={
                             <div className='d-flex justify-content-end'>
                                 <Button
-                                    onClick={() => {
-                                        expenseRef.current.open(
-                                            (v) => handleSubmit(v, null),
-                                            () => { },
-                                            null,
-                                            'Agregar',
-                                            false,
-                                        );
-                                    }}
+                                    onClick={handleAddExpense}
                                     variant='primary'
                                 >
                                     Nuevo gasto

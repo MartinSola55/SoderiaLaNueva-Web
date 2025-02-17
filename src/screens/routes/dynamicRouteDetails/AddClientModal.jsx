@@ -85,7 +85,7 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
     };
 
     useEffect(() => {
-        API.get('cart/getPaymentStatusesCombo').then((r) => {
+        API.get('cart/getPaymentMethodsCombo').then((r) => {
             setPaymentMethods(formatPaymentMethods(r.data.items));
         });
     }, [setPaymentMethods])
@@ -122,7 +122,7 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
                 </Row>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant='danger' onClick={handleClose}>
+                <Button link onClick={handleClose}>
                     Cancelar
                 </Button>
                 <Button onClick={handleConfirm} disabled={disabled}>

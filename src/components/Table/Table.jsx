@@ -15,6 +15,7 @@ const Table = ({
     bordered = true,
     striped = true,
     hover = true,
+    loading = false,
     totalCount = 0,
     currentPage = 1,
     onRowClick = () => { },
@@ -125,11 +126,18 @@ const Table = ({
                             })}
                         </tr>
                     )) : null}
-                    {emptyTableMessage &&
+                    {emptyTableMessage && !loading &&
                         <tr>
                             <td colSpan={columns.length} className='text-start'>{emptyTableMessage}</td>
                         </tr>
                     }
+                    {loading && (
+                        <tr>
+                            <td colSpan={columns.length} className='text-center'>
+                                <span className="loader"></span>
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
             </BS.Table>
             {pagination && rows && (

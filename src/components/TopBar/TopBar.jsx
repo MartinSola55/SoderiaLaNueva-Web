@@ -66,7 +66,7 @@ const TopBar = () => {
 
     const handlePerfilDetails = () => {
         setShowUser(false);
-        navigate(`/usuario/detallesPerfil/${LocalStorage.getUserId()}`)
+        navigate(`/usuarios/${LocalStorage.getUserId()}`)
     };
 
     // Handle click outside of notifications container

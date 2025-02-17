@@ -103,29 +103,26 @@ const ClientDetails = () => {
 						/>
 					</Col>
 					<Col sm={6}>
-						<Row className='h-100'>
-							<Col xs={12}>
-								<ClientProductsTable
-									isWatching={true}
-									products={buildProductsTable(products, form.products)}
-									submitting={submitting}
-									loading={loading}
-									onSubmit={handleClientProductsSubmit}
-									onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
-								/>
-							</Col>
-							<Col xs={12}>
-								<ClientSubscriptionProductsTable
-									isWatching={true}
-									subscriptions={buildSubscriptionsProductsTable(subscriptions, form.subscriptions)}
-									submitting={submitting}
-									loading={loading}
-									onSubmit={handleClientSubscriptionProductsSubmit}
-									onSubscriptionsChange={(props, value) => handleSubscriptionsChange(props, value, form, setForm)}
-								/>
-							</Col>
-
-						</Row>
+						<Col xs={12}>
+							<ClientProductsTable
+								isWatching={true}
+								products={buildProductsTable(products, form.products)}
+								submitting={submitting}
+								loading={loading}
+								onSubmit={handleClientProductsSubmit}
+								onProductsChange={(props, value) => handleProductsChange(props, value, form, setForm)}
+							/>
+						</Col>
+						<Col xs={12}>
+							<ClientSubscriptionProductsTable
+								isWatching={true}
+								subscriptions={buildSubscriptionsProductsTable(subscriptions, form.subscriptions)}
+								submitting={submitting}
+								loading={loading}
+								onSubmit={handleClientSubscriptionProductsSubmit}
+								onSubscriptionsChange={(props, value) => handleSubscriptionsChange(props, value, form, setForm)}
+							/>
+						</Col>
 					</Col>
 					<Col lg={6}>
 						<ClientProductHistoryTable

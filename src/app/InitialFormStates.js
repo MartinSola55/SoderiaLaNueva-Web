@@ -79,4 +79,9 @@ export class InitialFormStates {
         price: '',
         typeId: null,
     }
+
+    static Transfer = {
+        clientId: null,
+        amount: 0,
+    }
 }
