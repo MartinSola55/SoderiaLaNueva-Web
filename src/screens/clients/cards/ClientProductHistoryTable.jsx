@@ -21,24 +21,24 @@ export const ClientProductHistoryTable = ({
             text: 'Cantidad',
             textCenter: true,
         },
-		{
+        {
             name: 'date',
             text: 'Fecha',
             textCenter: true,
         },
     ];
 
-	return (
+    return (
         <Card
             title='Historial de envases'
             body={loading ? <Spinner /> :
                 <Row className='align-items-center'>
                     <Col xs={12}>
-                        <Table 
-							rows={products} 
-							columns={productsColumns} 
-							emptyTableMessage={products.length === 0 && 'El cliente no cuenta con un historial de envases'}
-						/>
+                        <Table
+                            rows={products}
+                            columns={productsColumns}
+                            emptyTableMessage='El cliente no cuenta con un historial de envases'
+                        />
                     </Col>
                 </Row>
             }

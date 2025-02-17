@@ -75,6 +75,7 @@ export const DynamicRouteCartDetailCard = ({
 			name: pending ? 'description' : 'name',
 			text: 'Producto',
 			textCenter: true,
+			formatter: (_, row) => `${row.name} - ${formatCurrency(row.price)}`,
 		},
 		{
 			name: pending ? 'quantity' : 'soldQuantity',

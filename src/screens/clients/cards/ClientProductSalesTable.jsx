@@ -6,7 +6,7 @@ export const ClientProductSalesTable = ({
     loading,
 }) => {
     const productsColumns = [
-		{
+        {
             name: 'date',
             text: 'Fecha',
             textCenter: true,
@@ -20,7 +20,7 @@ export const ClientProductSalesTable = ({
             name: 'payments',
             text: 'Pago',
             textCenter: true,
-			list: true
+            list: true
         },
     ];
 
@@ -30,11 +30,11 @@ export const ClientProductSalesTable = ({
             body={loading ? <Spinner /> :
                 <Row className='align-items-center'>
                     <Col xs={12}>
-                        <Table 
-							rows={products} 
-							columns={productsColumns} 
-							emptyTableMessage={products.length === 0 && 'El cliente no cuenta con un historial de bajadas y transferencias'}
-						/>
+                        <Table
+                            rows={products}
+                            columns={productsColumns}
+                            emptyTableMessage='El cliente no cuenta con un historial de bajadas y transferencias'
+                        />
                     </Col>
                 </Row>
             }

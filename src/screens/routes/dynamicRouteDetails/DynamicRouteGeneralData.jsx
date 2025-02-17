@@ -37,7 +37,12 @@ export const DynamicRouteGeneralData = ({ form }) => {
 				<Card
 					title='Productos vendidos'
 					header={<p className='mb-0'>06/01/2025</p>}
-					body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)} emptyTableMessage={getSoldProductsRows(form).length === 0 && 'No hay productos en la planilla'} />}
+					body={
+						<Table
+							columns={soldProductsColumns}
+							rows={getSoldProductsRows(form)}
+							emptyTableMessage='No hay productos en la planilla' />
+					}
 				/>
 			</Col>
 			<Col xs={12} xl={6} className='mt-5'>

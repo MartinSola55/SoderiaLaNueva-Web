@@ -202,7 +202,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 <Table
                                                     rows={selectedRows}
                                                     columns={selectedColumns}
-                                                    emptyTableMessage={selectedRows.length === 0 && 'No se hay clientes en la ruta'}
+                                                    emptyTableMessage='No se hay clientes en la ruta'
                                                 ></Table>
                                             </Col>
                                         </Row>
@@ -246,7 +246,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 </Col>
                                                 <Table
                                                     rows={notSelectedRows}
-                                                    emptyTableMessage={notSelectedRows.length === 0 && 'No se encontraron más clientes'}
+                                                    emptyTableMessage='No se encontraron más clientes'
                                                     columns={notSelectedColumns}
                                                     totalCount={totalCount}
                                                     currentPage={currentPage}
