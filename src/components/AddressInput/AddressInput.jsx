@@ -5,7 +5,11 @@ import Input from "../Input/Input";
 import Toast from "../Toast/Toast";
 import "./addressInput.scss";
 
-const AddressInput = ({ onAddressSelect, disabled, value }) => {
+const AddressInput = ({
+    value,
+    disabled,
+    onAddressSelect = () => { },
+}) => {
     const [address, setAddress] = useState(value || "");
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -50,11 +54,9 @@ const AddressInput = ({ onAddressSelect, disabled, value }) => {
             country: suggestion.address.country,
             lat: suggestion.lat,
             lon: suggestion.lon
-        }
+        };
 
-        if (onAddressSelect) {
-            onAddressSelect(addressData);
-        }
+        onAddressSelect(addressData);
     };
 
     return (
@@ -62,9 +64,10 @@ const AddressInput = ({ onAddressSelect, disabled, value }) => {
             <div className="input-wrapper">
                 <Input
                     value={address}
-                    onChange={handleInputChange}
                     disabled={disabled}
+                    maxLength={100}
                     placeholder="Ingrese su dirección"
+                    onChange={handleInputChange}
                 />
                 {loading && <span className="spinner">⏳</span>}
             </div>

@@ -63,15 +63,10 @@ const CreateClient = () => {
             ...prevForm,
             address: {
                 ...prevForm.address,
-                nameNumber: address.nameNumber,
-                state: address.state,
-                city: address.city,
-                country: address.country,
-                lat: address.lat,
-                lon: address.lon,
+                ...address,
             }
         }));
-    }
+    };
 
     const handleProductsChange = (props, value) => {
         const products = form.products.map((x) => {

@@ -19,6 +19,7 @@ import Table from './Table/Table';
 import Toast from './Toast/Toast';
 import Tooltip from './Tooltip/Tooltip';
 import TopBar from './TopBar/TopBar';
+import AddressInput from './AddressInput/AddressInput';
 
 import ActionButtons from './shared/ActionButtons/ActionButtons';
 import ChangePasswordModal from './shared/ChangePasswordModal/ChangePasswordModal';
@@ -63,6 +64,7 @@ export {
     Toast,
     Tooltip,
     TopBar,
+    AddressInput,
 
     // Shared components
     ActionButtons,
