@@ -13,6 +13,7 @@ const ActionButtons = ({
     row = {},
     canDelete = App.isAdmin(),
     showEdit = true,
+    showWatch = true,
     entity = "entidad",
     female = false,
     navigateTo = true,
@@ -54,14 +55,16 @@ const ActionButtons = ({
             />
             <Row>
                 <Col className="action-button--container">
-                    <Tooltip text="Ver" placement="top">
-                        <FontAwesomeIcon
-                            className="action-button"
-                            icon={faEye}
-                            color="black"
-                            onClick={handleWatch}
-                        />
-                    </Tooltip>
+                    {showWatch && (
+                        <Tooltip text="Ver" placement="top">
+                            <FontAwesomeIcon
+                                className="action-button"
+                                icon={faEye}
+                                color="black"
+                                onClick={handleWatch}
+                            />
+                        </Tooltip>
+                    )}
                     {!(row.isOpen !== undefined && row.isOpen) && showEdit && (
                         <Tooltip text="Editar" placement="top">
                             <FontAwesomeIcon

@@ -53,9 +53,10 @@ export const DynamicRouteCartDetailCard = ({
 
 	const cartSubscriptionProductsColumns = (pending) => [
 		{
-			name: pending ? 'description' : 'name',
+			name: 'name',
 			text: 'Producto',
 			textCenter: true,
+			formatter: (_, row) => pending ? `${row.name} - Disponible: ${row.available}` : row.name,
 		},
 		{
 			name: pending ? 'quantity' : 'subscriptionQuantity',
@@ -72,7 +73,7 @@ export const DynamicRouteCartDetailCard = ({
 
 	const cartProductColumns = (pending) => [
 		{
-			name: pending ? 'description' : 'name',
+			name: 'name',
 			text: 'Producto',
 			textCenter: true,
 			formatter: (_, row) => `${row.name} - ${formatCurrency(row.price)}`,

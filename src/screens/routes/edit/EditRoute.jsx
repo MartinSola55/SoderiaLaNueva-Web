@@ -107,7 +107,7 @@ const EditRoute = ({ isWatching = false }) => {
                 setClients(clients);
 
                 if (clients.length === 0) {
-                    Toast.warning(Messages.Error.noRows);
+                    Toast.warning(Messages.Error.noEntities('clientes'));
                 }
             });
         }
@@ -123,10 +123,10 @@ const EditRoute = ({ isWatching = false }) => {
             clients: form.clients.map((x) => parseInt(x.id)),
         };
 
-        API.post('rute/updateClients', rq)
+        API.post('route/updateClients', rq)
             .then((r) => {
                 Toast.success(r.message);
-                navigate('/planillas/list');
+                navigate(`/planillas/${id}`);
             })
             .catch((r) => {
                 Toast.error(r.error?.message);

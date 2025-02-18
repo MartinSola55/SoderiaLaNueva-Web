@@ -75,6 +75,10 @@ export const ClientInfo = ({
                                 <Label>Deuda</Label>
                                 <Input
                                     value={form.debt}
+                                    isFloat
+                                    numeric
+                                    placeholder='$'
+                                    type='number'
                                     disabled={interalIsWatching}
                                     onChange={(value) => onInputChange(value, 'debt')}
                                 />

@@ -41,7 +41,7 @@ export const formatProducts = (prod, disabled = false) => {
 export const formatCartProducts = (prod, cartId) => {
     return prod?.map((p) => ({
         id: p.productId,
-        description: p.name + ' - ' + formatCurrency(p.price),
+        name: p.name,
         quantity: "",
         price: parseFloat(p.price),
         cartId
@@ -51,7 +51,8 @@ export const formatCartProducts = (prod, cartId) => {
 export const formatCartSubscriptionProducts = (subsProd, cartId) => {
     return subsProd?.map((sp) => ({
         id: sp.typeId,
-        description: `${sp.name} - Disponible: ${sp.available}`,
+        name: sp.name,
+        available: sp.available,
         quantity: "",
         cartId
     }));
@@ -96,12 +97,12 @@ export const formatDebt = (value) => {
     if (parseFloat(value) === 0)
         return 'Sin deuda';
 
-    return `${value > 0 ? 'A favor' : 'Deuda'}: $${Math.abs(value)}`;
+    return `${value < 0 ? 'A favor' : 'Deuda'}: $${Math.abs(value)}`;
 };
 
 export const getDebtTextColor = (value) => {
-    if (value < 0) return 'text-danger'
-    if (value > 0) return 'text-success'
+    if (value > 0) return 'text-danger'
+    if (value < 0) return 'text-success'
     return ''
 };
 
@@ -133,17 +134,11 @@ export const getDayIndex = () => {
 };
 
 export const formatRole = (role) => {
-    switch (role) {
+    switch (role?.toUpperCase()) {
         case Roles.Admin:
             return 'Admin';
-        case Roles.Rol4:
-            return 'Nivel 4';
-        case Roles.Rol3:
-            return 'Nivel 3';
-        case Roles.Rol2:
-            return 'Nivel 2';
-        case Roles.Rol1:
-            return 'Nivel 1';
+        case Roles.Dealer:
+            return 'Repartidor';
         default:
             return 'Desconocido';
     }

@@ -66,7 +66,7 @@ const CreateSubscription = ({ isWatching = false }) => {
             return;
         }
         if (form.subscriptionProducts.every((x) => !x.quantity)) {
-            Toast.warning('El abono debe contar minimamente con un producto.');
+            Toast.warning('El abono debe contar mínimamente con un producto.');
             return;
         }
 
@@ -115,7 +115,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                             body={loading ? <Spinner /> :
                                 <Row className='align-items-center'>
                                     <Col xs={12} md={6} className='pe-3 mb-3'>
-                                        <Label required>Nombre del abono</Label>
+                                        <Label required={!isWatching}>Nombre del abono</Label>
                                         <Input
                                             helpText={!isWatching && 'Ej: Abono X4'}
                                             disabled={isWatching}
@@ -124,7 +124,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                                         />
                                     </Col>
                                     <Col xs={12} md={6} className='pe-3 mb-3'>
-                                        <Label required>Precio</Label>
+                                        <Label required={!isWatching}>Precio</Label>
                                         <Input
                                             helpText={!isWatching && '\u00A0'}
                                             disabled={isWatching}

@@ -20,8 +20,8 @@ const TransferList = () => {
                 <ActionButtons
                     navigateTo={false}
                     showEdit={false}
+                    showWatch={false}
                     entity='gasto'
-                    // onWatch={handleOpenTransfer}
                     {...props} />
         },
     ];
@@ -46,7 +46,10 @@ const TransferList = () => {
     useEffect(() => {
         getTransfers(sort, currentPage, dateRange, ({ transfers, totalCount }) => {
             setTotalCount(totalCount);
-            setRows(transfers);
+            setRows(transfers.map(x => ({
+                ...x,
+                endpoint: 'transfer'
+            })));
             if (transfers.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }

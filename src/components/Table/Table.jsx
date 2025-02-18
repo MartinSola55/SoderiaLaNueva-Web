@@ -72,7 +72,7 @@ const Table = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.length ? rows.map((row, i) => (
+                    {(rows.length && !loading) ? rows.map((row, i) => (
                         <tr
                             key={i}
                             style={row.style}

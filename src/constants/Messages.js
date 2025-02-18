@@ -6,6 +6,7 @@ export class Messages {
         generic: 'Ha ocurrido un error inesperado.',
         noRows: 'No se han encontrado registros que coincidan con los filtros aplicados.',
         notAllowed: 'No tienes permisos para ver esta página.',
+        noEntities: (entity) => `No se han encontrado ${entity} que coincidan con los filtros aplicados.`,
     }
     static Validation = {
         requiredFields: 'Por favor, complete todos los campos obligatorios.',

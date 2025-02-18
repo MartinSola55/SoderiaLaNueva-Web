@@ -1,21 +1,12 @@
 import { Col, Row } from 'react-bootstrap';
-import {
-    ActionButtons,
-    BreadCrumb,
-    Button,
-    Card,
-    Input,
-    Table,
-    TableSort,
-    Toast,
-} from '../../components';
+import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '../../components';
 import { useEffect, useState } from 'react';
 import API from '../../app/API';
 import { Roles } from '../../constants/Roles';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { buildGenericGetAllRq } from '../../app/Helpers';
+import { buildGenericGetAllRq, formatRole } from '../../app/Helpers';
 import { columns, sortUserItems } from './User.data';
 
 const breadcrumbItems = [
@@ -72,13 +63,9 @@ const UserList = () => {
             setRows(
                 r.data.users.map((user) => {
                     return {
-                        id: user.id,
-                        email: user.email,
-                        fullName: user.fullName,
+                        ...user,
+                        role: formatRole(user.role),
                         endpoint: 'User',
-                        createdAt: user.createdAt,
-                        role: user.role,
-                        phoneNumber: user.phoneNumber,
                     };
                 }),
             );

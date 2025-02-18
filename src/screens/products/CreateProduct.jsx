@@ -75,7 +75,7 @@ const CreateProduct = ({ isWatching = false }) => {
                             <>
                                 <Row className='align-items-center'>
                                     <Col xs={12} md={4} className='pe-3 mb-3'>
-                                        <Label required>Nombre del producto</Label>
+                                        <Label required={!isWatching}>Nombre del producto</Label>
                                         <Input
                                             disabled={isWatching}
                                             placeholder='Nombre'
@@ -84,7 +84,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                         />
                                     </Col>
                                     <Col xs={12} md={4} className='pe-3 mb-3'>
-                                        <Label required>Precio</Label>
+                                        <Label required={!isWatching}>Precio</Label>
                                         <Input
                                             disabled={isWatching}
                                             numeric
@@ -96,7 +96,7 @@ const CreateProduct = ({ isWatching = false }) => {
                                         />
                                     </Col>
                                     <Col xs={12} md={4} className='pe-3 mb-3'>
-                                        <Label required>Tipo</Label>
+                                        <Label required={!isWatching}>Tipo</Label>
                                         <ProductTypesDropdown
                                             disabled={isWatching}
                                             placeholder='Seleccione un tipo'

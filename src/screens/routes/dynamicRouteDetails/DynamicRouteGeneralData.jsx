@@ -10,6 +10,7 @@ import { soldProductsColumns } from "../Routes.data"
 
 export const DynamicRouteGeneralData = ({ form }) => {
 
+	const totalDebt = getTotalDebt(form);
 	const countNotPendingCarts = form.carts.filter((cart) => cart.status.toLocaleLowerCase() !== 'pendiente'.toLocaleLowerCase())?.length;
 
 	const getMoneyCollectedTooltip = () => {
@@ -28,7 +29,7 @@ export const DynamicRouteGeneralData = ({ form }) => {
 					body={
 						<>
 							<span className='mb-1 d-block fs-4'>{`Total de repartos: ${form.carts.length}`}</span>
-							<span className='mb-1 d-block fs-4'>{`Deuda total: ${formatCurrency(getTotalDebt(form))}`}</span>
+							<span className='mb-1 d-block fs-4'>{`Deuda total: ${totalDebt > 0 ? formatCurrency(totalDebt) : `${formatCurrency(Math.abs(totalDebt))} (a favor de los clientes)`}`}</span>
 						</>
 					}
 				/>
