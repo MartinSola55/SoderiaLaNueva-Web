@@ -78,7 +78,7 @@ export const RoutesCard = ({ isAdmin }) => {
                         onRowClick={(_, id) => navigate('planillas/abierta/' + id)}
                         clickable={true}
                         columns={isAdmin ? routesCols : finalDealerRoutesCols}
-                        emptyTableMessage={data.length === 0 && 'No se encontraron repartos para el día seleccionado.'}
+                        emptyTableMessage='No se encontraron repartos para el día seleccionado.'
                         bordered={false}
                         striped={false}
                         hover={false} />

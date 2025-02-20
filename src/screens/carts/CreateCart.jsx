@@ -6,7 +6,7 @@ import API from '../../app/API';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
 import App from '../../app/App';
-import { formatPaymentMethods } from '../../app/Helpers';
+import { formatCurrency, formatPaymentMethods } from '../../app/Helpers';
 import { getPaymentMethodRows, getProductsRows, getSubscriptionProductsRows, onPaymentMethodsChange, onProductsChange } from './Cart.helpers.js';
 import { Loader } from 'rsuite';
 
@@ -39,7 +39,7 @@ const CreateCart = ({ isWatching = false }) => {
             name: 'name',
             text: 'Producto',
             textCenter: true,
-            formatter: ({ row }) => { return `${row.name} - ${row.price}` }
+            formatter: (_, row) => `${row.name} - ${formatCurrency(row.price)}`
         },
         {
             name: 'soldQuantity',
@@ -95,9 +95,7 @@ const CreateCart = ({ isWatching = false }) => {
     useEffect(() => {
         if (id) {
             API.get('cart/getOne', { id }).then((r) => {
-                setForm(() => ({
-                    ...r.data,
-                }));
+                setForm(r.data);
                 setLoading(false);
             });
         }

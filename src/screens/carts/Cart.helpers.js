@@ -57,6 +57,7 @@ export const getProductsRows = (form) => {
 		return {
 			productTypeId: cp.productTypeId,
 			name: cp.name,
+			price: cp.price,
 			soldQuantity: existingCLientProduct?.soldQuantity || "",
 			returnedQuantity: existingCLientProduct?.returnedQuantity || 0,
 		};

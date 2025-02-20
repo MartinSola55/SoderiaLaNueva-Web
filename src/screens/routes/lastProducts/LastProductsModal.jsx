@@ -72,7 +72,7 @@ const LastProductsModal = forwardRef((props, ref) => {
                         <Table
                             rows={rows}
                             columns={columns}
-                            emptyTableMessage={rows.length === 0 && 'El cliente no cuenta con un historial de últimos productos'}
+                            emptyTableMessage='El cliente no cuenta con un historial de últimos productos'
                         />
                     </Col>
                 </Row>

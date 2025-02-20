@@ -102,7 +102,7 @@ const RouteList = () => {
                                     className='mb-5'
                                     columns={routeColumns}
                                     rows={rows}
-                                    emptyTableMessage={rows.length === 0 && 'No se encontraron planillas para el día seleccionado'}
+                                    emptyTableMessage='No se encontraron planillas para el día seleccionado'
                                     pagination={true}
                                     currentPage={currentPage}
                                     totalCount={totalCount}

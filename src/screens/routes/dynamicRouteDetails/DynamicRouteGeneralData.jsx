@@ -10,6 +10,7 @@ import { soldProductsColumns } from "../Routes.data"
 
 export const DynamicRouteGeneralData = ({ form }) => {
 
+	const totalDebt = getTotalDebt(form);
 	const countNotPendingCarts = form.carts.filter((cart) => cart.status.toLocaleLowerCase() !== 'pendiente'.toLocaleLowerCase())?.length;
 
 	const getMoneyCollectedTooltip = () => {
@@ -28,7 +29,7 @@ export const DynamicRouteGeneralData = ({ form }) => {
 					body={
 						<>
 							<span className='mb-1 d-block fs-4'>{`Total de repartos: ${form.carts.length}`}</span>
-							<span className='mb-1 d-block fs-4'>{`Deuda total: ${formatCurrency(getTotalDebt(form))}`}</span>
+							<span className='mb-1 d-block fs-4'>{`Deuda total: ${totalDebt > 0 ? formatCurrency(totalDebt) : `${formatCurrency(Math.abs(totalDebt))} (a favor de los clientes)`}`}</span>
 						</>
 					}
 				/>
@@ -37,7 +38,12 @@ export const DynamicRouteGeneralData = ({ form }) => {
 				<Card
 					title='Productos vendidos'
 					header={<p className='mb-0'>06/01/2025</p>}
-					body={<Table columns={soldProductsColumns} rows={getSoldProductsRows(form)} emptyTableMessage={getSoldProductsRows(form).length === 0 && 'No hay productos en la planilla'} />}
+					body={
+						<Table
+							columns={soldProductsColumns}
+							rows={getSoldProductsRows(form)}
+							emptyTableMessage='No hay productos en la planilla' />
+					}
 				/>
 			</Col>
 			<Col xs={12} xl={6} className='mt-5'>

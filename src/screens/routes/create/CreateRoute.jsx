@@ -143,7 +143,7 @@ const CreateRoute = () => {
                                     className='mb-5'
                                     columns={createColumns}
                                     rows={rows.filter((r) => r.fullName.toLowerCase().includes(filter) || r.email.toLowerCase().includes(filter))}
-                                    emptyTableMessage={rows.length === 0 && 'No se encontraron repartidores'}
+                                    emptyTableMessage='No se encontraron repartidores'
                                     clickable={true}
                                     pagination={true}
                                     currentPage={currentPage}

@@ -48,7 +48,7 @@ export const ClientsTable = ({
             columns={columns}
             rows={rows}
             loading={loading}
-            emptyTableMessage={!rows.length && 'No se encontraron clientes que coincidan con la búsqueda.'}
+            emptyTableMessage='No se encontraron clientes que coincidan con la búsqueda.'
         />
     );
 };

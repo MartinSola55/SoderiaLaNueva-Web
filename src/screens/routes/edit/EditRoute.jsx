@@ -107,7 +107,7 @@ const EditRoute = ({ isWatching = false }) => {
                 setClients(clients);
 
                 if (clients.length === 0) {
-                    Toast.warning(Messages.Error.noRows);
+                    Toast.warning(Messages.Error.noEntities('clientes'));
                 }
             });
         }
@@ -123,10 +123,10 @@ const EditRoute = ({ isWatching = false }) => {
             clients: form.clients.map((x) => parseInt(x.id)),
         };
 
-        API.post('rute/updateClients', rq)
+        API.post('route/updateClients', rq)
             .then((r) => {
                 Toast.success(r.message);
-                navigate('/planillas/list');
+                navigate(`/planillas/${id}`);
             })
             .catch((r) => {
                 Toast.error(r.error?.message);
@@ -202,7 +202,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 <Table
                                                     rows={selectedRows}
                                                     columns={selectedColumns}
-                                                    emptyTableMessage={selectedRows.length === 0 && 'No se hay clientes en la ruta'}
+                                                    emptyTableMessage='No se hay clientes en la ruta'
                                                 ></Table>
                                             </Col>
                                         </Row>
@@ -246,7 +246,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 </Col>
                                                 <Table
                                                     rows={notSelectedRows}
-                                                    emptyTableMessage={notSelectedRows.length === 0 && 'No se encontraron más clientes'}
+                                                    emptyTableMessage='No se encontraron más clientes'
                                                     columns={notSelectedColumns}
                                                     totalCount={totalCount}
                                                     currentPage={currentPage}

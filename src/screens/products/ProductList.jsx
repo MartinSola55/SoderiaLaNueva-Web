@@ -154,7 +154,7 @@ const ProductList = () => {
                                     className='mb-5'
                                     columns={clientCols}
                                     rows={clients.filter((x) => x.name.toLowerCase().includes(clientFilter.toLowerCase()))}
-                                    emptyTableMessage={!clients.length && 'No se encontraron clientes asociados a este producto'}
+                                    emptyTableMessage='No se encontraron clientes asociados a este producto'
                                     currentPage={currentPage}
                                     totalCount={totalCount}
                                     loading={loading}

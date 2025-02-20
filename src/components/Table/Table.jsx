@@ -32,7 +32,8 @@ const Table = ({
     };
 
     const handleRowClick = (e) => {
-        if (!clickable) return;
+        if (!clickable)
+            return;
 
         onRowClick(e, e.target.closest('tr').getAttribute('data-href'));
     };
@@ -71,7 +72,7 @@ const Table = ({
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.length ? rows.map((row, i) => (
+                    {(rows.length && !loading) ? rows.map((row, i) => (
                         <tr
                             key={i}
                             style={row.style}
@@ -126,7 +127,7 @@ const Table = ({
                             })}
                         </tr>
                     )) : null}
-                    {emptyTableMessage && !loading &&
+                    {rows.length === 0 && emptyTableMessage && !loading &&
                         <tr>
                             <td colSpan={columns.length} className='text-start'>{emptyTableMessage}</td>
                         </tr>
