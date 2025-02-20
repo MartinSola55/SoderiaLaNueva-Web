@@ -3,6 +3,7 @@ import LastProductsButton from "../lastProducts/LastProductsButton"
 import { formatDebt, getDebtTextColor, handleOpenLastProducts } from "../../../app/Helpers"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone, faTruckFast } from "@fortawesome/free-solid-svg-icons"
+import { AddressFormatter } from "../../../components"
 
 export const CartDetailCard = ({ idx, cart, lastProductsRef }) => {
 	return (
@@ -26,7 +27,7 @@ export const CartDetailCard = ({ idx, cart, lastProductsRef }) => {
 							)}
 							<p className={`mb-1 ${getDebtTextColor(cart.debt)}`}>{formatDebt(cart.debt)}</p>
 							<p className='mb-1'>
-								<FontAwesomeIcon icon={faHouse} />{' '}{cart.address.nameNumber} -{' '}<FontAwesomeIcon icon={faPhone} />{' '}
+								<FontAwesomeIcon icon={faHouse} />{' '}{AddressFormatter(cart.address)} -{' '}<FontAwesomeIcon icon={faPhone} />{' '}
 								{cart.phone}
 							</p>
 						</Col>

@@ -6,7 +6,7 @@ import { faHouse, faPhone } from "@fortawesome/free-solid-svg-icons"
 import { getCartTitleClassname, getIsSkippedCart, getTableStyleColumns, getTotalCart, handleChangePaymentMethods, onProductsChange, onSubscriptionProductsChange, showTable } from "../Routes.helpers"
 import { CartActionButton } from "../dynamicRouteDetails/CartActionButton"
 import { CartStatuses } from "../../../constants/Cart"
-import { Button, CellNumericInput, Table } from "../../../components"
+import { AddressFormatter, Button, CellNumericInput, Table } from "../../../components"
 import { useNavigate } from "react-router"
 import App from "../../../app/App"
 import { paymentMethodsColumns } from "../Routes.data"
@@ -138,7 +138,7 @@ export const DynamicRouteCartDetailCard = ({
 						<FontAwesomeIcon
 							icon={faHouse}
 						/>
-						{` ${cart.client.address.nameNumber} - `}
+						{` ${AddressFormatter(cart.client.address)} - `} 
 						<FontAwesomeIcon
 							icon={faPhone}
 						/>

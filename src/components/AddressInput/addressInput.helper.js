@@ -1,14 +1,23 @@
 export const formatAddress = (suggestion) => {
-    if (suggestion.nameNumber)
-        return suggestion.nameNumber + ', ' + suggestion.city + ', ' + suggestion.state + ', ' + suggestion.country;
-    
-    if (!suggestion || !suggestion.address) return;
+    if (!suggestion || !suggestion.address)
+        return "";
 
-    const { road, state, house_number, city, country } = suggestion.address;
+    const addressParts = [
+        suggestion.address.road || "",
+        suggestion.address.house_number || suggestion.address.houseNumber || "",
+        suggestion.address.suburb || "",
+        suggestion.address.town || "",
+        suggestion.address.village || "",
+        suggestion.address.county || "",
+        suggestion.address.neighbourhood || "",
+        suggestion.address.city_district || suggestion.address.cityDistrict || "",
+        suggestion.address.city || "",
+        suggestion.address.state || "",
+        suggestion.address.country || "",
+        suggestion.address.postcode || "",
+    ].filter(Boolean);
 
-    return [road ?? "", house_number ?? "", city ?? "", state ?? "", country ?? ""]
-        .filter(Boolean)
-        .join(", ");
+    return addressParts.join(", ");
 };
 
 export const debounce = (callback, delay) => {

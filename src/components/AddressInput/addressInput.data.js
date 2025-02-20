@@ -11,7 +11,6 @@ export const fetchAddress = async (address) => {
         }
 
         const data = await resp.json();
-        console.log(data);
         return data;
     } catch(error) {
         Toast.error(error);

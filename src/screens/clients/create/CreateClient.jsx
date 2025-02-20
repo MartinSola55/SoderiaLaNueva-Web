@@ -32,7 +32,7 @@ const CreateClient = () => {
         if (submitting)
             return;
 
-        if (!form.name || !form.address.nameNumber || !form.address.city || !form.address.state || !form.address.country || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
+        if (!form.name || !form.address.lat || !form.address.lon || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
@@ -56,16 +56,6 @@ const CreateClient = () => {
                 [field]: value,
             };
         });
-    };
-
-    const handleAddressChange = (address) => {
-        setForm((prevForm) => ({
-            ...prevForm,
-            address: {
-                ...prevForm.address,
-                ...address,
-            }
-        }));
     };
 
     const handleProductsChange = (props, value) => {
@@ -99,7 +89,6 @@ const CreateClient = () => {
                             onSubmit={handleSubmit}
                             isWatching={false}
                             onInputChange={(v, n) => handleInputChange(v, n, setForm)}
-                            onAddressChange={handleAddressChange}
                         />
                     </Col>
                     <Col sm={6}>

@@ -78,10 +78,18 @@ export const updateClient = async (form, onSuccess, onError) => {
         id: form.id,
         name: form.name,
         address: {
-            nameNumber: form.address.nameNumber,
-            state: form.address.state,
-            city: form.address.city,
-            country: form.address.country,
+            houseNumber: form.address.houseNumber ?? '',
+            road: form.address.road ?? '',
+            neighbourhood: form.address.neighbourhood ?? '',
+            suburb: form.address.suburb ?? '',
+            cityDistrict: form.address.cityDistrict ?? '',
+            city: form.address.city ?? '',
+            town: form.address.town ?? '',
+            village: form.address.village ?? '',
+            county: form.address.county ?? '',
+            state: form.address.state ?? '',
+            country: form.address.country ?? '',
+            postcode: form.address.postcode ?? '',
             lat: form.address.lat,
             lon: form.address.lon,
         },
@@ -187,7 +195,7 @@ export const getClients = (sort, currentPage, filterClients = [], onSuccess) => 
         const formattedClients = clients.map((client) => {
             return {
                 ...client,
-                address: client.address.nameNumber,
+                address: client.address,
                 deliveryDay: client.dealerName
                     ? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`
                     : ' Sin repartidor asignado - Sin día asignado ',

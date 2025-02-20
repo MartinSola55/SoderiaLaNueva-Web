@@ -6,17 +6,17 @@ import Toast from "../Toast/Toast";
 import "./addressInput.scss";
 
 const AddressInput = ({
-    value,
+    address,
     disabled,
     onAddressSelect = () => { },
 }) => {
-    const [address, setAddress] = useState(value || "");
     const [suggestions, setSuggestions] = useState([]);
+    const [value, setValue] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setAddress(value || "");
-    }, [value]);
+        setValue(formatAddress({ address }));
+    }, [address]);
 
     const fetchSuggestions = async (value) => {
         if (value.length < 3) {
@@ -38,20 +38,26 @@ const AddressInput = ({
     const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
 
     const handleInputChange = (value) => {
-        setAddress(value);
+        setValue(value);
         debouncedFetchSuggestions(value);
     };
 
     const handleSelectAddress = (suggestion) => {
-        const formattedAddress = formatAddress(suggestion);
-        setAddress(formattedAddress);
         setSuggestions([]);
 
         const addressData = {
-            nameNumber: suggestion.address.road + ' ' + suggestion.address.house_number,
-            state: suggestion.address.state,
-            city: suggestion.address.city,
-            country: suggestion.address.country,
+            houseNumber: suggestion.address.house_number ?? '',
+            road: suggestion.address.road ?? '',
+            neighbourhood: suggestion.address.neighbourhood ?? '',
+            suburb: suggestion.address.suburb ?? '',
+            cityDistrict: suggestion.address.city_district ?? '',
+            city: suggestion.address.city ?? '',
+            town: suggestion.address.town ?? '',
+            village: suggestion.address.village ?? '',
+            county: suggestion.address.county ?? '',
+            state: suggestion.address.state ?? '',
+            country: suggestion.address.country ?? '',
+            postcode: suggestion.address.postcode ?? '',
             lat: suggestion.lat,
             lon: suggestion.lon
         };
@@ -63,7 +69,7 @@ const AddressInput = ({
         <div className="input-container">
             <div className="input-wrapper">
                 <Input
-                    value={address}
+                    value={value}
                     disabled={disabled}
                     maxLength={100}
                     placeholder="Ingrese su dirección"

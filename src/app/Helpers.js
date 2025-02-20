@@ -26,14 +26,7 @@ export const formatClients = (clients) => {
     return clients.map((c) => ({
         id: c.clientId,
         name: c.name,
-        address: {
-            nameNumber: c.address,
-            state: c.state,
-            city: c.city,
-            country: c.country,
-            lat: c.lat,
-            lon: c.lon,
-        },
+        address: c.address,
     }));
 };
 

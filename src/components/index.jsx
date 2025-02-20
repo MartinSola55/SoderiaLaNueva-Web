@@ -41,6 +41,7 @@ import CellCheck from './shared/CellInputs/CellCheck';
 import CellButton from './shared/CellInputs/CellButton';
 
 import { DebtFormatter } from './Formatters/DebtFormatter';
+import { AddressFormatter } from './Formatters/AddressFormatter';
 
 export {
     BreadCrumb,
@@ -88,4 +89,5 @@ export {
 
     // Formatters
     DebtFormatter,
+    AddressFormatter,
 };

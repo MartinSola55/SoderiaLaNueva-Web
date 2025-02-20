@@ -76,17 +76,6 @@ const ClientDetails = () => {
 		);
 	};
 
-	const handleAddressChange = (address) => {
-		setForm((prevForm) => {
-			return ({
-				...prevForm,
-				address: {
-					...address
-				}
-			})
-		});
-	};
-
 	const handleClientSubscriptionProductsSubmit = async () => {
 		if (submitting)
 			return;
@@ -111,7 +100,6 @@ const ClientDetails = () => {
 							submitting={submitting}
 							onSubmit={handleClientInfoSubmit}
 							onInputChange={(v, n) => handleInputChange(v, n, setForm)}
-							onAddressChange={handleAddressChange}
 						/>
 					</Col>
 					<Col sm={6}>

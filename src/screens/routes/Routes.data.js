@@ -1,3 +1,4 @@
+import { AddressFormatter } from "../../components";
 import { CartServiceType } from "../../constants/Cart";
 
 export const listColumns = [
@@ -49,6 +50,7 @@ export const editNotSelectedColumns = [
 		name: 'address',
 		text: 'Dirección',
 		textCenter: true,
+		formatter: AddressFormatter,
 	},
 ];
 

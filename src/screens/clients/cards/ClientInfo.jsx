@@ -3,7 +3,6 @@ import { AddressInput, Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdo
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { handleOnSubmit } from "../Clients.helpers";
-import { formatAddress } from "../../../components/AddressInput/addressInput.helper";
 
 export const ClientInfo = ({
     form,
@@ -12,7 +11,6 @@ export const ClientInfo = ({
     isWatching,
     onSubmit,
     onInputChange,
-    onAddressChange = () => { },
 }) => {
     const navigate = useNavigate();
     const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
@@ -34,9 +32,9 @@ export const ClientInfo = ({
                         <Col xs={12} className='pe-3 mb-3'>
                             <Label required={!interalIsWatching}>Dirección</Label>
                             <AddressInput
-                                value={formatAddress(form.address)}
+                                address={form.address}
                                 disabled={interalIsWatching}
-                                onAddressSelect={onAddressChange}
+                                onAddressSelect={(value) => onInputChange(value, 'address')}
                             />
                         </Col>
                         <Col xs={12} className='pe-3 mb-3'>
