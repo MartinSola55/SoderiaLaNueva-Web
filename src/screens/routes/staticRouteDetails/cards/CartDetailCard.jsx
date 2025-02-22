@@ -1,10 +1,13 @@
 import { Col, Row } from "react-bootstrap"
-import LastProductsButton from "../lastProducts/LastProductsButton"
-import { formatDebt, getDebtTextColor, handleOpenLastProducts } from "../../../app/Helpers"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone, faTruckFast } from "@fortawesome/free-solid-svg-icons"
+import LastProductsButton from "../../lastProducts/LastProductsButton";
+import { formatDebt, getDebtTextColor } from "../../../../app/Helpers";
 
-export const CartDetailCard = ({ idx, cart, lastProductsRef }) => {
+export const CartDetailCard = ({
+	idx,
+	cart,
+}) => {
 	return (
 		<Col xs={12} key={idx} className='row mx-0'>
 			<Col xs={10} md={5} className={`order-2 ${idx % 2 ? 'order-2' : 'order-md-1'}`}>
@@ -15,7 +18,7 @@ export const CartDetailCard = ({ idx, cart, lastProductsRef }) => {
 						</Col>
 						<Col xs={4} md={2} className='d-flex justify-content-center align-items-center p-0'>
 							<LastProductsButton
-								onClick={() => handleOpenLastProducts(lastProductsRef, cart.lastProducts)}
+							// onClick={() => handleOpenLastProducts(lastProductsRef, cart.lastProducts)}
 							/>
 						</Col>
 						<Col xs={12} className='mt-1 p-0'>
@@ -43,4 +46,4 @@ export const CartDetailCard = ({ idx, cart, lastProductsRef }) => {
 			</Col>
 		</Col>
 	)
-}
+};

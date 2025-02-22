@@ -127,7 +127,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                 <>
                                     <Row className='align-items-center'>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
-                                            <Label required>Nombre completo</Label>
+                                            <Label required={!isWatching || !viewProfileDetails}>Nombre completo</Label>
                                             <Input
                                                 disabled={isWatching || viewProfileDetails}
                                                 placeholder='Nombre completo'
@@ -138,7 +138,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
-                                            <Label required>Número de teléfono</Label>
+                                            <Label required={!isWatching}>Número de teléfono</Label>
                                             <Input
                                                 disabled={isWatching}
                                                 numeric
@@ -151,7 +151,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                             />
                                         </Col>
                                         <Col xs={12} md={4} className='pe-3 mb-3'>
-                                            <Label required>Rol</Label>
+                                            <Label required={!isWatching || !viewProfileDetails}>Rol</Label>
                                             <RolesDropdown
                                                 disabled={isWatching || viewProfileDetails}
                                                 placeholder='Seleccione un rol'
@@ -163,7 +163,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                     </Row>
                                     <Row>
                                         <Col xs={12} md={6} className='pe-3 mb-3'>
-                                            <Label required>Email</Label>
+                                            <Label required={!isWatching || !viewProfileDetails}>Email</Label>
                                             <Input
                                                 disabled={isWatching || viewProfileDetails}
                                                 type='email'
@@ -176,7 +176,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
                                         </Col>
                                         {!viewProfileDetails && !id && (
                                             <Col xs={12} md={6} className='pe-3 mb-3'>
-                                                <Label required>Contraseña</Label>
+                                                <Label required={!isWatching}>Contraseña</Label>
                                                 <Input
                                                     disabled={isWatching}
                                                     placeholder='Contraseña'

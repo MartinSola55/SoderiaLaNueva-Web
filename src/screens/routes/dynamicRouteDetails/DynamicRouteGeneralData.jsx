@@ -2,11 +2,11 @@ import { Col, Row } from "react-bootstrap"
 import SimpleCard from "../../../components/SimpleCard/SimpleCard"
 import { Card, Table, Tooltip } from "../../../components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import RouteInfoCard from "../cards/RouteInfoCard"
 import { formatCurrency } from "../../../app/Helpers"
 import { faCheck, faClock, faDollarSign, faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons"
 import { getMoneyCollected, getSoldProductsRows, getTotalDebt } from "../Routes.helpers"
 import { soldProductsColumns } from "../Routes.data"
+import { RouteInfoCard } from "./cards"
 
 export const DynamicRouteGeneralData = ({ form }) => {
 
@@ -19,7 +19,7 @@ export const DynamicRouteGeneralData = ({ form }) => {
 				<li>Efectivo: ${formatCurrency(getMoneyCollected(form) - form.transfersAmount)}</li>
 				${form.transfersAmount > 0 ? '<li>Transferencia (administración): ' + formatCurrency(form.transfersAmount) + '</li>' : ''}
 			</ul>`
-		)
+		);
 	};
 
 	return (
@@ -28,8 +28,8 @@ export const DynamicRouteGeneralData = ({ form }) => {
 				<SimpleCard
 					body={
 						<>
-							<span className='mb-1 d-block fs-4'>{`Total de repartos: ${form.carts.length}`}</span>
-							<span className='mb-1 d-block fs-4'>{`Deuda total: ${totalDebt > 0 ? formatCurrency(totalDebt) : `${formatCurrency(Math.abs(totalDebt))} (a favor de los clientes)`}`}</span>
+							<h4 className='mb-1 d-block '>Total de repartos: {form.carts.length}</h4>
+							<h4 className='mb-1 d-block '>Deuda total: {formatCurrency(Math.abs(totalDebt))} {totalDebt < 0 ? <small>(a favor de los clientes)</small> : ''}</h4>
 						</>
 					}
 				/>
@@ -37,7 +37,6 @@ export const DynamicRouteGeneralData = ({ form }) => {
 			<Col xs={12} xl={6} className='mt-5'>
 				<Card
 					title='Productos vendidos'
-					header={<p className='mb-0'>06/01/2025</p>}
 					body={
 						<Table
 							columns={soldProductsColumns}

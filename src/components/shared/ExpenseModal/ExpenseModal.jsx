@@ -94,7 +94,7 @@ const ExpenseModal = forwardRef((_, ref) => {
             <Modal.Body>
                 <Row>
                     <Col xs={6} className='mb-3'>
-                        <Label required>Repartidor</Label>
+                        <Label required={!isWatching}>Repartidor</Label>
                         <DealerDropdown
                             disabled={isWatching}
                             value={expense.dealerId}
@@ -103,7 +103,7 @@ const ExpenseModal = forwardRef((_, ref) => {
                         />
                     </Col>
                     <Col xs={6}>
-                        <Label required>Monto</Label>
+                        <Label required={!isWatching}>Monto</Label>
                         <Input
                             disabled={isWatching}
                             isFloat
@@ -116,7 +116,7 @@ const ExpenseModal = forwardRef((_, ref) => {
                         />
                     </Col>
                     <Col xs={12} className='mb-3'>
-                        <Label required>Descripción</Label>
+                        <Label required={!isWatching}>Descripción</Label>
                         <Input
                             disabled={isWatching}
                             value={expense.description}

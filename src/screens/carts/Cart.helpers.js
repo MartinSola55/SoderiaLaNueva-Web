@@ -1,14 +1,3 @@
-export const getPaymentMethodRows = (paymentMethods = [], form) => {
-	return paymentMethods.map((pm) => {
-		const formPm = form.paymentMethods.find((x) => x.paymentMethodId === pm.id);
-		return {
-			id: pm.id,
-			name: pm.label,
-			amount: formPm ? formPm.amount : ''
-		};
-	});
-};
-
 export const onPaymentMethodsChange = (props, v, form, handleInputChange) => {
 	const formPayemntMethod = form.paymentMethods.find(fpm => fpm.paymentMethodId === props.row.id);
 	const newPaymentMethods = formPayemntMethod ?
@@ -40,26 +29,26 @@ export const onProductsChange = (props, v, form, handleInputChange, name) => {
 	handleInputChange(newProducts, 'products');
 };
 
-export const getSubscriptionProductsRows = (form) => {
-	return form.subscriptionProducts?.map((sp) => {
-		const existingSubscriptionProduct = form.products.find(x => x.productTypeId === sp.typeId);
-		return {
-			productTypeId: sp.typeId,
-			name: `${sp.name} - Disponible: ${sp.available} `,
-			subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
-		};
-	})
-};
+export const formatAddress = (suggestion) => {
+	if (!suggestion || !suggestion.address)
+		return "";
 
-export const getProductsRows = (form) => {
-	return form.clientProducts?.map((cp) => {
-		const existingCLientProduct = form.products.find(x => x.productTypeId === cp.productTypeId);
-		return {
-			productTypeId: cp.productTypeId,
-			name: cp.name,
-			price: cp.price,
-			soldQuantity: existingCLientProduct?.soldQuantity || "",
-			returnedQuantity: existingCLientProduct?.returnedQuantity || 0,
-		};
-	});
+	let addressParts = [];
+
+	if (suggestion.address.nameNumber)
+		addressParts.push(suggestion.address.nameNumber);
+	else if (suggestion.address.road && suggestion.address.house_number)
+		addressParts.push(suggestion.address.road + ' ' + suggestion.address.house_number);
+
+	addressParts = [
+		...addressParts,
+		suggestion.address.neighbourhood || "",
+		suggestion.address.city_district || suggestion.address.cityDistrict || "",
+		suggestion.address.city || "",
+		suggestion.address.state || "",
+		suggestion.address.country || "",
+		suggestion.address.postcode || "",
+	].filter(Boolean);
+
+	return addressParts.join(", ");
 };

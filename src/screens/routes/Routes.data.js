@@ -59,12 +59,12 @@ export const soldProductsColumns = [
 		textCenter: true,
 	},
 	{
-		name: 'soldQuantity',
+		name: 'sold',
 		text: 'Vendidos',
 		textCenter: true,
 	},
 	{
-		name: 'returnedQuantity',
+		name: 'returned',
 		text: 'Devueltos',
 		textCenter: true,
 	},
@@ -75,12 +75,4 @@ export const soldProductsColumns = [
 	},
 ];
 
-export const paymentMethodsColumns = [
-	{
-		name: 'label',
-		text: 'Método',
-		textCenter: true,
-	}
-];
-
-export const cartServiceTypes = [{value: CartServiceType.Cart, label: CartServiceType.Cart}, {value: CartServiceType.Subscription, label: CartServiceType.Subscription}]
+export const cartServiceTypes = [{ value: CartServiceType.Cart, label: CartServiceType.Cart }, { value: CartServiceType.Subscription, label: CartServiceType.Subscription }]
