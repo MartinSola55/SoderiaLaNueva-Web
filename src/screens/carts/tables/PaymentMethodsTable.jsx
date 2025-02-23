@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Card, CellNumericInput, Spinner, Table } from "../../../components";
-import { formatPaymentMethods } from "../../../app/Helpers";
-import API from "../../../app/API";
+import { formatPaymentMethods } from "@app/Helpers";
+import API from "@app/API";
+import { Card, CellNumericInput, Spinner, Table } from "@components";
 
 export const PaymentMethodsTable = ({
 	form,

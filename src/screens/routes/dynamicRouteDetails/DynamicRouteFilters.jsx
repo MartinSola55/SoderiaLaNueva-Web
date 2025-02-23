@@ -1,6 +1,6 @@
 import { Col } from "react-bootstrap"
-import { Dropdown, Input, ProductTypesDropdown } from "../../../components"
-import App from "../../../app/App";
+import { Dropdown, Input, ProductTypesDropdown } from "@components"
+import App from "@app/App";
 
 export const DynamicRouteFilters = ({ filters, cartStatuses, cartTransfersTypes, cartPaymentStatuses, cartServiceTypes, setFilters }) => {
 	const handleFilterRows = (value, name) => {

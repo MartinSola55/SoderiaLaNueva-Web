@@ -1,9 +1,9 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, CellNumericInput, Loader, Table } from '../../../components';
+import { Button, CellNumericInput, Loader, Table } from '@components';
+import { formatCartProducts, formatCurrency, formatPaymentMethods } from '@app/Helpers';
+import API from '@app/API';
 import { handleChangePaymentMethods } from '../Routes.helpers';
-import { formatCartProducts, formatCurrency, formatPaymentMethods } from '../../../app/Helpers';
-import API from '../../../app/API';
 
 const AddClientModal = forwardRef(({ disabled }, ref) => {
 	const paymentMethodsTableColumns = [

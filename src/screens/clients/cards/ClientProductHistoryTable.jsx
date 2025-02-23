@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import { Card, Spinner, Table } from "../../../components";
+import { Card, Spinner, Table } from "@components";
 
 export const ClientProductHistoryTable = ({
 	products = [],

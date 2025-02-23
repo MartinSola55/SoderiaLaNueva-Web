@@ -1,13 +1,12 @@
-import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, DeliveryDayDropdown, Label, Table, Toast } from '../../components';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { getDayIndex } from '../../app/Helpers';
-import App from '../../app/App';
+import { Col, Row } from 'react-bootstrap';
+import { ActionButtons, ActionConfirmationModal, BreadCrumb, Button, Card, DeliveryDayDropdown, Label, Table, Toast } from '@components';
+import { getDayIndex } from '@app/Helpers';
+import { Messages } from '@constants/Messages';
+import App from '@app/App';
 import { listColumns } from './Routes.data';
 import { getAllRoutes } from './Routes.helpers';
-import { Messages } from '../../constants/Messages';
-import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
 
 const breadcrumbItems = [
 	{

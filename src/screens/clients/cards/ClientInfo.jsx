@@ -1,7 +1,7 @@
-import { Col, Row } from "react-bootstrap";
-import { Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdown, Input, InvoiceTypesDropdown, Label, Loader, Spinner, TaxConditionsDropdown } from "../../../components";
-import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { Col, Row } from "react-bootstrap";
+import { Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdown, Input, InvoiceTypesDropdown, Label, Loader, Spinner, TaxConditionsDropdown } from "@components";
 import { handleOnSubmit } from "../Clients.helpers";
 
 export const ClientInfo = ({

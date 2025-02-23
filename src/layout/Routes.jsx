@@ -1,8 +1,7 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { lazy, Suspense } from 'react';
-import App from '../app/App.js';
-import { Spinner } from '../components/index.jsx';
-import { CreateTransfer } from '../screens/transfers/CreateTransfer.jsx';
+import App from '@app/App.js';
+import { Spinner } from '@components';
 
 // Lazy loading de componentes
 const ExpensesList = lazy(() => import('../screens/expenses/ExpenseList.jsx'));
@@ -29,6 +28,7 @@ const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx')
 const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
 const DealerRouteList = lazy(() => import('../screens/routes/DealerRouteList.jsx'));
 const AddClientList = lazy(() => import('../screens/routes/dynamicRouteDetails/AddClientList.jsx'));
+const CreateTransfer = lazy(() => import('../screens/transfers/CreateTransfer.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 

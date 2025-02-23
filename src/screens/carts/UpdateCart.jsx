@@ -1,18 +1,14 @@
-import { Button, Col, Row } from 'react-bootstrap';
-import { BreadCrumb } from '../../components';
 import { useCallback, useEffect, useState } from 'react';
-import Toast from '../../components/Toast/Toast';
-import API from '../../app/API';
-import { InitialFormStates } from '../../app/InitialFormStates';
+import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router';
-import App from '../../app/App';
 import { Loader } from 'rsuite';
+import { InitialFormStates } from '@app/InitialFormStates.js';
+import API from '@app/API.js';
+import App from '@app/App.js';
+import { BreadCrumb, Button, Toast } from '@components';
+import { PaymentMethodsTable, ProductsTable, ReturnedProductsTable, SubscriptionProductsTable } from './tables';
 import { getBreadcrumbItems } from './Cart.data.js';
 import { updateCart } from './Cart.server.js';
-import { SubscriptionProductsTable } from './tables/SubscriptionProductsTable.jsx';
-import { ProductsTable } from './tables/ProductsTable.jsx';
-import { ReturnedProductsTable } from './tables/ReturnedProductsTable.jsx';
-import { PaymentMethodsTable } from './tables/PaymentMethodsTable.jsx';
 
 const initialForm = InitialFormStates.Cart;
 

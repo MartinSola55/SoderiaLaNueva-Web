@@ -1,5 +1,5 @@
-import { formatCurrency } from "../../../app/Helpers";
-import { Card, CellNumericInput, Spinner, Table } from "../../../components";
+import { Card, CellNumericInput, Spinner, Table } from "@components";
+import { formatCurrency } from "@app/Helpers";
 
 export const ProductsTable = ({
 	form,

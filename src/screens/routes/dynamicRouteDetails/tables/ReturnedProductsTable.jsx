@@ -1,4 +1,4 @@
-import { Table } from "../../../../components";
+import { Table } from "@components";
 
 export const ReturnedProductsTable = ({
 	cart = {},

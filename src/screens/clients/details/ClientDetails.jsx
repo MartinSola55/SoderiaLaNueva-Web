@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Toast } from '../../../components';
 import { Card as BSCard } from "react-bootstrap";
-import { InitialFormStates } from '../../../app/InitialFormStates';
+import App from '@app/App';
+import { InitialFormStates } from '@app/InitialFormStates';
+import { BreadCrumb, Toast } from '@components';
+import { Messages } from '@constants/Messages';
 import { buildProductsSalesTable, buildProductsTable, buildSubscriptionsProductsTable, getBreadcrumbItems, getClient, getProducts, getSubscriptions, handleInputChange, handleProductsChange, handleSubscriptionsChange, updateClient, updateClientProducts, updateClientSubscriptions } from '../Clients.helpers';
 import { ClientInfo, ClientProductHistoryTable, ClientProductSalesTable, ClientProductsTable, ClientSubscriptionProductsTable } from '../cards';
-import App from '../../../app/App';
-import { Messages } from '../../../constants/Messages';
 
 const ClientDetails = () => {
 	const navigate = useNavigate();

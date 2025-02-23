@@ -1,6 +1,6 @@
-import { formatCurrency } from "../../../../app/Helpers";
-import { CellNumericInput, Table } from "../../../../components";
-import { CartStatuses } from "../../../../constants/Cart";
+import { CellNumericInput, Table } from "@components";
+import { formatCurrency } from "@app/Helpers";
+import { CartStatuses } from "@constants/Cart";
 import { mergeProducts } from "../DynamicRouteDetails.helpers";
 
 export const SoldProductsTable = ({

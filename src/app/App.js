@@ -1,35 +1,35 @@
+import { Roles } from '@constants/Roles';
 import { LocalStorage } from './LocalStorage';
-import { Roles } from '../constants/Roles';
 
 const isLoggedIn = () => {
-    if (!LocalStorage.getUserId()) return false;
+	if (!LocalStorage.getUserId()) return false;
 
-    const sessionExpiration = new Date(LocalStorage.getSessionExpiration());
+	const sessionExpiration = new Date(LocalStorage.getSessionExpiration());
 
-    if (!sessionExpiration) return false;
+	if (!sessionExpiration) return false;
 
-    if (new Date() > sessionExpiration) {
-        LocalStorage.clearSessionData();
-        return false;
-    }
+	if (new Date() > sessionExpiration) {
+		LocalStorage.clearSessionData();
+		return false;
+	}
 
-    return true;
+	return true;
 };
 
 const isAdmin = () => {
-    const role = LocalStorage.getUserRole();
-    return role && role === Roles.Admin;
+	const role = LocalStorage.getUserRole();
+	return role && role === Roles.Admin;
 };
 
 const isDealer = () => {
-    const role = LocalStorage.getUserRole();
-    return role && role === Roles.Dealer;
+	const role = LocalStorage.getUserRole();
+	return role && role === Roles.Dealer;
 };
 
 const App = {
-    isLoggedIn,
-    isAdmin,
-    isDealer,
+	isLoggedIn,
+	isAdmin,
+	isDealer,
 };
 
 export default App;

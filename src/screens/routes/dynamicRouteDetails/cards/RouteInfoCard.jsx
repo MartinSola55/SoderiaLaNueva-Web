@@ -1,8 +1,6 @@
 import { Col, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import '../../route.scss';
-
 export const RouteInfoCard = ({ icon, description, bgColor, title = '' }) => {
 	return (
 		<Row className='m-0'>

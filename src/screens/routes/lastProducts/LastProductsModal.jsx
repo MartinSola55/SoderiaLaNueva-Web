@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, Table } from '../../../components';
+import { Button, Table } from '@components';
 
 const LastProductsModal = forwardRef((_, ref) => {
 	const columns = [

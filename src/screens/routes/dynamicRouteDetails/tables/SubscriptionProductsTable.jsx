@@ -1,5 +1,5 @@
-import { CellNumericInput, Table } from "../../../../components";
-import { CartStatuses } from "../../../../constants/Cart";
+import { CellNumericInput, Table } from "@components";
+import { CartStatuses } from "@constants/Cart";
 
 export const SubscriptionProductsTable = ({
 	cart = {},

@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, DeliveryDayDropdown, Label, Loader } from '../../../components';
+import { Button, DeliveryDayDropdown, Label, Loader } from '@components';
 
 const RouteModal = forwardRef(({ disabled, form }, ref) => {
 	const [isVisible, setIsVisible] = useState(false);

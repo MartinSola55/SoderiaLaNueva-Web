@@ -1,4 +1,4 @@
-import { CellNumericInput, Table } from "../../../../components";
+import { CellNumericInput, Table } from "@components";
 import { mergePaymentMethods } from "../DynamicRouteDetails.helpers";
 
 export const PaymentMethodsTable = ({

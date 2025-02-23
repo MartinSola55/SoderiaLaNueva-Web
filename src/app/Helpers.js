@@ -1,4 +1,4 @@
-import { Roles } from '../constants/Roles';
+import { Roles } from "@constants/Roles";
 
 export const formatOptions = (options) => {
 	return options.map((option) => ({

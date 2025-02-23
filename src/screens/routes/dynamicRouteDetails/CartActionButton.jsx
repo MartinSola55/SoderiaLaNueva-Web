@@ -1,6 +1,6 @@
-import { Button } from "../../../components"
 import { Dropdown } from 'react-bootstrap';
-import { CartStatuses } from "../../../constants/Cart";
+import { Button } from "@components"
+import { CartStatuses } from "@constants/Cart";
 
 export const CartActionButton = ({
 	onOpenUpdateCartStatus = () => { },

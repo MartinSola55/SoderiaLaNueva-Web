@@ -1,19 +1,19 @@
 import { Col, Row } from "react-bootstrap"
 import { useNavigate } from "react-router"
-import { formatCurrency, formatDebt, getDebtTextColor } from "../../../../app/Helpers"
-import { Button } from "../../../../components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone } from "@fortawesome/free-solid-svg-icons"
+import { Button } from "@components"
+import { formatCurrency, formatDebt, getDebtTextColor } from "@app/Helpers"
+import { CartStatuses } from "@constants/Cart"
+import App from "@app/App"
 import { getCartTitleClassname } from "../../Routes.helpers"
 import { CartActionButton } from "../CartActionButton"
-import { CartStatuses } from "../../../../constants/Cart"
 import { SubscriptionProductsTable } from "../tables/SubscriptionProductsTable"
 import { SoldProductsTable } from "../tables/SoldProductsTable"
 import { getTotalSold } from "../DynamicRouteDetails.helpers"
 import { PaymentMethodsTable } from "../tables/PaymentMethodsTable"
 import { ReturnedProductsTable } from "../tables/ReturnedProductsTable"
 import LastProductsButton from "../../lastProducts/LastProductsButton"
-import App from "../../../../app/App"
 
 export const DynamicRouteCartDetailCard = ({
 	cart,

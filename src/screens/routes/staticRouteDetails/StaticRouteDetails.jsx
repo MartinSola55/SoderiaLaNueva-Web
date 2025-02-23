@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router';
-import { BreadCrumb, Button, Card, Spinner } from '../../../components';
-import API from '../../../app/API';
-import App from '../../../app/App';
-import { InitialFormStates } from '../../../app/InitialFormStates';
-import { formatDeliveryDay } from '../../../app/Helpers';
+import { Col, Row } from 'react-bootstrap';
+import { ActionConfirmationModal, BreadCrumb, Button, Card, Spinner } from '@components';
+import API from '@app/API';
+import App from '@app/App';
+import { InitialFormStates } from '@app/InitialFormStates';
+import { formatDeliveryDay } from '@app/Helpers';
 import LastProductsModal from '../lastProducts/LastProductsModal';
-import ActionConfirmationModal from '../../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
 import { CartDetailCard } from './cards/CartDetailCard';
+
 import '../route.scss';
 
 const breadcrumbItems = [

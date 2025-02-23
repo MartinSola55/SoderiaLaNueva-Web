@@ -1,4 +1,4 @@
-import { Card, CellNumericInput, Spinner, Table } from "../../../components";
+import { Card, CellNumericInput, Spinner, Table } from "@components";
 
 export const SubscriptionProductsTable = ({
 	form,
