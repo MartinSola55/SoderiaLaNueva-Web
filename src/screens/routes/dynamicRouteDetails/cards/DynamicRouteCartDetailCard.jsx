@@ -1,6 +1,6 @@
 import { Col, Row } from "react-bootstrap"
 import { useNavigate } from "react-router"
-import { formatDebt, getDebtTextColor } from "../../../../app/Helpers"
+import { formatCurrency, formatDebt, getDebtTextColor } from "../../../../app/Helpers"
 import { Button } from "../../../../components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone } from "@fortawesome/free-solid-svg-icons"
@@ -124,7 +124,7 @@ export const DynamicRouteCartDetailCard = ({
 
 		return (
 			<Col xs={4}>
-				<h4>Total: {getTotalSold(cart)}</h4>
+				<h4>Total: {formatCurrency(getTotalSold(cart))}</h4>
 				<PaymentMethodsTable
 					cart={cart}
 					paymentMethods={paymentMethods}
@@ -170,18 +170,15 @@ export const DynamicRouteCartDetailCard = ({
 				<Col xs={12} md={10}>
 					<h4 className={getCartTitleClassname(cart.status)}>{`${cart.client.name} #${cart.client.id} - ${cart.status}`}</h4>
 					<p className='mb-1'>
-						{`Bajada ${cart.id} - Creada: ${cart.createdAt} ${cart.updatedAt ? ' - Últ. modif: ' + cart.updatedAt : ''} - `}
+						{`Bajada #${cart.id} - Creada: ${cart.createdAt} ${cart.updatedAt ? ' - Últ. modif: ' + cart.updatedAt : ''} - `}
 						<span className={getDebtTextColor(cart.client.debt)}>{formatDebt(cart.client.debt)}</span>
 					</p>
 					<p className='mb-1'>
-						<FontAwesomeIcon
-							icon={faHouse}
-						/>
+						<FontAwesomeIcon icon={faHouse} />
 						{` ${cart.client.address} - `}
-						<FontAwesomeIcon
-							icon={faPhone}
-						/>
+						<FontAwesomeIcon icon={faPhone} />
 						{` ${cart.client.phone}`}
+						{cart.client.observations && ` - ${cart.client.observations}`}
 					</p>
 					{App.isAdmin() && (
 						<ul>

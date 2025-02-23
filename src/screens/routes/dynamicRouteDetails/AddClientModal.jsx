@@ -5,7 +5,6 @@ import { handleChangePaymentMethods } from '../Routes.helpers';
 import { formatCartProducts, formatCurrency, formatPaymentMethods } from '../../../app/Helpers';
 import API from '../../../app/API';
 
-// eslint-disable-next-line react/display-name
 const AddClientModal = forwardRef(({ disabled }, ref) => {
 	const paymentMethodsTableColumns = [
 		{

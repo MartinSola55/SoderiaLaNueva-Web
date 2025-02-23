@@ -10,7 +10,7 @@ export class InitialFormStates {
 	static Expense = {
 		dealerId: '',
 		description: '',
-		amount: 0
+		amount: ''
 	};
 
 	static Subscription = {
@@ -43,6 +43,7 @@ export class InitialFormStates {
 		id: null,
 		dealer: null,
 		deliveryDay: null,
+		transfersAmount: 0,
 		carts: [],
 		productTypes: [],
 	};

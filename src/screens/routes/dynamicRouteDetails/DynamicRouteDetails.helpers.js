@@ -1,11 +1,10 @@
 import API from "../../../app/API";
-import { formatCurrency } from "../../../app/Helpers";
 import { Toast } from "../../../components";
 import { CartStatuses } from "../../../constants/Cart";
 
 export const getTotalSold = (cart) => {
 	const total = cart.products.reduce((acc, x) => acc + x.soldQuantity * x.price, 0);
-	return formatCurrency(total);
+	return total;
 };
 
 export const mergeProducts = (clientProducts, products) => {

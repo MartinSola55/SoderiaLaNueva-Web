@@ -2,7 +2,6 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { Button, Table } from '../../../components';
 
-// eslint-disable-next-line react/display-name
 const LastProductsModal = forwardRef((_, ref) => {
 	const columns = [
 		{

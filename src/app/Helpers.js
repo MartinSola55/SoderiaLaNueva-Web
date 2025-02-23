@@ -14,6 +14,13 @@ export const formatComboItems = (items) => {
 	}));
 };
 
+export const formatRoleItems = (items) => {
+	return items.map((item) => ({
+		value: item.stringId ? item.stringId : item.id,
+		label: formatRole(item.description),
+	}));
+};
+
 export const formatSubscriptions = (subscripstions, disabled = false) => {
 	return subscripstions?.map((s) => ({
 		id: s.id,

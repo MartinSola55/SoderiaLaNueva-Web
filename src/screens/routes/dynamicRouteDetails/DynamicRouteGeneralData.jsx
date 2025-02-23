@@ -4,7 +4,7 @@ import { Card, Table, Tooltip } from "../../../components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { formatCurrency } from "../../../app/Helpers"
 import { faCheck, faClock, faDollarSign, faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons"
-import { getMoneyCollected, getSoldProductsRows, getTotalDebt } from "../Routes.helpers"
+import { getMoneyCollected, geTotalCollectedByMethod, getSoldProductsRows, getTotalDebt } from "../Routes.helpers"
 import { soldProductsColumns } from "../Routes.data"
 import { RouteInfoCard } from "./cards"
 
@@ -13,14 +13,14 @@ export const DynamicRouteGeneralData = ({ form }) => {
 	const totalDebt = getTotalDebt(form);
 	const countNotPendingCarts = form.carts.filter((cart) => cart.status.toLocaleLowerCase() !== 'pendiente'.toLocaleLowerCase())?.length;
 
-	const getMoneyCollectedTooltip = () => {
-		return (
-			`<ul class='text-left ps-3 mb-0'>
-				<li>Efectivo: ${formatCurrency(getMoneyCollected(form) - form.transfersAmount)}</li>
-				${form.transfersAmount > 0 ? '<li>Transferencia (administración): ' + formatCurrency(form.transfersAmount) + '</li>' : ''}
-			</ul>`
-		);
-	};
+	const getMoneyCollectedTooltip = () => (
+		<ul className='text-start ps-3 mb-0 money-collected-tooltip'>
+			{geTotalCollectedByMethod(form).map((method, i) => (
+				<li key={i}>{method.name}: {formatCurrency(method.amount)}</li>
+			))}
+			{form.transfersAmount > 0 ? <li>Transferencia (administración): {formatCurrency(form.transfersAmount)}</li> : ''}
+		</ul>
+	);
 
 	return (
 		<>
@@ -57,7 +57,7 @@ export const DynamicRouteGeneralData = ({ form }) => {
 									description={
 										<>
 											<span className='me-2'>Recaudado en el día</span>
-											<Tooltip text={getMoneyCollectedTooltip()}>
+											<Tooltip tooltipContent={getMoneyCollectedTooltip()}>
 												<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)' />
 											</Tooltip>
 										</>
@@ -73,7 +73,7 @@ export const DynamicRouteGeneralData = ({ form }) => {
 									icon={faShoppingBag}
 									bgColor='rgb(252, 75, 108)'
 									title={`${formatCurrency(form.spentAmount)}`}
-									description='Gasto en el día'
+									description='Gastos del día'
 								/>
 							}
 						/>

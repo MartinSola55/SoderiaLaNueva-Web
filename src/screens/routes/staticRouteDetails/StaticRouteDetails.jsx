@@ -49,9 +49,7 @@ const StaticRouteDetails = () => {
 	useEffect(() => {
 		API.get('route/getStaticRoute', { id })
 			.then((r) => {
-				setForm(() => ({
-					...r.data,
-				}));
+				setForm(r.data);
 				setLoading(false);
 			})
 			.catch(() => {
@@ -77,6 +75,10 @@ const StaticRouteDetails = () => {
 			null,
 			(r) => navigate(`/planillas/abierta/${r.data.id}`)
 		);
+	};
+
+	const handleOpenLastProducts = (products) => {
+		lastProductsRef.current.open(products);
 	};
 
 	return (
@@ -109,13 +111,13 @@ const StaticRouteDetails = () => {
 								{form.carts.length === 0 && (
 									<h6>No existen repartos para esta ruta</h6>
 								)}
-								{form.carts.map((cart, idx) => {
+								{form.carts.map((cart, i) => {
 									return (
 										<CartDetailCard
-											key={idx}
-											idx={idx}
+											key={i}
+											odd={i % 2 === 0}
 											cart={cart}
-											lastProductsRef={lastProductsRef} />
+											onOpenLastProducts={handleOpenLastProducts} />
 									);
 								})}
 							</Row>

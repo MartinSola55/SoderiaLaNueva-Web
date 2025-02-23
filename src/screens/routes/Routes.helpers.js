@@ -70,13 +70,28 @@ export const getTotalDebt = (form) => {
 
 export const getMoneyCollected = (form) => {
 	let total = 0;
-	form.carts.forEach((cart) => {
+	form.carts.filter(x => x.status === CartStatuses.Confirmed).forEach((cart) => {
 		cart.paymentMethods.forEach((pm) => {
 			total = total + pm.amount
 		})
 	});
 	return total + form.transfersAmount
-}
+};
+
+export const geTotalCollectedByMethod = (form) => {
+	const totalCollectedByMethod = [];
+	form.carts.filter(x => x.status === CartStatuses.Confirmed).forEach((cart) => {
+		cart.paymentMethods.forEach((x) => {
+			const index = totalCollectedByMethod.findIndex(y => y.name === x.name);
+			if (index === -1) {
+				totalCollectedByMethod.push(x);
+			} else {
+				totalCollectedByMethod[index].amount += x.amount;
+			}
+		});
+	});
+	return totalCollectedByMethod;
+};
 
 export const getSoldProductsRows = (form) => {
 	const productSummary = {};
@@ -89,12 +104,13 @@ export const getSoldProductsRows = (form) => {
 		};
 	});
 
-
-	form.carts.filter(x => x.status === CartStatuses.Confirmed).forEach(cart => {
-		cart.products?.length && cart.products.forEach(product => {
-			productSummary[product.productTypeId].sold += product.soldQuantity + product.subscriptionQuantity;
-			productSummary[product.productTypeId].returned += product.returnedQuantity;
-		});
+	form.carts.forEach(cart => {
+		if (cart.status === CartStatuses.Confirmed) {
+			cart.products?.length && cart.products.forEach(product => {
+				productSummary[product.productTypeId].sold += product.soldQuantity + product.subscriptionQuantity;
+				productSummary[product.productTypeId].returned += product.returnedQuantity;
+			});
+		}
 
 		cart.client.products?.length && cart.client.products.forEach(product => {
 			productSummary[product.productTypeId].stock += product.stock;
