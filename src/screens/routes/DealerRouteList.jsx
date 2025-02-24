@@ -1,21 +1,21 @@
-import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Table, Toast } from '../../components';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Col, Row } from 'react-bootstrap';
+import { ActionConfirmationModal, BreadCrumb, SimpleCard, Table, Toast } from '@components';
+import { Messages } from '@constants/Messages';
 import { getAllDealerRoutes } from './Routes.helpers';
-import { Messages } from '../../constants/Messages';
-import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import SimpleCard from '../../components/SimpleCard/SimpleCard';
+
 import './route.scss';
 
 const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Mis planillas',
-    },
+	{
+		active: true,
+		label: 'Mis planillas',
+	},
 ];
 
-const DealerRouteList = () => {	const columns = [
+const DealerRouteList = () => {
+	const columns = [
 		{
 			name: 'dealer',
 			text: 'Nombre',
@@ -25,9 +25,9 @@ const DealerRouteList = () => {	const columns = [
 			text: 'Envíos a realizar',
 		},
 	];
-	
-    const [rows, setRows] = useState([]);
-    const navigate = useNavigate();
+
+	const [rows, setRows] = useState([]);
+	const navigate = useNavigate();
 
 	// Refs
 	const actionConfirmationRef = useRef(null);
@@ -41,28 +41,28 @@ const DealerRouteList = () => {	const columns = [
 				Toast.warning(Messages.Error.noRows);
 			}
 		});
-    }, []);
+	}, []);
 
 	// Handlers
-    const handleRowClick = (id) => {
+	const handleRowClick = (id) => {
 		actionConfirmationRef.current?.open(
-            { routeId: id },
-            'Route/OpenNew',
-            '¿Seguro deseas comenzar el reparto?',
-            null,
-            (r) => navigate(`/planillas/abierta/${r.data.id}`),
-        );
-    };
+			{ routeId: id },
+			'route/openNew',
+			'¿Seguro deseas comenzar el reparto?',
+			null,
+			(r) => navigate(`/planillas/abierta/${r.data.id}`),
+		);
+	};
 
-    return (
-        <>
-            <ActionConfirmationModal ref={actionConfirmationRef} />
-            <BreadCrumb items={breadcrumbItems} title='Mis planillas' />
-            <div>
-                <Col xs={11} className='container'>
+	return (
+		<>
+			<ActionConfirmationModal ref={actionConfirmationRef} />
+			<BreadCrumb items={breadcrumbItems} title='Mis planillas' />
+			<div>
+				<Col xs={11} className='container'>
 					{rows.map((row, idx) => (
 						<SimpleCard
-							className='mb-4' 
+							className='mb-4'
 							key={idx}
 							body={
 								<Row className='m-0'>
@@ -71,9 +71,9 @@ const DealerRouteList = () => {	const columns = [
 									</Col>
 									<Col xs={12}>
 										<Table
-											className='my-routes-table' 
+											className='my-routes-table'
 											columns={columns}
-											rows={[{dealer: row.dealer, totalCarts:row.totalCarts}]}
+											rows={[{ dealer: row.dealer, totalCarts: row.totalCarts }]}
 											bordered={false}
 											striped={false}
 											hover={false}
@@ -82,13 +82,13 @@ const DealerRouteList = () => {	const columns = [
 										/>
 									</Col>
 								</Row>
-							} 
+							}
 						/>
 					))}
-                </Col>
-            </div>
-        </>
-    );
+				</Col>
+			</div>
+		</>
+	);
 };
 
 export default DealerRouteList;

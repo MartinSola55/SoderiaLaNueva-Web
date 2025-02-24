@@ -10,7 +10,7 @@ const PaymentMethodsDropdown = ({
     disabled = false,
     placeholder = 'Seleccione un método de pago',
     isMulti = false,
-    onChange = () => {},
+    onChange = () => { },
 }) => {
     const [items, setItems] = useState(null);
 
@@ -18,7 +18,7 @@ const PaymentMethodsDropdown = ({
     useEffect(() => {
         if (items) return;
 
-        API.get('Cart/GetPaymentStatusesCombo').then((r) => {
+        API.get('cart/getPaymentMethodsCombo').then((r) => {
             setItems(formatComboItems(r.data.items));
         });
     }, [items]);

@@ -7,23 +7,33 @@
 	border-radius: 50%;
 	height: 45px;
 	width: 45px;
-    box-shadow: none; 
-    transition: box-shadow 0.3s ease; 
+	box-shadow: none;
+	transition: box-shadow 0.3s ease;
+	flex-shrink: 0;
 }
 
 .btn-last-products:hover {
 	cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2) ; 
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.money-collected-tooltip {
+	white-space: nowrap;
+}
+
+.tooltip-inner {
+	max-width: fit-content;
+	padding: 10px 20px;
 }
 
 .timeline {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
 }
-  
+
 .timeline-line {
 	position: absolute;
 	width: 2px;
@@ -31,7 +41,7 @@
 	background-color: #ddd;
 	z-index: 1;
 }
-  
+
 .timeline-icon {
 	position: relative;
 	z-index: 2;
@@ -47,38 +57,38 @@
 }
 
 .my-routes-table {
-    thead {
-        border-width: 0;
+	thead {
+		border-width: 0;
 
-        th {
-            border: 0px;
-            color: #99abb4 !important;
-            padding: 12px;
-            font-weight: 500;
-            font-size: 16px;
-        }
-    }
+		th {
+			border: 0px;
+			color: #99abb4 !important;
+			padding: 12px;
+			font-weight: 500;
+			font-size: 16px;
+		}
+	}
 
-    tbody {
+	tbody {
 
-        tr {
-            cursor: pointer;
-            border-left: 4px solid #ffffff;
+		tr {
+			cursor: pointer;
+			border-left: 4px solid #ffffff;
 
-            &:hover {
-                border-left: 4px solid #1e88e5;
-            }
+			&:hover {
+				border-left: 4px solid #1e88e5;
+			}
 
-            td {
-                border-bottom-width: 0;
-                border-top: 1px solid #dee2e6;
-                padding: 12px;
-                height: 45px;
+			td {
+				border-bottom-width: 0;
+				border-top: 1px solid #dee2e6;
+				padding: 12px;
+				height: 45px;
 
-                h6 {
-                    font-size: 14px;
-                }
-            }
-        }
-    }
+				h6 {
+					font-size: 14px;
+				}
+			}
+		}
+	}
 }

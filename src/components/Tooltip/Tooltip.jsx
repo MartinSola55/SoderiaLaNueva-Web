@@ -4,26 +4,29 @@ import RawHtml from '../RawHtml/RawHtml';
 import './tooltip.scss';
 
 const Tooltip = ({
-    textStyle = {},
-    text = '',
-    placement = 'bottom',
-    children
+	textStyle = {},
+	text = '',
+	placement = 'bottom',
+	tooltipContent,
+	children
 }) => {
-    const tooltipContent = (
-        <BS.Tooltip>
-            <RawHtml style={{ ...textStyle, margin: '5px' }} html={text} />
-        </BS.Tooltip>
-    );
+	const tooltip = (
+		<BS.Tooltip>
+			{tooltipContent || (
+				<RawHtml style={{ ...textStyle, margin: '5px' }} html={text} />
+			)}
+		</BS.Tooltip>
+	);
 
-    return (
-        <BS.OverlayTrigger
-            trigger={['hover', 'focus', 'touch']}
-            placement={placement}
-            overlay={tooltipContent}
-        >
-            {children}
-        </BS.OverlayTrigger>
-    );
+	return (
+		<BS.OverlayTrigger
+			trigger={['hover', 'focus', 'touch']}
+			placement={placement}
+			overlay={tooltip}
+		>
+			{children}
+		</BS.OverlayTrigger>
+	);
 };
 
 export default Tooltip;

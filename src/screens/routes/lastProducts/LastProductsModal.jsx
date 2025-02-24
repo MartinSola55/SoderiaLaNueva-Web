@@ -1,89 +1,88 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, Table } from '../../../components';
+import { Button, Table } from '@components';
 
-// eslint-disable-next-line react/display-name
-const LastProductsModal = forwardRef((props, ref) => {
-    const columns = [
-        {
-            name: 'date',
-            text: 'Fecha',
-            textCenter: true,
-        },
-        {
-            name: 'name',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: 'soldQuantity',
-            text: 'Cantidad vendida',
-            textCenter: true,
-        },
-        {
-            name: 'returnedQuantity',
-            text: 'Cantidad devuelta',
-            textCenter: true,
-        },
-    ];
+const LastProductsModal = forwardRef((_, ref) => {
+	const columns = [
+		{
+			name: 'date',
+			text: 'Fecha',
+			textCenter: true,
+		},
+		{
+			name: 'name',
+			text: 'Producto',
+			textCenter: true,
+		},
+		{
+			name: 'soldQuantity',
+			text: 'Cantidad vendida',
+			textCenter: true,
+		},
+		{
+			name: 'returnedQuantity',
+			text: 'Cantidad devuelta',
+			textCenter: true,
+		},
+	];
 
-    const [isVisible, setIsVisible] = useState(false);
-    const [callbacks, setCallbacks] = useState(null);
-    const [rows, setRows] = useState([]);
+	const [isVisible, setIsVisible] = useState(false);
+	const [callbacks, setCallbacks] = useState(null);
+	const [rows, setRows] = useState([]);
 
-    useImperativeHandle(ref, () => ({
-        open,
-        close,
-    }));
+	useImperativeHandle(ref, () => ({
+		open,
+		close,
+	}));
 
-    const open = (onClose, rows) => {
-        setCallbacks({
-            onClose,
-        });
-        setIsVisible(true);
-        setRows(rows);
-    };
+	const open = (rows, onClose) => {
+		setRows(rows);
+		setCallbacks({ onClose });
+		setIsVisible(true);
+	};
 
-    const close = () => {
-        setIsVisible(false);
-        if (callbacks?.onClose) callbacks?.onClose();
-    };
+	const close = () => {
+		setIsVisible(false);
+		if (callbacks?.onClose)
+			callbacks?.onClose();
+	};
 
-    const handleClose = () => {
-        close();
-    };
+	const handleClose = () => {
+		close();
+	};
 
-    if (!isVisible) return null;
+	if (!isVisible)
+		return null;
 
-    return (
-        <Modal
-            dialogClassName='modal-dialog-centered'
-            size='lg'
-            show={isVisible}
-            onHide={handleClose}
-            backdrop='static'
-        >
-            <Modal.Header>
-                <Modal.Title>Últimos productos</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Row>
-                    <Col xs={12}>
-                        <Table
+	return (
+		<Modal
+			dialogClassName='modal-dialog-centered'
+			size='lg'
+			show={isVisible}
+			onHide={handleClose}
+			backdrop='static'
+		>
+			<Modal.Header>
+				<Modal.Title>Últimos productos bajados</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Row>
+					<Col xs={12}>
+						<Table
 							rows={rows}
 							columns={columns}
-							emptyTableMessage={rows.length === 0 && 'El cliente no cuenta con un historial de últimos productos'}
+							emptyTableMessage='El cliente no cuenta con un historial de últimos productos bajados.'
 						/>
-                    </Col>
-                </Row>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant='danger' onClick={handleClose}>
-                    Cerrar
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+					</Col>
+				</Row>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button link onClick={handleClose}>
+					Cerrar
+				</Button>
+			</Modal.Footer>
+		</Modal>
+	);
 });
 
 export default LastProductsModal;

@@ -1,17 +1,6 @@
-export const getPaymentMethodRows = (paymentMethods = [], form) => {
-	return paymentMethods.map((pm) => {
-		const formPm = form.paymentMethods.find((x) => x.paymentMethodId === pm.id);
-		return {
-			id: pm.id,
-			name: pm.label,
-			amount: formPm ? formPm.amount : ''
-		};
-	});
-};
-
 export const onPaymentMethodsChange = (props, v, form, handleInputChange) => {
 	const formPayemntMethod = form.paymentMethods.find(fpm => fpm.paymentMethodId === props.row.id);
-	const newPaymentMethods = formPayemntMethod ? 
+	const newPaymentMethods = formPayemntMethod ?
 		form.paymentMethods.map(x => {
 			if (x.paymentMethodId === props.row.id)
 				return {
@@ -19,9 +8,9 @@ export const onPaymentMethodsChange = (props, v, form, handleInputChange) => {
 					amount: v,
 				};
 			return x;
-		}) : 
+		}) :
 		[...form.paymentMethods, { paymentMethodId: props.row.id, amount: v }];
-		
+
 	handleInputChange(newPaymentMethods, 'paymentMethods');
 };
 
@@ -33,59 +22,33 @@ export const onProductsChange = (props, v, form, handleInputChange, name) => {
 		newProducts[productIndex] = {
 			...form.products[productIndex],
 			[name]: v,
-		  };
+		};
 	else
-		newProducts.push({productTypeId : props.row.productTypeId, [name] : v});
+		newProducts.push({ productTypeId: props.row.productTypeId, [name]: v });
 
 	handleInputChange(newProducts, 'products');
 };
 
-export const getSubscriptionProductsRows = (form) => {
-	return form.subscriptionProducts?.map((sp) => {
-		const existingSubscriptionProduct = form.products.find(x => x.productTypeId === sp.typeId);
-		return {
-			productTypeId: sp.typeId,
-			name: `${sp.name} - Disponible: ${sp.available} `,
-			subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
-		};
-	})
+export const formatAddress = (suggestion) => {
+	if (!suggestion || !suggestion.address)
+		return "";
+
+	let addressParts = [];
+
+	if (suggestion.address.nameNumber)
+		addressParts.push(suggestion.address.nameNumber);
+	else if (suggestion.address.road && suggestion.address.house_number)
+		addressParts.push(suggestion.address.road + ' ' + suggestion.address.house_number);
+
+	addressParts = [
+		...addressParts,
+		suggestion.address.neighbourhood || "",
+		suggestion.address.city_district || suggestion.address.cityDistrict || "",
+		suggestion.address.city || "",
+		suggestion.address.state || "",
+		suggestion.address.country || "",
+		suggestion.address.postcode || "",
+	].filter(Boolean);
+
+	return addressParts.join(", ");
 };
-
-export const getProductsRows = (form) => {
-	return form.clientProducts?.map((cp) => {
-		const existingCLientProduct = form.products.find(x => x.productTypeId === cp.productTypeId);
-		return {
-			productTypeId: cp.productTypeId,
-			name: cp.name,
-			soldQuantity: existingCLientProduct?.soldQuantity || "",
-			returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
-		};
-	});
-};
-
-// export const getRqProducts = (form) => {
-// 	const products = getProductsRows(form);
-// 	const newProducts = products.forEach(x => {
-// 		const existingProduct = products.find(x => x.productTypeId === sp.typeId);
-
-// 	})
-// 	return form.subscriptionProducts?.map((sp) => {
-// 		return {
-// 			productTypeId: sp.typeId,
-// 			name: `${sp.name} - Disponible: ${sp.available} `,
-// 			subscriptionQuantity: existingSubscriptionProduct?.subscriptionQuantity || ""
-// 		};
-// 	})
-// }
-
-
-// const products = form.clientProducts?.map((cp) => {
-// 	const existingCLientProduct = form.products.find(x => x.productTypeId === cp.productTypeId);
-// 	return {
-// 		productTypeId: cp.productTypeId,
-// 		name: cp.name,
-// 		soldQuantity: existingCLientProduct?.soldQuantity || "",
-// 		returnedQuantity : existingCLientProduct?.returnedQuantity || 0,
-// 	};
-// });
-

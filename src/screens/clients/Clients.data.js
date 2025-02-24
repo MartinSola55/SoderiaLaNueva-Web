@@ -1,3 +1,5 @@
+import { DebtFormatter } from "../../components";
+
 export const clientColumns = [
     {
         name: 'name',
@@ -18,6 +20,7 @@ export const clientColumns = [
         name: 'debt',
         text: 'Deuda',
         textCenter: true,
+        formatter: DebtFormatter,
     },
     {
         name: 'deliveryDay',

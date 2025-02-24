@@ -1,0 +1,9 @@
+{
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.tabSize": 4,
+	"[javascript]": {
+		"editor.defaultFormatter": null
+	},
+}

@@ -1,238 +1,203 @@
-import { Button, Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Card, Input, Table, TableSort, Toast } from '../../components';
+import { Col, Row } from 'react-bootstrap';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import API from '../../app/API';
-import { Messages } from '../../constants/Messages';
-import { buildGenericGetAllRq, formatCurrency } from '../../app/Helpers';
-import TableFilters from '../../components/shared/TableFilters/TableFilters';
-import ExpenseModal from './ExpenseModal';
-import ActionButtonsExpense from './ActionButtonsExpenses/ActionButtonsExpense';
+import { buildGenericGetAllRq, formatCurrency } from '@app/Helpers';
+import { ActionButtons, BreadCrumb, Button, Card, ExpenseModal, Input, Table, TableFilters, TableSort, Toast } from '@components';
+import API from '@app/API';
+import { Messages } from '@constants/Messages';
 
 const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Gastos',
-    },
+	{
+		active: true,
+		label: 'Gastos',
+	},
 ];
 
 const ExpenseList = () => {
-    // Consts
-    const columns = [
-        {
-            name: 'description',
-            text: 'Descripción',
-            textCenter: true,
-        },
-        {
-            name: 'amount',
-            text: 'Monto',
-            textCenter: true,
-        },
-        {
-            name: 'createdAt',
-            text: 'Fecha',
-            textCenter: true,
-        },
-        {
-            name: 'actions',
-            text: 'Acciones',
-            component: (props) => (
-                <ActionButtonsExpense canDelete={true} onEdit={handleOpenExpense} entity='gasto' {...props} />
-            ),
-            className: 'text-center',
-        },
-    ];
+	// Consts
+	const columns = [
+		{
+			name: 'dealerName',
+			text: 'Repartidor',
+			textCenter: true,
+		},
+		{
+			name: 'description',
+			text: 'Descripción',
+			textCenter: true,
+		},
+		{
+			name: 'amount',
+			text: 'Monto',
+			textCenter: true,
+			formatter: formatCurrency,
+		},
+		{
+			name: 'createdAt',
+			text: 'Fecha',
+			textCenter: true,
+		},
+		{
+			name: 'actions',
+			text: 'Acciones',
+			component: (props) =>
+				<ActionButtons
+					navigateTo={false}
+					entity='gasto'
+					onEdit={(id) => handleOpenExpense(id, false)}
+					onWatch={(id) => handleOpenExpense(id, true)}
+					{...props} />,
+			className: 'text-center',
+		},
+	];
 
-    const sortExpenseItems = [
-        { value: 'createdAt-asc', label: 'Creado - Asc.' },
-        { value: 'createdAt-desc', label: 'Creado - Desc.' },
-    ];
+	const sortExpenseItems = [
+		{ value: 'createdAt-asc', label: 'Fecha - Asc.' },
+		{ value: 'createdAt-desc', label: 'Fecha - Desc.' },
+	];
 
-    //States
-    const [rows, setRows] = useState([]);
-    const [filter, setFilter] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
-    const [sort, setSort] = useState(null);
-    const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
-    const [submiting, setSubmiting] = useState(false);
+	//States
+	const [rows, setRows] = useState([]);
+	const [filter, setFilter] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalCount, setTotalCount] = useState(0);
+	const [sort, setSort] = useState(null);
+	const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
 
-    // Refs
-    const expenseRef = useRef(null);
+	// Refs
+	const expenseModalRef = useRef(null);
 
-    // Handlers
-    const handleFilterRows = (value) => {
-        setFilter(value.toLowerCase());
-    };
+	// Handlers
+	const handleFilterRows = (value) => {
+		setFilter(value);
+	};
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+	const handlePageChange = (page) => {
+		setCurrentPage(page);
+	};
 
-    const handleSortChange = ({ column, direction }) => {
-        setSort({ column, direction });
-    };
+	const handleSortChange = ({ column, direction }) => {
+		setSort({ column, direction });
+	};
 
-    const handleResetFilters = () => {
-        setDateRange(null);
-    };
+	const handleResetFilters = () => {
+		setDateRange(null);
+	};
 
-    const handleSubmit = async (expense, id) => {
-        if (submiting) return;
+	const handleOpenExpense = (id, isWatching) => {
+		const row = rows.find((r) => r.id === id);
+		const expense = {
+			id: row.id,
+			dealerId: row.dealerId,
+			description: row.description,
+			amount: row.amount,
+		};
+		expenseModalRef.current.open(
+			() => getExpenses(),
+			expense,
+			isWatching ? 'Ver' : 'Editar',
+			isWatching,
+		);
+	};
 
-        if (!expense.dealerId || !expense.description || !expense.amount) {
-            Toast.warning(Messages.Validation.requiredFields);
-            return;
-        }
+	const handleAddExpense = () => {
+		expenseModalRef.current.open(
+			() => getExpenses(),
+			null,
+			'Agregar',
+			false,
+		);
+	};
 
-        if (expense.amount && expense.amount <= 0) {
-            Toast.warning('El monto debe ser superior a cero.');
-            return;
-        }
+	const getExpenses = useCallback(() => {
+		const rq = buildGenericGetAllRq(sort, currentPage, dateRange);
 
-        setSubmiting(true);
+		API.post('expense/getAll', rq).then((r) => {
+			setTotalCount(r.data.totalCount);
+			setRows(
+				r.data.expenses.map((expense) => {
+					return {
+						...expense,
+						endpoint: 'Expense',
+					};
+				}),
+			);
+			if (r.data.expenses.length === 0) {
+				Toast.warning(Messages.Error.noRows);
+			}
+		});
+	}, [currentPage, dateRange, sort]);
 
-        const rq = {
-            dealerId: expense.dealerId,
-            description: expense.description,
-            amount: expense.amount,
-        };
+	const updateDeletedRow = (id) => {
+		setRows((prevRow) => prevRow.filter((row) => row.id !== id));
+	};
 
-        if (id) {
-            rq.id = id;
-        }
+	// Effects
+	useEffect(() => {
+		getExpenses();
+	}, [currentPage, dateRange, getExpenses, sort]);
 
-        API.post(`Expense/${id ? 'Update' : 'Create'}`, rq)
-            .then((r) => {
-                Toast.success(r.message);
-                expenseRef.current?.close();
-                getExpenses();
-            })
-            .catch((r) => {
-                Toast.error(r.error?.message);
-            })
-            .finally(() => {
-                setSubmiting(false);
-            });
-    };
-
-    const handleOpenExpense = (id, isWatching) => {
-        const row = rows.find((r) => r.id === id);
-        const expense = {
-            dealerId: row.dealerId,
-            description: row.description,
-            amount: parseFloat(row.amount.replace(/[^0-9,]/g, '').replace(',', '.')),
-        };
-        expenseRef.current.open(
-            (v) => handleSubmit(v, id),
-            () => { },
-            expense,
-            isWatching ? 'Ver' : 'Editar',
-            isWatching,
-        );
-    };
-
-    const getExpenses = useCallback(() => {
-        const rq = buildGenericGetAllRq(sort, currentPage, dateRange);
-
-        API.post('Expense/GetAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.expenses.map((expense) => {
-                    return {
-                        id: expense.id,
-                        description: expense.description,
-                        amount: formatCurrency(expense.amount),
-                        createdAt: expense.createdAt,
-                        dealerId: expense.dealerId,
-                        endpoint: 'Expense',
-                    };
-                }),
-            );
-            if (r.data.expenses.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, dateRange, sort]);
-
-    const updateDeletedRow = (id) => {
-        setRows((prevRow) => prevRow.filter((row) => row.id !== id));
-    };
-
-    // Effects
-    useEffect(() => {
-        getExpenses();
-    }, [currentPage, dateRange, getExpenses, sort]);
-
-    return (
-        <>
-            <BreadCrumb items={breadcrumbItems} title='Gastos' />
-            <ExpenseModal disabled={submiting} ref={expenseRef} />
-            <div>
-                <Col xs={11} className='container'>
-                    <Card
-                        title='Gastos'
-                        body={
-                            <>
-                                <Row>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <TableSort
-                                            items={sortExpenseItems}
-                                            onChange={handleSortChange}
-                                        />
-                                    </Col>
-                                    <TableFilters
-                                        dateRange={dateRange}
-                                        onRangeChange={setDateRange}
-                                        onReset={handleResetFilters}
-                                    />
-                                    <Col xs={12} className='pe-3 mb-3'>
-                                        <Input
-                                            borderless
-                                            placeholder='Buscar'
-                                            helpText='Descrición'
-                                            value={filter}
-                                            onChange={handleFilterRows}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Table
-                                    className='mb-5'
-                                    columns={columns}
-                                    rows={rows.filter((r) =>
-                                        r.description.toLowerCase().includes(filter),
-                                    )}
-                                    pagination={true}
-                                    currentPage={currentPage}
-                                    totalCount={totalCount}
-                                    onPageChange={handlePageChange}
-                                    onUpdate={updateDeletedRow}
-                                />
-                            </>
-                        }
-                        footer={
-                            <div className='d-flex justify-content-end'>
-                                <Button
-                                    onClick={() => {
-                                        expenseRef.current.open(
-                                            (v) => handleSubmit(v, null),
-                                            () => { },
-                                            null,
-                                            'Agregar',
-                                            false,
-                                        );
-                                    }}
-                                    variant='primary'
-                                >
-                                    Nuevo gasto
-                                </Button>
-                            </div>
-                        }
-                    />
-                </Col>
-            </div>
-        </>
-    );
+	return (
+		<>
+			<BreadCrumb items={breadcrumbItems} title='Gastos' />
+			<ExpenseModal ref={expenseModalRef} />
+			<div>
+				<Col xs={11} className='container'>
+					<Card
+						title='Gastos'
+						body={
+							<>
+								<Row>
+									<Col xs={12} sm={6} lg={3} className='mb-3'>
+										<TableSort
+											items={sortExpenseItems}
+											onChange={handleSortChange}
+										/>
+									</Col>
+									<TableFilters
+										dateRange={dateRange}
+										onRangeChange={setDateRange}
+										onReset={handleResetFilters}
+									/>
+									<Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
+										<Input
+											borderless
+											placeholder='Buscar'
+											helpText='Descripción o repartidor'
+											value={filter}
+											onChange={handleFilterRows}
+										/>
+									</Col>
+								</Row>
+								<Table
+									className='mb-5'
+									columns={columns}
+									rows={rows.filter((x) =>
+										x.description.toLowerCase().includes(filter.toLowerCase())
+										|| x.dealerName.toLowerCase().includes(filter.toLowerCase())
+									)}
+									pagination={true}
+									currentPage={currentPage}
+									totalCount={totalCount}
+									onPageChange={handlePageChange}
+									onUpdate={updateDeletedRow}
+								/>
+							</>
+						}
+						footer={
+							<div className='d-flex justify-content-end'>
+								<Button
+									onClick={handleAddExpense}
+									variant='primary'
+								>
+									Nuevo gasto
+								</Button>
+							</div>
+						}
+					/>
+				</Col>
+			</div>
+		</>
+	);
 };
 
 export default ExpenseList;

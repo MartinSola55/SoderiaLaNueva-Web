@@ -13,9 +13,13 @@ const ActionButtons = ({
     row = {},
     canDelete = App.isAdmin(),
     showEdit = true,
+    showWatch = true,
     entity = "entidad",
     female = false,
-    onUpdate = () => { }
+    navigateTo = true,
+    onUpdate = () => { },
+    onWatch = () => { },
+    onEdit = () => { },
 }) => {
     const navigate = useNavigate();
     const id = row.id;
@@ -24,11 +28,17 @@ const ActionButtons = ({
     const modalRef = useRef();
 
     const handleWatch = () => {
-        navigate(window.location.pathname.replace(/\/[^/]+$/, `/${id}`));
+        if (navigateTo)
+            navigate(window.location.pathname.replace(/\/[^/]+$/, `/${id}`));
+        else
+            onWatch(id);
     };
 
     const handleEdit = () => {
-        navigate(window.location.pathname.replace(/\/[^/]+$/, `/edit/${id}`));
+        if (navigateTo)
+            navigate(window.location.pathname.replace(/\/[^/]+$/, `/edit/${id}`));
+        else
+            onEdit(id);
     };
 
     const handleDelete = () => {
@@ -45,14 +55,16 @@ const ActionButtons = ({
             />
             <Row>
                 <Col className="action-button--container">
-                    <Tooltip text="Ver" placement="top">
-                        <FontAwesomeIcon
-                            className="action-button"
-                            icon={faEye}
-                            color="black"
-                            onClick={handleWatch}
-                        />
-                    </Tooltip>
+                    {showWatch && (
+                        <Tooltip text="Ver" placement="top">
+                            <FontAwesomeIcon
+                                className="action-button"
+                                icon={faEye}
+                                color="black"
+                                onClick={handleWatch}
+                            />
+                        </Tooltip>
+                    )}
                     {!(row.isOpen !== undefined && row.isOpen) && showEdit && (
                         <Tooltip text="Editar" placement="top">
                             <FontAwesomeIcon

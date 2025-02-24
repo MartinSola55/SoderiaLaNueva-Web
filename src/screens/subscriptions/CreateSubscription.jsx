@@ -1,63 +1,61 @@
-import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Button, Card, CellNumericInput, Input, Label, Loader, Spinner, Table } from '../../components';
 import { useEffect, useState } from 'react';
-import Toast from '../../components/Toast/Toast';
-import { Messages } from '../../constants/Messages';
-import { InitialFormStates } from '../../app/InitialFormStates';
+import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router';
-import { getBreadcrumbItems, getProductTypes, getSubscription, saveSubscription, getProductRows } from './Subscriptions.helpers';
+import { getBreadcrumbItems, getProductTypes, getSubscription, saveSubscription } from './Subscriptions.helpers';
 import App from '../../app/App';
 
 const CreateSubscription = ({ isWatching = false }) => {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    const columns = [
-        {
-            name: 'description',
-            text: 'Producto',
-            textCenter: true,
-        },
-        {
-            name: 'quantity',
-            text: 'Cantidad',
-            className: 'text-center',
-            component: (props) => <CellNumericInput {...props} value={props.row.quantity} disabled={isWatching} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />
-        },
-    ];
+	const columns = [
+		{
+			name: 'description',
+			text: 'Producto',
+			textCenter: true,
+		},
+		{
+			name: 'quantity',
+			text: 'Cantidad',
+			className: 'text-center',
+			component: (props) => <CellNumericInput {...props} value={props.row.quantity} disabled={isWatching} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />
+		},
+	];
 
     const params = useParams();
     const id = params.id;
-	
+
     // State
     const [form, setForm] = useState(InitialFormStates.Subscription);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [productTypes, setProductTypes] = useState([]);
-
-	const productRows = getProductRows(productTypes, form)
 
     // Effects
     useEffect(() => {
-		if (!isWatching) {
-			getProductTypes((products) => {
-				setForm((prevForm) => ({
-					...prevForm,
-				}));
-				setProductTypes(products)
-				setLoading(false);
-			});
-		}
         if (id) {
-            getSubscription(id, (data) => {
-                setForm(data);
+			getSubscription(
+				id,
+				// onSuccess
+				(data) => {
+					setForm(data);
+					setLoading(false);
+				},
+				// onError
+				() => { navigate('/notFound') }
+			);
+        } else {
+            getProductTypes((products) => {
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    subscriptionProducts: products,
+                }));
                 setLoading(false);
             });
-		}
-    }, [id, isWatching]);
+        }
+    }, [id, navigate, isWatching]);
 
-    // Handlers
-    const handleSubmit = async () => {
-        if (submiting) return;
+	// Handlers
+	const handleSubmit = async () => {
+		if (submitting) return;
 
         if (!form.name || !form.price) {
             Toast.warning(Messages.Validation.requiredFields);
@@ -75,14 +73,14 @@ const CreateSubscription = ({ isWatching = false }) => {
         );
     };
 
-    const handleInputChange = (value, field) => {
-        setForm((prevForm) => {
-            return {
-                ...prevForm,
-                [field]: value,
-            };
-        });
-    };
+	const handleInputChange = (value, field) => {
+		setForm((prevForm) => {
+			return {
+				...prevForm,
+				[field]: value,
+			};
+		});
+	};
 
     const handleProductsChange = (props, value) => {
         const products = productRows.map((x) => {
@@ -94,13 +92,13 @@ const CreateSubscription = ({ isWatching = false }) => {
             return x;
         });
 
-        handleInputChange(products, 'subscriptionProducts');
-    };
+		handleInputChange(products, 'subscriptionProducts');
+	};
 
-    // Render
-    if (!App.isAdmin()) {
-        return navigate('/notAllowed');
-    }
+	// Render
+	if (!App.isAdmin()) {
+		return navigate('/notAllowed');
+	}
 
     return (
         <>
@@ -113,7 +111,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                             body={loading ? <Spinner /> :
                                 <Row className='align-items-center'>
                                     <Col xs={12} md={6} className='pe-3 mb-3'>
-                                        <Label required>Nombre del abono</Label>
+                                        <Label required={!isWatching}>Nombre del abono</Label>
                                         <Input
                                             helpText={!isWatching && 'Ej: Abono X4'}
                                             disabled={isWatching}
@@ -122,7 +120,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                                         />
                                     </Col>
                                     <Col xs={12} md={6} className='pe-3 mb-3'>
-                                        <Label required>Precio</Label>
+                                        <Label required={!isWatching}>Precio</Label>
                                         <Input
                                             helpText={!isWatching && '\u00A0'}
                                             disabled={isWatching}
@@ -160,7 +158,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                             body={loading ? <Spinner /> :
                                 <Row className='align-items-center'>
                                     <Col xs={12}>
-                                        <Table rows={isWatching ? form.subscriptionProducts : productRows} columns={columns} />
+										<Table rows={isWatching ? form.subscriptionProducts : productRows} columns={columns} />
                                     </Col>
                                 </Row>
                             }

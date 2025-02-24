@@ -1,4 +1,4 @@
 export class Roles {
-    static Admin = "Admin";
-    static Dealer = "Repartidor";
-}
+    static Admin = "ADMIN";
+    static Dealer = "DEALER";
+};
