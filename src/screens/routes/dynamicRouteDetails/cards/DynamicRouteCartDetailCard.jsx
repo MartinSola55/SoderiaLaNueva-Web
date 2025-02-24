@@ -2,7 +2,7 @@ import { Col, Row } from "react-bootstrap"
 import { useNavigate } from "react-router"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone } from "@fortawesome/free-solid-svg-icons"
-import { Button } from "@components"
+import { AddressFormatter, Button } from "@components"
 import { formatCurrency, formatDebt, getDebtTextColor } from "@app/Helpers"
 import { CartStatuses } from "@constants/Cart"
 import App from "@app/App"
@@ -175,7 +175,7 @@ export const DynamicRouteCartDetailCard = ({
 					</p>
 					<p className='mb-1'>
 						<FontAwesomeIcon icon={faHouse} />
-						{` ${cart.client.address} - `}
+						{` ${AddressFormatter(cart.client.address)} - `}
 						<FontAwesomeIcon icon={faPhone} />
 						{` ${cart.client.phone}`}
 						{cart.client.observations && ` - ${cart.client.observations}`}

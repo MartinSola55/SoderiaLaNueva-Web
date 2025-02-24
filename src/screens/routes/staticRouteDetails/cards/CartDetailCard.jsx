@@ -1,9 +1,9 @@
 import { Col, Row } from "react-bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHouse, faPhone, faTruckFast } from "@fortawesome/free-solid-svg-icons"
-import { AddressFormatter } from "../../../components"
 import { formatDebt, getDebtTextColor } from "@app/Helpers";
 import LastProductsButton from "../../lastProducts/LastProductsButton";
+import { AddressFormatter } from "@components";
 
 export const CartDetailCard = ({
 	odd,

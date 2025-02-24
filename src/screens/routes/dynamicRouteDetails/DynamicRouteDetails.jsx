@@ -16,7 +16,7 @@ import { cartServiceTypes } from '../Routes.data';
 import { DynamicRouteCartDetailCard } from './cards/DynamicRouteCartDetailCard';
 import { DynamicRouteFilters } from './DynamicRouteFilters';
 import { confirmCart, getTotalSold, updateAfterSubmit } from './DynamicRouteDetails.helpers';
-
+import MapModal from '../modals/MapModal';
 import '../route.scss';
 
 const breadcrumbItems = [
@@ -48,10 +48,12 @@ const DynamicRouteDetails = () => {
 	const [cartTransfersTypes, setCartTransfersTypes] = useState([]);
 	const [cartPaymentStatuses, setCartPaymentStatuses] = useState([]);
 	const [paymentMethods, setPaymentMethods] = useState([]);
+	const [dropOffPoints, setDropOffPoints] = useState([]);
 
 	// Refs
 	const lastProductsRef = useRef(null);
 	const actionConfirmationRef = useRef(null);
+	const mapModalRef = useRef(null);
 
 	// Effects
 	useEffect(() => {
@@ -68,6 +70,17 @@ const DynamicRouteDetails = () => {
 		API.get('route/getDynamicRoute', { id })
 			.then((r) => {
 				setForm(r.data);
+				const points = r.data.carts.map((cart) => {
+					const client = cart.client;
+					if (client && client.address.lat && client.address.lon) {
+						return {
+							lng: client.address.lon,
+							lat: client.address.lat,
+						};
+					}
+					return null;
+				}).filter(point => point !== null);
+				setDropOffPoints(points);
 				setLoading(false);
 			})
 			.catch(() => {
@@ -205,11 +218,12 @@ const DynamicRouteDetails = () => {
 	};
 
 	const handleOpenMap = () => {
-
+		mapModalRef.current.open(dropOffPoints);
 	};
 
 	return (
 		<>
+			<MapModal ref={mapModalRef}/>
 			<BreadCrumb items={breadcrumbItems} title='Planillas' />
 			<LastProductsModal ref={lastProductsRef} />
 			<ActionConfirmationModal ref={actionConfirmationRef} disabled={submitting} />
