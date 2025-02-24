@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { CellButton, Table, Toast } from '.@components';
+import { CellButton, Table, Toast } from '@components';
+import { Messages } from '@constants/Messages';
+import { debounce } from '@app/Helpers';
 import { getClients } from './Transfers.helpers';
-import { Messages } from '.@constants/Messages';
-import { debounce } from '.@app/Helpers';
 import { clientColumns } from './Transfers.data';
 
 export const ClientsTable = ({
