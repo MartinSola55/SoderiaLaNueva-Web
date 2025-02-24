@@ -37,6 +37,7 @@ export const editSelectedColumns = [
 		name: 'address',
 		text: 'Dirección',
 		textCenter: true,
+		formatter: AddressFormatter,
 	},
 ];
 

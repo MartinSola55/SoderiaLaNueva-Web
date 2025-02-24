@@ -1,4 +1,4 @@
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { BreadCrumb } from '../../components';
 import { SoldProductsCard } from './soldProductsCard/SoldProductsCard';
 import { ExpensesCard } from './expensesCard/ExpensesCard';
@@ -6,11 +6,19 @@ import { RoutesCard } from './routesCard/RoutesCard';
 import { BalanceCard } from './balanceCard/BalanceCard';
 import Map from '../../components/Map/Map';
 import App from '../../app/App';
+import { useRef } from 'react';
+import MapModal from '../routes/modals/MapModal';
 
 const Home = () => {
 	const dropOffPoints = [
 		{ lng: -68.104, lat: -38.95, }
 	]
+
+	const mapModalRef = useRef(null);
+
+	const handleOpen = () => {
+		mapModalRef.current.open(dropOffPoints);
+	}
 
 	return (
 		<>
@@ -43,7 +51,9 @@ const Home = () => {
 					</Row>
 				)}
 			</Col>
-			<Map dropOffPoints={dropOffPoints} />
+			<Button onClick={handleOpen}>Open Map</Button>
+			<MapModal ref={mapModalRef} />
+			{/* <Map dropOffPoints={dropOffPoints} /> */}
 		</>
 	);
 };
