@@ -1,19 +1,19 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Col, Row } from "react-bootstrap";
 import { AddressInput, Button, Card, CheckBox, DealerDropdown, DeliveryDayDropdown, Input, InvoiceTypesDropdown, Label, Loader, Spinner, TaxConditionsDropdown } from "../../../components";
-import { useNavigate } from "react-router";
-import { useState } from "react";
 import { handleOnSubmit } from "../Clients.helpers";
 
 export const ClientInfo = ({
-    form,
-    loading,
-    submitting,
-    isWatching,
-    onSubmit,
-    onInputChange,
+	form,
+	loading,
+	submitting,
+	isWatching,
+	onSubmit,
+	onInputChange,
 }) => {
-    const navigate = useNavigate();
-    const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
+	const navigate = useNavigate();
+	const [interalIsWatching, setInteralIsWatching] = useState(isWatching);
 
     return (
         <Card

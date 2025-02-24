@@ -14,6 +14,7 @@ import Pagination from './Pagination/Pagination';
 import Radio from './Radio/Radio';
 import RawHtml from './RawHtml/RawHtml';
 import SidePanel from './SidePanel/SidePanel';
+import SimpleCard from './SimpleCard/SimpleCard';
 import Spinner from './Spinner/Spinner';
 import Table from './Table/Table';
 import Toast from './Toast/Toast';
@@ -22,6 +23,7 @@ import TopBar from './TopBar/TopBar';
 import AddressInput from './AddressInput/AddressInput';
 
 import ActionButtons from './shared/ActionButtons/ActionButtons';
+import ActionConfirmationModal from './shared/ActionConfirmationModal/ActionConfirmationModal';
 import ChangePasswordModal from './shared/ChangePasswordModal/ChangePasswordModal';
 import ExpenseModal from './shared/ExpenseModal/ExpenseModal';
 import TransferModal from './shared/TransferModal/TransferModal';
@@ -39,53 +41,57 @@ import SubscriptionsDropdown from './shared/SubscriptionsDropdown/SubscriptionsD
 import CellNumericInput from './shared/CellInputs/CellNumericInput';
 import CellCheck from './shared/CellInputs/CellCheck';
 import CellButton from './shared/CellInputs/CellButton';
+import TableFilters from './shared/TableFilters/TableFilters';
 
 import { DebtFormatter } from './Formatters/DebtFormatter';
 import { AddressFormatter } from './Formatters/AddressFormatter';
 
 export {
-    BreadCrumb,
-    Button,
-    Card,
-    CheckBox,
-    DatePicker,
-    DateRangePicker,
-    Dropdown,
-    InfoButton,
-    Input,
-    Label,
-    Loader,
-    NavBar,
-    Pagination,
-    Radio,
-    RawHtml,
-    SidePanel,
-    Spinner,
-    Table,
-    Toast,
-    Tooltip,
-    TopBar,
-    AddressInput,
+	BreadCrumb,
+	Button,
+	Card,
+	CheckBox,
+	DatePicker,
+	DateRangePicker,
+	Dropdown,
+	InfoButton,
+	Input,
+	Label,
+	Loader,
+	NavBar,
+	Pagination,
+	Radio,
+	RawHtml,
+	SidePanel,
+	SimpleCard,
+	Spinner,
+	Table,
+	Toast,
+	Tooltip,
+	TopBar,
+	AddressInput,
 
-    // Shared components
-    ActionButtons,
-    ChangePasswordModal,
-    ExpenseModal,
-    TransferModal,
-    DeleteConfirmationModal,
-    TableSort,
-    DealerDropdown,
-    DeliveryDayDropdown,
-    ProductTypesDropdown,
-    RolesDropdown,
-    PaymentMethodsDropdown,
-    InvoiceTypesDropdown,
-    TaxConditionsDropdown,
-    ProductsDropdown,
-    SubscriptionsDropdown,
-    CellNumericInput,
-    CellCheck,
-    CellButton,
+	// Shared components
+	ActionButtons,
+	ActionConfirmationModal,
+	ChangePasswordModal,
+	ExpenseModal,
+	TransferModal,
+	DeleteConfirmationModal,
+	TableSort,
+	DealerDropdown,
+	DeliveryDayDropdown,
+	ProductTypesDropdown,
+	RolesDropdown,
+	PaymentMethodsDropdown,
+	InvoiceTypesDropdown,
+	TaxConditionsDropdown,
+	ProductsDropdown,
+	SubscriptionsDropdown,
+	CellNumericInput,
+	CellCheck,
+	CellButton,
+	TableFilters,
 
     // Formatters
     DebtFormatter,

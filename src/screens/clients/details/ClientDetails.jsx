@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Toast } from '../../../components';
-import { InitialFormStates } from '../../../app/InitialFormStates';
+import { Card as BSCard } from "react-bootstrap";
+import App from '@app/App';
+import { InitialFormStates } from '@app/InitialFormStates';
+import { BreadCrumb, Toast } from '@components';
+import { Messages } from '@constants/Messages';
 import { buildProductsSalesTable, buildProductsTable, buildSubscriptionsProductsTable, getBreadcrumbItems, getClient, getProducts, getSubscriptions, handleInputChange, handleProductsChange, handleSubscriptionsChange, updateClient, updateClientProducts, updateClientSubscriptions } from '../Clients.helpers';
 import { ClientInfo, ClientProductHistoryTable, ClientProductSalesTable, ClientProductsTable, ClientSubscriptionProductsTable } from '../cards';
-import App from '../../../app/App';
-import { Messages } from '../../../constants/Messages';
 
 const ClientDetails = () => {
 	const navigate = useNavigate();
@@ -91,6 +92,12 @@ const ClientDetails = () => {
 		<>
 			<BreadCrumb items={getBreadcrumbItems('Detalles')} title='Clientes' />
 			<Col xs={11} className='container'>
+				<BSCard className='mb-3 p-3 shadow'>
+					<div className='text-center'>
+						<h2 className='mb-0'>{form.name}</h2>
+						<small>Añadido al sistema el {form.createdAt}</small>
+					</div>
+				</BSCard>
 				<Row>
 					<Col sm={6}>
 						<ClientInfo

@@ -1,139 +1,139 @@
-import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '../../components';
 import { useEffect, useState } from 'react';
-import API from '../../app/API';
-import { Roles } from '../../constants/Roles';
 import { useNavigate } from 'react-router';
-import { Messages } from '../../constants/Messages';
-import App from '../../app/App';
-import { buildGenericGetAllRq, formatRole } from '../../app/Helpers';
+import { Col, Row } from 'react-bootstrap';
+import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '@components';
+import API from '@app/API';
+import App from '@app/App';
+import { Roles } from '@constants/Roles';
+import { Messages } from '@constants/Messages';
+import { buildGenericGetAllRq, formatRole } from '@app/Helpers';
 import { columns, sortUserItems } from './User.data';
 
 const breadcrumbItems = [
-    {
-        active: true,
-        label: 'Usuarios',
-    },
+	{
+		active: true,
+		label: 'Usuarios',
+	},
 ];
 
 const userColumns = [
-    ...columns,
-    {
-        name: 'actions',
-        text: 'Acciones',
-        component: (props) => < ActionButtons entity='usuario' {...props} />,
-        className: 'text-center',
-    },
+	...columns,
+	{
+		name: 'actions',
+		text: 'Acciones',
+		component: (props) => < ActionButtons entity='usuario' {...props} />,
+		className: 'text-center',
+	},
 ];
 
 const UserList = () => {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    const [rows, setRows] = useState([]);
-    const [filter, setFilter] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
-    const [sort, setSort] = useState(null);
+	const [rows, setRows] = useState([]);
+	const [filter, setFilter] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalCount, setTotalCount] = useState(0);
+	const [sort, setSort] = useState(null);
 
-    const handleFilterRows = (value) => {
-        setFilter(value.toLowerCase());
-    };
+	const handleFilterRows = (value) => {
+		setFilter(value.toLowerCase());
+	};
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+	const handlePageChange = (page) => {
+		setCurrentPage(page);
+	};
 
-    const handleSortChange = ({ column, direction }) => {
-        setSort({ column, direction });
-    };
+	const handleSortChange = ({ column, direction }) => {
+		setSort({ column, direction });
+	};
 
-    useEffect(() => {
-        if (!App.isAdmin()) {
-            return navigate('/notAllowed');
-        }
-    }, [navigate]);
+	useEffect(() => {
+		if (!App.isAdmin()) {
+			return navigate('/notAllowed');
+		}
+	}, [navigate]);
 
-    useEffect(() => {
-        const rq = buildGenericGetAllRq(sort, currentPage);
+	useEffect(() => {
+		const rq = buildGenericGetAllRq(sort, currentPage);
 
-        rq.roles = [Roles.Admin, Roles.Dealer];
+		rq.roles = [Roles.Admin, Roles.Dealer];
 
-        API.post('user/getAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.users.map((user) => {
-                    return {
-                        ...user,
-                        role: formatRole(user.role),
-                        endpoint: 'User',
-                    };
-                }),
-            );
-            if (r.data.users.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, sort]);
+		API.post('user/getAll', rq).then((r) => {
+			setTotalCount(r.data.totalCount);
+			setRows(
+				r.data.users.map((user) => {
+					return {
+						...user,
+						role: formatRole(user.role),
+						endpoint: 'User',
+					};
+				}),
+			);
+			if (r.data.users.length === 0) {
+				Toast.warning(Messages.Error.noRows);
+			}
+		});
+	}, [currentPage, sort]);
 
-    const updateDeletedRow = (id) => {
-        setRows((prevRow) => prevRow.filter((row) => row.id !== id));
-    };
+	const updateDeletedRow = (id) => {
+		setRows((prevRow) => prevRow.filter((row) => row.id !== id));
+	};
 
-    return (
-        <>
-            <BreadCrumb items={breadcrumbItems} title='Usuarios' />
-            <div>
-                <Col xs={11} className='container'>
-                    <Card
-                        title='Usuarios'
-                        body={
-                            <>
-                                <Row>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <TableSort
-                                            items={sortUserItems}
-                                            onChange={handleSortChange}
-                                        />
-                                    </Col>
-                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
-                                        <Input
-                                            showIcon
-                                            borderless
-                                            placeholder='Buscar'
-                                            helpText='Nombre de usuario o email'
-                                            value={filter}
-                                            onChange={handleFilterRows}
-                                        />
-                                    </Col>
-                                </Row>
-                                <Table
-                                    className='mb-5'
-                                    columns={userColumns}
-                                    rows={rows.filter(
-                                        (r) =>
-                                            r.fullName.toLowerCase().includes(filter) ||
-                                            r.email.toLowerCase().includes(filter),
-                                    )}
-                                    pagination={true}
-                                    currentPage={currentPage}
-                                    totalCount={totalCount}
-                                    onPageChange={handlePageChange}
-                                    onUpdate={updateDeletedRow}
-                                />
-                            </>
-                        }
-                        footer={
-                            <div className='d-flex justify-content-end'>
-                                <Button onClick={() => navigate('/usuarios/new')} variant='primary'>
-                                    Nuevo usuario
-                                </Button>
-                            </div>
-                        }
-                    />
-                </Col>
-            </div>
-        </>
-    );
+	return (
+		<>
+			<BreadCrumb items={breadcrumbItems} title='Usuarios' />
+			<div>
+				<Col xs={11} className='container'>
+					<Card
+						title='Usuarios'
+						body={
+							<>
+								<Row>
+									<Col xs={12} sm={6} lg={3} className='mb-3'>
+										<TableSort
+											items={sortUserItems}
+											onChange={handleSortChange}
+										/>
+									</Col>
+									<Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
+										<Input
+											showIcon
+											borderless
+											placeholder='Buscar'
+											helpText='Nombre de usuario o email'
+											value={filter}
+											onChange={handleFilterRows}
+										/>
+									</Col>
+								</Row>
+								<Table
+									className='mb-5'
+									columns={userColumns}
+									rows={rows.filter(
+										(r) =>
+											r.fullName.toLowerCase().includes(filter) ||
+											r.email.toLowerCase().includes(filter),
+									)}
+									pagination={true}
+									currentPage={currentPage}
+									totalCount={totalCount}
+									onPageChange={handlePageChange}
+									onUpdate={updateDeletedRow}
+								/>
+							</>
+						}
+						footer={
+							<div className='d-flex justify-content-end'>
+								<Button onClick={() => navigate('/usuarios/new')} variant='primary'>
+									Nuevo usuario
+								</Button>
+							</div>
+						}
+					/>
+				</Col>
+			</div>
+		</>
+	);
 };
 
 export default UserList;

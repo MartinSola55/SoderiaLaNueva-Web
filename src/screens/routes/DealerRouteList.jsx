@@ -1,11 +1,10 @@
-import { Col, Row } from 'react-bootstrap';
-import { BreadCrumb, Table, Toast } from '../../components';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Col, Row } from 'react-bootstrap';
+import { ActionConfirmationModal, BreadCrumb, SimpleCard, Table, Toast } from '@components';
+import { Messages } from '@constants/Messages';
 import { getAllDealerRoutes } from './Routes.helpers';
-import { Messages } from '../../constants/Messages';
-import ActionConfirmationModal from '../../components/shared/ActionConfirmationModal/ActionConfirmationModal';
-import SimpleCard from '../../components/SimpleCard/SimpleCard';
+
 import './route.scss';
 
 const breadcrumbItems = [
