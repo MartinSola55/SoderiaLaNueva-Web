@@ -1,3 +1,5 @@
+import { Roles } from "../../constants/Roles";
+
 export const columns = [
 	{
 		name: 'fullName',
@@ -29,4 +31,9 @@ export const columns = [
 export const sortUserItems = [
 	{ value: 'createdAt-asc', label: 'Creado - Asc.' },
 	{ value: 'createdAt-desc', label: 'Creado - Desc.' },
+];
+
+export const rolesItems = [
+	{value: Roles.Admin, label:Roles.Admin},
+	{value: Roles.Dealer, label: Roles.Dealer}
 ];

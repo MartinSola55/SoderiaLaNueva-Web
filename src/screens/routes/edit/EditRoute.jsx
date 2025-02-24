@@ -198,7 +198,7 @@ const EditRoute = ({ isWatching = false }) => {
                                                 <Table
                                                     rows={selectedRows}
                                                     columns={selectedColumns}
-													emptyTableMessage={selectedRows.length === 0 && 'No se hay clientes en la ruta'}
+													emptyTableMessage={selectedRows.length === 0 && 'No hay clientes en la ruta'}
                                                 ></Table>
                                             </Col>
                                         </Row>

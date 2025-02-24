@@ -8,7 +8,7 @@ const RolesDropdown = ({
     label = null,
     required = false,
     disabled = false,
-    placeholder = 'Seleccione un usuario',
+    placeholder = 'Seleccione un rol',
     isMulti = false,
     onChange = () => { },
 }) => {

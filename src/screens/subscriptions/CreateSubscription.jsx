@@ -5,7 +5,7 @@ import Toast from '../../components/Toast/Toast';
 import { Messages } from '../../constants/Messages';
 import { InitialFormStates } from '../../app/InitialFormStates';
 import { useNavigate, useParams } from 'react-router';
-import { getBreadcrumbItems, getProductTypes, getSubscription, saveSubscription } from './Subscriptions.helpers';
+import { getBreadcrumbItems, getProductTypes, getSubscription, saveSubscription, getProductRows } from './Subscriptions.helpers';
 import App from '../../app/App';
 
 const CreateSubscription = ({ isWatching = false }) => {
@@ -27,29 +27,33 @@ const CreateSubscription = ({ isWatching = false }) => {
 
     const params = useParams();
     const id = params.id;
-
+	
     // State
     const [form, setForm] = useState(InitialFormStates.Subscription);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [productTypes, setProductTypes] = useState([]);
+
+	const productRows = getProductRows(productTypes, form)
 
     // Effects
     useEffect(() => {
+		if (!isWatching) {
+			getProductTypes((products) => {
+				setForm((prevForm) => ({
+					...prevForm,
+				}));
+				setProductTypes(products)
+				setLoading(false);
+			});
+		}
         if (id) {
             getSubscription(id, (data) => {
                 setForm(data);
                 setLoading(false);
             });
-        } else {
-            getProductTypes((products) => {
-                setForm((prevForm) => ({
-                    ...prevForm,
-                    subscriptionProducts: products,
-                }));
-                setLoading(false);
-            });
-        }
-    }, [id]);
+		}
+    }, [id, isWatching]);
 
     // Handlers
     const handleSubmit = async () => {
@@ -59,13 +63,13 @@ const CreateSubscription = ({ isWatching = false }) => {
             Toast.warning(Messages.Validation.requiredFields);
             return;
         }
-        if (form.subscriptionProducts.every((x) => !x.quantity)) {
+        if (productRows.every((x) => !x.quantity)) {
             Toast.warning('El abono debe contar minimamente con un producto.');
             return;
         }
 
         setSubmiting(true);
-        saveSubscription(form, id,
+        saveSubscription(form, id, productRows,
             () => { navigate('/abonos/list') },
             () => { setSubmiting(false) }
         );
@@ -81,7 +85,7 @@ const CreateSubscription = ({ isWatching = false }) => {
     };
 
     const handleProductsChange = (props, value) => {
-        const products = form.subscriptionProducts.map((x) => {
+        const products = productRows.map((x) => {
             if (x.id === props.row.id)
                 return {
                     ...x,
@@ -156,7 +160,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                             body={loading ? <Spinner /> :
                                 <Row className='align-items-center'>
                                     <Col xs={12}>
-                                        <Table rows={form.subscriptionProducts} columns={columns} />
+                                        <Table rows={isWatching ? form.subscriptionProducts : productRows} columns={columns} />
                                     </Col>
                                 </Row>
                             }

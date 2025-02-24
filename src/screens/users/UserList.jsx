@@ -4,6 +4,7 @@ import {
     BreadCrumb,
     Button,
     Card,
+    Dropdown,
     Input,
     Table,
     TableSort,
@@ -16,7 +17,7 @@ import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
 import { buildGenericGetAllRq } from '../../app/Helpers';
-import { columns, sortUserItems } from './User.data';
+import { columns, rolesItems, sortUserItems } from './User.data';
 
 const breadcrumbItems = [
     {
@@ -43,6 +44,8 @@ const UserList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
+    const [rolesSelected, setRolesSelected] = useState([Roles.Dealer]);
+    
 
     const handleFilterRows = (value) => {
         setFilter(value.toLowerCase());
@@ -65,7 +68,7 @@ const UserList = () => {
     useEffect(() => {
         const rq = buildGenericGetAllRq(sort, currentPage);
 
-        rq.roles = [Roles.Admin, Roles.Dealer];
+        rq.roles = rolesSelected;
 
         API.post('User/GetAll', rq).then((r) => {
             setTotalCount(r.data.totalCount);
@@ -86,7 +89,7 @@ const UserList = () => {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [currentPage, rolesSelected, sort]);
 
     const updateDeletedRow = (id) => {
         setRows((prevRow) => prevRow.filter((row) => row.id !== id));
@@ -106,6 +109,14 @@ const UserList = () => {
                                         <TableSort
                                             items={sortUserItems}
                                             onChange={handleSortChange}
+                                        />
+                                    </Col>
+                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
+                                        <Dropdown
+											items={rolesItems}
+											value={rolesSelected}
+											isMulti
+                                            onChange={(values) => setRolesSelected(values.map(x => x.value))}
                                         />
                                     </Col>
                                     <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
