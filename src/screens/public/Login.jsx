@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Card, CardBody, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { ToastContainer } from 'react-toastify';
-import { Button, Input, Label, Loader } from "@components";
+import { Button, Input, Label, Loader, Toast } from "@components";
 import API from "@app/API";
-import Toast from "@components/Toast/Toast";
 import { Messages } from "@constants/Messages";
 import { LocalStorage } from "@app/LocalStorage";
 
