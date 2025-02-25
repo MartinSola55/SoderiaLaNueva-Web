@@ -1,17 +1,14 @@
-import { Image } from 'react-bootstrap';
 import { useEffect, useRef, useState } from 'react';
+import { Image } from 'react-bootstrap';
+import { useNavigate } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClose, faUser } from '@fortawesome/free-solid-svg-icons';
-import { LocalStorage } from "../../app/LocalStorage";
 import classNames from 'classnames';
-import API from '../../app/API';
-import Toast from '../Toast/Toast';
-import Button from '../Button/Button';
-import { useNavigate } from 'react-router';
-import Loader from '../Loader/Loader';
+import { Button, Loader, SidePanel, Toast } from '@components';
+import { LocalStorage } from '@app/LocalStorage';
+import API from '@app/API';
 import Logo from '../../assets/logo.png';
 import LogoMini from '../../assets/logo-mini.png';
-import SidePanel from '../SidePanel/SidePanel';
 
 import './topbar.scss';
 

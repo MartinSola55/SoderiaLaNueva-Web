@@ -41,6 +41,11 @@ import CellNumericInput from './shared/CellInputs/CellNumericInput';
 import CellCheck from './shared/CellInputs/CellCheck';
 import CellButton from './shared/CellInputs/CellButton';
 import TableFilters from './shared/TableFilters/TableFilters';
+import MonthDropdown from './shared/MonthDropdown/MonthDropdown';
+import SalesYearsDropdown from './shared/SalesYearsDropdown/SalesYearsDropdown';
+
+import { LineChart } from './charts/LineChart/LineChart';
+import { AreaChart } from './charts/AreaChart/AreaChart';
 
 import { DebtFormatter } from './Formatters/DebtFormatter';
 
@@ -89,6 +94,12 @@ export {
 	CellCheck,
 	CellButton,
 	TableFilters,
+	MonthDropdown,
+	SalesYearsDropdown,
+
+	// Charts
+	LineChart,
+	AreaChart,
 
 	// Formatters
 	DebtFormatter,

@@ -1,9 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import Button from '../../Button/Button';
-import Loader from '../../Loader/Loader';
-import API from '../../../app/API';
-import Toast from '../../Toast/Toast';
+import { Button, Loader, Toast } from '@components';
+import API from '@app/API';
 
 // eslint-disable-next-line
 const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {

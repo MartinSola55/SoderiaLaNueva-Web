@@ -1,8 +1,8 @@
-import classNames from 'classnames';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import InfoButton from '../InfoButton/InfoButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import classNames from 'classnames';
+import { InfoButton } from '@components';
 
 import './input.scss';
 

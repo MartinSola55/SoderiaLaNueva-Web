@@ -3,27 +3,30 @@ import { Dropdown } from '@components';
 import { formatComboItems } from '@app/Helpers';
 import API from '@app/API';
 
-const InvoiceTypesDropdown = ({
+const SalesYearsDropdown = ({
 	value = null,
 	label = null,
 	required = false,
 	disabled = false,
-	placeholder = 'Seleccione un tipo',
+	placeholder = 'Año',
+	isMulti = false,
 	onChange = () => { },
 }) => {
 	const [items, setItems] = useState(null);
 
 	// Get users
 	useEffect(() => {
-		if (items) return;
+		if (items)
+			return;
 
-		API.get('client/getComboInvoiceTypes').then((r) => {
+		API.get('stats/getSalesYears').then((r) => {
 			setItems(formatComboItems(r.data.items));
 		});
 	}, [items]);
 
 	const handleChange = (options) => {
-		onChange(options.value);
+		const value = isMulti ? options : options.value;
+		onChange(value);
 	};
 
 	return (
@@ -31,6 +34,7 @@ const InvoiceTypesDropdown = ({
 			placeholder={placeholder}
 			label={label}
 			required={required}
+			isMulti={isMulti}
 			disabled={disabled}
 			items={items ?? []}
 			value={value}
@@ -39,13 +43,14 @@ const InvoiceTypesDropdown = ({
 	);
 };
 
-const MemoDropdown = memo(InvoiceTypesDropdown, (prevProps, nextProps) => {
+const MemoDropdown = memo(SalesYearsDropdown, (prevProps, nextProps) => {
 	return (
 		nextProps.value === prevProps.value &&
 		nextProps.label === prevProps.label &&
 		nextProps.required === prevProps.required &&
+		nextProps.placeholder === prevProps.placeholder &&
 		nextProps.disabled === prevProps.disabled &&
-		nextProps.placeholder === prevProps.placeholder
+		nextProps.isMulti === prevProps.isMulti
 	);
 });
 
