@@ -1,8 +1,8 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { Button, Input, Loader, Toast } from '../..';
-import { Messages } from '../../../constants/Messages';
-import API from '../../../app/API';
+import { Button, Input, Loader, Toast } from '@components';
+import { Messages } from '@constants/Messages';
+import API from '@app/API';
 
 const TransferModal = forwardRef((_, ref) => {
 	const [isVisible, setIsVisible] = useState(false);

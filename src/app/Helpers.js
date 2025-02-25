@@ -74,19 +74,19 @@ export const formatSoldProducts = (items) => {
 	return items.map((item) => (`${item.name} (${item.amount})`))
 };
 
-export const formatCurrency = (value) => {
+export const formatCurrency = (value, includeDecimals = true) => {
 	if (value === null || value === undefined)
 		return '';
 
 	if (value < 0)
 		return `-$${Math.abs(value).toLocaleString('es-AR', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
+			minimumFractionDigits: includeDecimals ? 2 : 0,
+			maximumFractionDigits: includeDecimals ? 2 : 0,
 		})}`;
 
 	return `$${value.toLocaleString('es-AR', {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
+		minimumFractionDigits: includeDecimals ? 2 : 0,
+		maximumFractionDigits: includeDecimals ? 2 : 0,
 	})}`;
 };
 
@@ -122,6 +122,14 @@ export const formatDeliveryDay = (value) => {
 		default:
 			return 'Sin día';
 	}
+};
+
+export const getMonthName = (period = '2025-01') => {
+	const [year, month] = period.split('-');
+	const date = new Date(year, month - 1);
+	const monthName = date.toLocaleString('es-ES', { month: 'long' });
+
+	return monthName.charAt(0).toUpperCase() + monthName.slice(1);
 };
 
 // 1 for Monday, 2 for Tuesday, 3 for Wednesday, 4 for Thursday and 5 for Friday

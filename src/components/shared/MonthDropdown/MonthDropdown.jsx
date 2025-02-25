@@ -1,27 +1,29 @@
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 import { Dropdown } from '@components';
-import { formatComboItems } from '@app/Helpers';
-import API from '@app/API';
 
-const ProductTypesDropdown = ({
+const MonthDropdown = ({
 	value = null,
 	label = null,
 	required = false,
 	disabled = false,
-	placeholder = 'Seleccione un tipo de producto',
+	placeholder = 'Mes',
 	isMulti = false,
 	onChange = () => { },
 }) => {
-	const [items, setItems] = useState(null);
-
-	// Get users
-	useEffect(() => {
-		if (items) return;
-
-		API.get('product/getComboProductTypes').then((r) => {
-			setItems(formatComboItems(r.data.items));
-		});
-	}, [items]);
+	const months = [
+		{ value: 1, label: 'Enero' },
+		{ value: 2, label: 'Febrero' },
+		{ value: 3, label: 'Marzo' },
+		{ value: 4, label: 'Abril' },
+		{ value: 5, label: 'Mayo' },
+		{ value: 6, label: 'Junio' },
+		{ value: 7, label: 'Julio' },
+		{ value: 8, label: 'Agosto' },
+		{ value: 9, label: 'Septiembre' },
+		{ value: 10, label: 'Octubre' },
+		{ value: 11, label: 'Noviembre' },
+		{ value: 12, label: 'Diciembre' }
+	];
 
 	const handleChange = (options) => {
 		const value = isMulti ? options : options.value;
@@ -35,19 +37,20 @@ const ProductTypesDropdown = ({
 			required={required}
 			isMulti={isMulti}
 			disabled={disabled}
-			items={items ? items : []}
+			items={months}
 			value={value}
 			onChange={(option) => handleChange(option)}
 		/>
 	);
 };
 
-const MemoDropdown = memo(ProductTypesDropdown, (prevProps, nextProps) => {
+const MemoDropdown = memo(MonthDropdown, (prevProps, nextProps) => {
 	return (
 		nextProps.value === prevProps.value &&
 		nextProps.label === prevProps.label &&
 		nextProps.required === prevProps.required &&
 		nextProps.placeholder === prevProps.placeholder &&
+		nextProps.disabled === prevProps.disabled &&
 		nextProps.isMulti === prevProps.isMulti
 	);
 });

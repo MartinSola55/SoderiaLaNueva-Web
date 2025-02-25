@@ -1,12 +1,12 @@
-import Button from "../../Button/Button";
+import { Button } from "@components";
 
 const CellButton = ({
-    onClick,
+	onClick,
 	children,
 }) => {
-    return <Button onClick={onClick}>
-				{children}
-			</Button>
+	return <Button onClick={onClick}>
+		{children}
+	</Button>
 };
 
 export default CellButton;
