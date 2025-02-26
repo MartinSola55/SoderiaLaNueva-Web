@@ -1,7 +1,7 @@
 import * as BS from 'react-bootstrap';
 import classNames from 'classnames';
-import Pagination from '../Pagination/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Pagination } from '@components';
 
 import './table.scss';
 

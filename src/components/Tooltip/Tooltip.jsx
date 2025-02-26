@@ -1,5 +1,5 @@
 import * as BS from 'react-bootstrap';
-import RawHtml from '../RawHtml/RawHtml';
+import { RawHtml } from '@components';
 
 import './tooltip.scss';
 

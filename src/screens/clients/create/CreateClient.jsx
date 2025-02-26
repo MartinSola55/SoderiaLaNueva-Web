@@ -31,23 +31,50 @@ const CreateClient = () => {
 		if (submitting)
 			return;
 
-		if (!form.name || !form.address || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
-			Toast.warning(Messages.Validation.requiredFields);
-			return;
-		}
+        if (!form.name || !form.address.lat || !form.address.lon || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
+            Toast.warning(Messages.Validation.requiredFields);
+            return;
+        }
 
 		if (form.products.every(x => x.quantity === '')) {
 			Toast.warning("El cliente debe tener al menos un producto asociado.");
 			return;
 		}
 
-		setSubmitting(true);
-		createClient(form,
-			() => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
+        setSubmitting(true);
+        createClient(form,
+            () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
 			() => { },
-			() => { setSubmitting(false) }
-		);
-	};
+            () => { setSubmitting(false) }
+        );
+    };
+
+    const handleInputChange = (value, field) => {
+        setForm((prevForm) => {
+            return {
+                ...prevForm,
+                [field]: value,
+            };
+        });
+    };
+
+    const handleProductsChange = (props, value) => {
+        const products = form.products.map((x) => {
+            if (x.id === props.row.id)
+                return {
+                    ...x,
+                    quantity: value,
+                };
+            return x;
+        });
+
+        handleInputChange(products, 'products');
+    };
+
+    // Render
+    if (!App.isAdmin()) {
+        return navigate('/notAllowed');
+    }
 
 	return (
 		<>

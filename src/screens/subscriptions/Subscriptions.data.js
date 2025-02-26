@@ -1,3 +1,5 @@
+import { AddressFormatter } from "../../components";
+
 export const sortProductItems = [
     { value: 'price-asc', label: 'Precio - Asc.' },
     { value: 'price-desc', label: 'Precio - Desc.' },
@@ -34,6 +36,7 @@ export const clientCols = [
         name: 'address',
         text: 'Dirección',
         textCenter: true,
+        formatter: AddressFormatter,
     },
     {
         name: 'route',

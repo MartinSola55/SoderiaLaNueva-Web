@@ -6,15 +6,15 @@ import "./SidePanel.scss";
 import App from "@app/App";
 
 const SidePanel = ({
-    isOpen = false,
-    onClose = () => { },
+	isOpen = false,
+	onClose = () => { },
 }) => {
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    const handleItemClick = (link) => {
-        navigate(link);
-        onClose();
-    };
+	const handleItemClick = (link) => {
+		navigate(link);
+		onClose();
+	};
 
     return (
         <div>

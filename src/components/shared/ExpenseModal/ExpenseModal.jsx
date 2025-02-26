@@ -1,9 +1,9 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
-import { InitialFormStates } from '../../../app/InitialFormStates';
-import { Button, DealerDropdown, Input, Label, Loader, Toast } from '../..';
-import { Messages } from '../../../constants/Messages';
-import API from '../../../app/API';
+import { Button, DealerDropdown, Input, Label, Loader, Toast } from '@components';
+import { Messages } from '@constants/Messages';
+import { InitialFormStates } from '@app/InitialFormStates';
+import API from '@app/API';
 
 const initialExpense = InitialFormStates.Expense;
 

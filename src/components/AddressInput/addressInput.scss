@@ -1,0 +1,55 @@
+.input-container {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+    box-shadow: none;
+    transition: border 0.1s ease-in-out;
+}
+
+.input-wrapper input:focus {
+    border-bottom: 2px solid steelblue;
+    outline: none;
+}
+
+.input-wrapper .spinner {
+    position: absolute;
+    right: 10px;
+}
+
+.suggestions-list {
+    position: absolute;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 10;
+    list-style: none;
+    padding: 0;
+    margin-top: 5px;
+}
+
+.suggestion-item {
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}

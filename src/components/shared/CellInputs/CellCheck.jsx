@@ -1,15 +1,15 @@
-import CheckBox from "../../CheckBox/CheckBox";
+import { CheckBox } from "@components";
 
 const CellCheck = ({
-    checked,
-    onChange,
-    ...props
+	checked,
+	onChange,
+	...props
 }) => {
-    return <CheckBox
-        checked={checked}
-        onChange={onChange}
-        {...props}
-    />
+	return <CheckBox
+		checked={checked}
+		onChange={onChange}
+		{...props}
+	/>
 };
 
 export default CellCheck;

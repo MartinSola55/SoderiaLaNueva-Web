@@ -29,6 +29,7 @@ const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
 const DealerRouteList = lazy(() => import('../screens/routes/DealerRouteList.jsx'));
 const AddClientList = lazy(() => import('../screens/routes/dynamicRouteDetails/AddClientList.jsx'));
 const CreateTransfer = lazy(() => import('../screens/transfers/CreateTransfer.jsx'));
+const GeneralStats = lazy(() => import('../screens/stats/GeneralStats.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 
@@ -302,6 +303,18 @@ export const AppRoutes = () => (
 						element={
 							<DefaultLayout>
 								<CreateTransfer />
+							</DefaultLayout>
+						}
+					/>
+				</Route>
+
+				{/* Stats */}
+				<Route path='/estadisticas' element={<AdminRoute />}>
+					<Route
+						path='/estadisticas'
+						element={
+							<DefaultLayout>
+								<GeneralStats />
 							</DefaultLayout>
 						}
 					/>

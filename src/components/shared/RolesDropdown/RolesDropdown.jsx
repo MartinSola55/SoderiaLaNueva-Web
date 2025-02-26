@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from 'react';
-import { Dropdown } from '../..';
-import API from '../../../app/API';
-import { formatRoleItems } from '../../../app/Helpers';
+import { Dropdown } from '@components';
+import { formatRoleItems } from '@app/Helpers';
+import API from '@app/API';
 
 const RolesDropdown = ({
     value = null,
