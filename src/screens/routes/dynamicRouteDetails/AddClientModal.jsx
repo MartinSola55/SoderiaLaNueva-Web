@@ -15,21 +15,21 @@ const AddClientModal = forwardRef(({ disabled }, ref) => {
 		{
 			name: 'amount',
 			text: 'Cantidad',
-			component: (props) => (<CellNumericInput {...props} maxValue={undefined} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)} />),
+			component: (props) => (<CellNumericInput {...props} maxValue={null} value={props.row.amount} onChange={(v) => handleChangePaymentMethods(props, v, paymentMethods, setPaymentMethods)} />),
 			textCenter: true,
 		},
 	];
 
 	const productColumns = [
 		{
-			name: 'description',
+			name: 'name',
 			text: 'Producto',
 			textCenter: true,
 		},
 		{
 			name: 'quantity',
 			text: 'Cantidad',
-			component: (props) => <CellNumericInput {...props} value={props.row.quantity} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />,
+			component: (props) => <CellNumericInput {...props} value={props.row.quantity} maxValue={null} onChange={(v) => handleProductsChange(props, v)} />,
 			className: 'text-center',
 		},
 	];

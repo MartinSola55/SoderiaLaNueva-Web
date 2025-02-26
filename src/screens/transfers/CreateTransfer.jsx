@@ -5,7 +5,7 @@ import { BreadCrumb, Card, Input, TransferModal } from "@components";
 import { getBreadcrumbItems } from "./Transfers.helpers";
 import { ClientsTable } from "./ClientsTable";
 
-export const CreateTransfer = () => {
+const CreateTransfer = () => {
 	const navigate = useNavigate();
 
 	// Ref
@@ -60,3 +60,4 @@ export const CreateTransfer = () => {
 		</>
 	);
 };
+export default CreateTransfer;

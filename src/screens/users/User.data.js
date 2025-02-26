@@ -1,3 +1,4 @@
+import { formatRole } from "@app/Helpers";
 import { Roles } from "../../constants/Roles";
 
 export const columns = [
@@ -34,6 +35,6 @@ export const sortUserItems = [
 ];
 
 export const rolesItems = [
-	{value: Roles.Admin, label:Roles.Admin},
-	{value: Roles.Dealer, label: Roles.Dealer}
+	{value: Roles.Admin, label:formatRole(Roles.Admin)},
+	{value: Roles.Dealer, label: formatRole(Roles.Dealer)}
 ];

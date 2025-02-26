@@ -1,14 +1,13 @@
 import { Col, Row } from 'react-bootstrap';
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ActionButtons, BreadCrumb, Button, Card, Input, Table, TableSort, Toast } from '@components';
+import { ActionButtons, BreadCrumb, Button, Card, Dropdown, Input, Table, TableSort, Toast } from '@components';
 import API from '@app/API';
 import App from '@app/App';
-import { Roles } from '@constants/Roles';
 import { Messages } from '@constants/Messages';
 import { buildGenericGetAllRq, formatRole } from '@app/Helpers';
 import { columns, rolesItems, sortUserItems } from './User.data';
+import { Roles } from '@constants/Roles';
 
 const breadcrumbItems = [
 	{
@@ -37,7 +36,6 @@ const UserList = () => {
 	const [sort, setSort] = useState(null);
     const [rolesSelected, setRolesSelected] = useState([Roles.Dealer]);
     
-
 	const handleFilterRows = (value) => {
 		setFilter(value.toLowerCase());
 	};
@@ -65,22 +63,18 @@ const UserList = () => {
             setTotalCount(r.data.totalCount);
             setRows(
                 r.data.users.map((user) => {
-                    return {
-                        id: user.id,
-                        email: user.email,
-                        fullName: user.fullName,
-                        endpoint: 'User',
-                        createdAt: user.createdAt,
-                        role: user.role,
-                        phoneNumber: user.phoneNumber,
-                    };
+					return {
+						...user,
+						role: formatRole(user.role),
+						endpoint: 'User',
+					};
                 }),
             );
             if (r.data.users.length === 0) {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [currentPage, rolesSelected, sort]);
 
 	const updateDeletedRow = (id) => {
 		setRows((prevRow) => prevRow.filter((row) => row.id !== id));

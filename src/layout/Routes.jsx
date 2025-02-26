@@ -1,7 +1,7 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router';
 import { lazy, Suspense } from 'react';
-import App from '@app/App.js';
 import { Spinner } from '@components';
+import App from '@app/App';
 
 // Lazy loading de componentes
 const ExpensesList = lazy(() => import('../screens/expenses/ExpenseList.jsx'));
@@ -198,7 +198,7 @@ export const AppRoutes = () => (
 					/>
 				</Route>
 
-				{/* Planillas Admin y Dealer */}
+				{/* Planillas Admin */}
 				<Route path='/planillas' element={<AdminRoute />}>
 					<Route
 						path='/planillas/list'
@@ -242,7 +242,8 @@ export const AppRoutes = () => (
 						}
 					/>
 				</Route>
-
+				
+				{/* Planilla Admin y Dealer */}
 				<Route path='/planillas' element={<PrivateRoute />}>
 					<Route
 						path='/planillas/abierta/:id'

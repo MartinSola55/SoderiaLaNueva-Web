@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router';
-import { getBreadcrumbItems, getProductTypes, getSubscription, saveSubscription } from './Subscriptions.helpers';
-import App from '../../app/App';
+import { getBreadcrumbItems, getProductTypes, getSubscription, saveSubscription, getProductRows } from './Subscriptions.helpers';
+import { BreadCrumb, Button, Card, CellNumericInput, Input, Label, Loader, Spinner, Table, Toast } from '@components';
+import { Messages } from '@constants/Messages';
+import { InitialFormStates } from '@app/InitialFormStates';
+import App from '@app/App';
 
 const CreateSubscription = ({ isWatching = false }) => {
 	const navigate = useNavigate();
@@ -17,20 +20,32 @@ const CreateSubscription = ({ isWatching = false }) => {
 			name: 'quantity',
 			text: 'Cantidad',
 			className: 'text-center',
-			component: (props) => <CellNumericInput {...props} value={props.row.quantity} disabled={isWatching} maxValue={undefined} onChange={(v) => handleProductsChange(props, v)} />
+			component: (props) => <CellNumericInput {...props} value={props.row.quantity} disabled={isWatching} maxValue={null} onChange={(v) => handleProductsChange(props, v)} />
 		},
 	];
 
     const params = useParams();
     const id = params.id;
-
+	
     // State
     const [form, setForm] = useState(InitialFormStates.Subscription);
     const [submiting, setSubmiting] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [productTypes, setProductTypes] = useState([]);
+
+	const productRows = getProductRows(productTypes, form)
 
     // Effects
     useEffect(() => {
+		if (!isWatching) {
+			getProductTypes((products) => {
+				setForm((prevForm) => ({
+					...prevForm,
+				}));
+				setProductTypes(products)
+				setLoading(false);
+			});
+		}
         if (id) {
 			getSubscription(
 				id,
@@ -42,20 +57,12 @@ const CreateSubscription = ({ isWatching = false }) => {
 				// onError
 				() => { navigate('/notFound') }
 			);
-        } else {
-            getProductTypes((products) => {
-                setForm((prevForm) => ({
-                    ...prevForm,
-                    subscriptionProducts: products,
-                }));
-                setLoading(false);
-            });
-        }
-    }, [id, navigate, isWatching]);
+		}
+    }, [id, isWatching, navigate]);
 
 	// Handlers
 	const handleSubmit = async () => {
-		if (submitting) return;
+		if (submiting) return;
 
         if (!form.name || !form.price) {
             Toast.warning(Messages.Validation.requiredFields);
@@ -158,7 +165,7 @@ const CreateSubscription = ({ isWatching = false }) => {
                             body={loading ? <Spinner /> :
                                 <Row className='align-items-center'>
                                     <Col xs={12}>
-										<Table rows={isWatching ? form.subscriptionProducts : productRows} columns={columns} />
+                                        <Table rows={isWatching ? form.subscriptionProducts : productRows} columns={columns} />
                                     </Col>
                                 </Row>
                             }
