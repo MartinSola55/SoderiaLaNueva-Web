@@ -7,7 +7,8 @@ const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 
 const Map = ({
-    dropOffPoints = []
+    dropOffPoints = [],
+	visitedPoints = []
 }) => {
     const initialLocation = useMemo(() => [-68.10348998645422, -38.95008965955272], []);
     const mapRef = useRef(null);
@@ -26,11 +27,18 @@ const Map = ({
 
                 mapRef.current.on('load', () => {
                     initializeMapLayers(mapRef.current, initialLocation);
-                    updateDropoffs(mapRef.current, dropOffPoints, initialLocation);
+                    updateDropoffs(mapRef.current, dropOffPoints, visitedPoints, initialLocation);
                 });
             }
         }
-    }, [dropOffPoints, initialLocation]);
+
+		return () => {
+			if (mapRef.current) {
+				mapRef.current.remove();
+				mapRef.current = null;
+			}
+		};
+    }, [dropOffPoints, visitedPoints, initialLocation]);
 
     if (!accessToken)
         return null;

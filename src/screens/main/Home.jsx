@@ -16,7 +16,6 @@ const Home = () => {
 						<Row>
 							<Col xs={12} lg={6}>
 								<RoutesCard isAdmin={true} />
-								<RoutesCard isAdmin={true} />
 							</Col>
 							<Col xs={12} lg={6}>
 								<SoldProductsCard />

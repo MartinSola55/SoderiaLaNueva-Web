@@ -1,9 +1,7 @@
-.modal-dialog {
-	width: 80vw;
-	height: 70vh;
+.map-modal-dialog {
 	margin: auto;
 	max-width: 100%;
-	padding-top: 4px;
+	padding: 4px;
 }
 
 .modal-content {
@@ -11,13 +9,13 @@
 	border-radius: 8px;
 }
 
-.modal-header {
+.map-modal-header {
 	display: flex;
 	justify-content: space-between;
 	position: relative;
 	background-color: #f8f9fa;
 
-	.modal-title {
+	.map-modal-title {
 		font-size: 24px;
 		font-weight: bold;
 	}
@@ -35,7 +33,7 @@
 	}
 }
 
-.modal-body {
+.map-modal-body {
 	padding: 0;
 	height: 100%;
 }

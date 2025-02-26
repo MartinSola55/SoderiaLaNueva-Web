@@ -1,5 +1,6 @@
 import * as turf from '@turf/turf';
 import { fetchRoute } from './map.data';
+import { CartStatuses } from '@constants/Cart';
 
 export const initializeMapLayers = (map, initialLocation) => {
     const warehouseFeature = turf.featureCollection([turf.point(initialLocation)]);
@@ -35,7 +36,7 @@ export const initializeMapLayers = (map, initialLocation) => {
         type: 'circle',
         source: 'dropoffs',
         paint: {
-            'circle-radius': 5,
+            'circle-radius': 7,
             'circle-color': '#3887be',
         },
     });
@@ -80,21 +81,35 @@ export const initializeMapLayers = (map, initialLocation) => {
             paint: {
                 'text-color': '#3887be',
                 'text-halo-color': 'hsl(55, 11%, 96%)',
-                'text-halo-width': 3,
+                'text-halo-width': 2,
             },
         },
         'waterway-label'
     );
 };
 
-export const updateDropoffs = (map, dropOffPoints, initialLocation) => {
+export const updateDropoffs = (map, dropOffPoints, visitedPoints, initialLocation) => {
     const dropoffSource = map.getSource('dropoffs');
     const routeSource = map.getSource('route');
 
     if (dropoffSource) {
-        const features = dropOffPoints.map((point) => turf.point([point.lng, point.lat]));
+        const features = dropOffPoints.map((point) => {
+			return turf.point([point.lng, point.lat], { 
+				visited: point.status === CartStatuses.Confirmed ? true : false,
+				status: point.status,
+				color: point.status === CartStatuses.Confirmed ? 'green' : 'yellow',
+				clientName: point.clientName
+			});
+		});
         const geojson = turf.featureCollection(features);
         dropoffSource.setData(geojson);
+
+		map.setPaintProperty('dropoffs-circle', 'circle-color', [
+			'case',
+			['get', 'visited'], 'green',
+			['==', ['get', 'status'], CartStatuses.Confirmed], 'green',
+			'yellow'
+		]);
 
         if (features.length > 0) {
             const coordinates = [initialLocation, ...features.map((f) => f.geometry.coordinates)];

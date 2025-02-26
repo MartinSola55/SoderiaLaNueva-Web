@@ -49,6 +49,7 @@ const DynamicRouteDetails = () => {
 	const [cartPaymentStatuses, setCartPaymentStatuses] = useState([]);
 	const [paymentMethods, setPaymentMethods] = useState([]);
 	const [dropOffPoints, setDropOffPoints] = useState([]);
+	const [visitedPoints, setVisitedPoints] = useState([]);
 
 	// Refs
 	const lastProductsRef = useRef(null);
@@ -73,19 +74,28 @@ const DynamicRouteDetails = () => {
 				const points = r.data.carts.map((cart) => {
 					const client = cart.client;
 					if (client && client.address.lat && client.address.lon) {
+						const isVisited = cart.status === CartStatuses.Confirmed;
+						const color = isVisited ? 'green' : 'yellow';
 						return {
+							id: cart.id,
 							lng: client.address.lon,
 							lat: client.address.lat,
+							color,
+							status: cart.status,
+							clientName: client.name,
+							isVisited: isVisited,
 						};
 					}
 					return null;
 				}).filter(point => point !== null);
-				setDropOffPoints(points);
+				setVisitedPoints(() => points.filter(point => point.isVisited));
+				setDropOffPoints(() => points.filter(point => !point.isVisited));
 				setLoading(false);
 			})
 			.catch(() => {
 				navigate('/notFound');
 			});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, navigate]);
 
 	//  Handlers
@@ -218,7 +228,7 @@ const DynamicRouteDetails = () => {
 	};
 
 	const handleOpenMap = () => {
-		mapModalRef.current.open(dropOffPoints);
+		mapModalRef.current.open(dropOffPoints, visitedPoints);
 	};
 
 	return (
