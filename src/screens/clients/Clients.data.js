@@ -1,4 +1,4 @@
-import { DebtFormatter } from "../../components";
+import { DebtFormatter, AddressFormatter } from "../../components";
 
 export const clientColumns = [
     {
@@ -10,6 +10,7 @@ export const clientColumns = [
         name: 'address',
         text: 'Dirección',
         textCenter: true,
+        formatter: AddressFormatter,
     },
     {
         name: 'phone',

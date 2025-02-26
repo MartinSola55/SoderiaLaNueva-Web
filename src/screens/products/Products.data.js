@@ -1,3 +1,5 @@
+import { AddressFormatter } from "../../components";
+
 export const productCols = [
     {
         name: 'name',
@@ -31,6 +33,7 @@ export const clientCols = [
         name: 'address',
         text: 'Dirección',
         textCenter: true,
+        formatter: AddressFormatter,
     },
     {
         name: 'route',

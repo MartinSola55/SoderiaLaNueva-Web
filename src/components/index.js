@@ -20,6 +20,7 @@ import Table from './Table/Table';
 import Toast from './Toast/Toast';
 import Tooltip from './Tooltip/Tooltip';
 import TopBar from './TopBar/TopBar';
+import AddressInput from './AddressInput/AddressInput';
 
 import ActionButtons from './shared/ActionButtons/ActionButtons';
 import ActionConfirmationModal from './shared/ActionConfirmationModal/ActionConfirmationModal';
@@ -48,6 +49,7 @@ import { LineChart } from './charts/LineChart/LineChart';
 import { AreaChart } from './charts/AreaChart/AreaChart';
 
 import { DebtFormatter } from './Formatters/DebtFormatter';
+import { AddressFormatter } from './Formatters/AddressFormatter';
 
 export {
 	BreadCrumb,
@@ -72,6 +74,7 @@ export {
 	Toast,
 	Tooltip,
 	TopBar,
+	AddressInput,
 
 	// Shared components
 	ActionButtons,
@@ -101,6 +104,7 @@ export {
 	LineChart,
 	AreaChart,
 
-	// Formatters
-	DebtFormatter,
+    // Formatters
+    DebtFormatter,
+    AddressFormatter,
 };

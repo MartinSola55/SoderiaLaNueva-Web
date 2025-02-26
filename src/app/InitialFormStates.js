@@ -19,20 +19,35 @@ export class InitialFormStates {
 		subscriptionProducts: [],
 	};
 
-	static Client = {
-		name: '',
-		address: '',
-		phone: '',
-		observations: '',
-		dealerId: null,
-		deliveryDay: null,
-		hasInvoice: false,
-		invoiceType: null,
-		taxCondition: null,
-		cuit: '',
-		products: [],
-		subscriptions: [],
-	};
+    static Client = {
+        name: '',
+        address: {
+            houseNumber: '',
+            road: '',
+            neighbourhood: '',
+            suburb: '',
+            cityDistrict: '',
+            city: '',
+            town: '',
+            village: '',
+            county: '',
+            state: '',
+            country: '',
+            postcode: '',
+            lat: '',
+            lon: '',
+        },
+        phone: '',
+        observations: '',
+        dealerId: null,
+        deliveryDay: null,
+        hasInvoice: false,
+        invoiceType: null,
+        taxCondition: null,
+        cuit: '',
+        products: [],
+        subscriptions: [],
+    };
 
 	static StaticRoute = {
 		dealerId: null,

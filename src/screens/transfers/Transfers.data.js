@@ -1,5 +1,5 @@
 import { formatCurrency } from "../../app/Helpers";
-import { DebtFormatter } from "../../components";
+import { AddressFormatter, DebtFormatter } from "../../components";
 
 export const transferColumns = [
     {
@@ -35,6 +35,7 @@ export const clientColumns = [
         name: 'address',
         text: 'Dirección',
         textCenter: true,
+        formatter: AddressFormatter,
     },
     {
         name: 'phone',
