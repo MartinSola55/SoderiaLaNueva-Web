@@ -39,7 +39,7 @@ export const RoutesCard = ({ isAdmin }) => {
 			setData(r.data.routes.map(x => ({
 				...x,
 				href: x.id,
-				soldProducts: x.soldProducts.length > 0 ? formatSoldProducts(x.soldProducts) : []
+				soldProducts: x.soldProducts?.length > 0 ? formatSoldProducts(x.soldProducts) : []
 			})));
 			setLoading(false);
 		});

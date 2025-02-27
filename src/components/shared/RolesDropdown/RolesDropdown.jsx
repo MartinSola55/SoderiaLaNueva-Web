@@ -4,13 +4,13 @@ import { formatRoleItems } from '@app/Helpers';
 import API from '@app/API';
 
 const RolesDropdown = ({
-	value = null,
-	label = null,
-	required = false,
-	disabled = false,
-	placeholder = 'Seleccione un usuario',
-	isMulti = false,
-	onChange = () => { },
+    value = null,
+    label = null,
+    required = false,
+    disabled = false,
+    placeholder = 'Seleccione un rol',
+    isMulti = false,
+    onChange = () => { },
 }) => {
 	const [items, setItems] = useState(null);
 

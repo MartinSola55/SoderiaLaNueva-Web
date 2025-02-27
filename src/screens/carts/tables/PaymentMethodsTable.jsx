@@ -40,9 +40,16 @@ export const PaymentMethodsTable = ({
 	];
 
 	const handleChange = (value, row) => {
+		const getNewPaymentMethods = () => {
+			const formPaymentMethod = form.paymentMethods?.find(x => x.paymentMethodId === row.id);
+			if (formPaymentMethod)
+				return form.paymentMethods.map(x => x.paymentMethodId === row.id ? { ...x, amount: value } : x);
+			return [...form.paymentMethods, {paymentMethodId: row.id, amount: value}]
+		};
+
 		const newForm = {
 			...form,
-			paymentMethods: form.paymentMethods.map(x => x.paymentMethodId === row.id ? { ...x, amount: value } : x),
+			paymentMethods: getNewPaymentMethods(),
 		};
 		onTableChange(newForm);
 	};

@@ -201,27 +201,29 @@ const EditRoute = ({ isWatching = false }) => {
 												<Table
 													rows={selectedRows}
 													columns={selectedColumns}
-													emptyTableMessage='No se hay clientes en la ruta'
+													emptyTableMessage='No hay clientes seleccionados en la ruta'
 												></Table>
 											</Col>
 										</Row>
 									)
 								}
 								footer={
-									<div className='d-flex justify-content-end'>
-										<Button
-											variant='secondary'
-											className='me-2'
-											onClick={() => navigate('/planillas/list')}
-										>
-											Volver
-										</Button>
-										{!isWatching && (
-											<Button onClick={handleSubmit} disabled={submitting}>
-												{submitting ? <Loader /> : (id ? 'Actualizar' : 'Crear')}
+									selectedRows.length > 0 && (
+										<div className='d-flex justify-content-end'>
+											<Button
+												variant='secondary'
+												className='me-2'
+												onClick={() => navigate('/planillas/list')}
+											>
+												Volver
 											</Button>
-										)}
-									</div>
+											{!isWatching && (
+												<Button onClick={handleSubmit} disabled={submitting}>
+													{submitting ? <Loader /> : (id ? 'Actualizar' : 'Crear')}
+												</Button>
+											)}
+										</div>
+									)
 								}
 							/>
 						</Col>

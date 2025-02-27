@@ -313,7 +313,7 @@ const DynamicRouteDetails = () => {
 					}
 					footer={
 						<div className='d-flex justify-content-between'>
-							{!form.isClosed && (
+							{!form.isClosed && App.isAdmin() && (
 								<Button
 									className='me-4'
 									onClick={handleCloseRoute}

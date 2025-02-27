@@ -1,3 +1,6 @@
+import { formatRole } from "@app/Helpers";
+import { Roles } from "../../constants/Roles";
+
 export const columns = [
 	{
 		name: 'fullName',
@@ -29,4 +32,9 @@ export const columns = [
 export const sortUserItems = [
 	{ value: 'createdAt-asc', label: 'Creado - Asc.' },
 	{ value: 'createdAt-desc', label: 'Creado - Desc.' },
+];
+
+export const rolesItems = [
+	{value: Roles.Admin, label:formatRole(Roles.Admin)},
+	{value: Roles.Dealer, label: formatRole(Roles.Dealer)}
 ];

@@ -33,27 +33,33 @@ export const ClientSubscriptionProductsTable = ({
 			body={loading ? <Spinner /> :
 				<Row className='align-items-center'>
 					<Col xs={12}>
-						<Table rows={subscriptions} columns={subscriptionsColumns} />
+						<Table 
+							rows={subscriptions} 
+							columns={subscriptionsColumns}
+							emptyTableMessage='No se encontraron abonos creados'
+						/>
 					</Col>
 				</Row>
 			}
 			footer={
 				<div className={`d-flex justify-content-${interalIsWatching ? 'end' : 'between'}`}>
-					{!interalIsWatching ? (
-						<>
-							<Button link onClick={() => setInteralIsWatching(true)}>
-								Cancelar
-							</Button>
-							<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>
-								{submitting ? <Loader /> : 'Guardar'}
-							</Button>
-						</>
-					) : (
-						<>
-							<Button onClick={() => { setInteralIsWatching(false) }}>
-								Editar
-							</Button>
-						</>
+					{subscriptions.length > 0 && (
+						!interalIsWatching ? (
+							<>
+								<Button link onClick={() => setInteralIsWatching(true)}>
+									Cancelar
+								</Button>
+								<Button onClick={() => handleOnSubmit(onSubmit, setInteralIsWatching)} disabled={submitting}>
+									{submitting ? <Loader /> : 'Guardar'}
+								</Button>
+							</>
+						) : (
+							<>
+								<Button onClick={() => { setInteralIsWatching(false) }}>
+									Editar
+								</Button>
+							</>
+						)
 					)}
 				</div>
 			}

@@ -74,11 +74,23 @@ export const getProductTypes = (onSuccess) => {
     });
 };
 
-export const saveSubscription = (form, id, onSuccess, onError) => {
+export const getProductRows = (productTypes = [], form) => {
+	return productTypes.map(x => {
+		const productForm = form.subscriptionProducts.find(y => Number(y.id) === Number(x.id))
+		if (productForm)
+			return {
+				...x,
+				quantity: productForm.quantity,
+			};
+		return x;
+	});
+} 
+
+export const saveSubscription = (form, id, productRows, onSuccess, onError) => {
     const rq = {
         name: form.name,
         price: form.price,
-        subscriptionProducts: form.subscriptionProducts
+        subscriptionProducts: productRows
             .filter((x) => x.quantity)
             .map((x) => ({
                 productTypeId: x.id,

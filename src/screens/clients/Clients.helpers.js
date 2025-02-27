@@ -1,3 +1,4 @@
+import App from "@app/App";
 import API from "../../app/API";
 import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "../../app/Helpers";
 import { Toast } from "../../components";
@@ -26,7 +27,8 @@ export const getAddClientBreadcrumbItems = (label, routeId) => {
 	const items = [
 		{
 			active: false,
-			label: 'Planillas',
+			label: App.isAdmin() ? 'Planillas' : 'Mis planillas',
+			url: App.isAdmin() ? '/planillas/list' : '/planillas/misPlanillas',
 		},
 		{
 			active: false,
@@ -45,7 +47,7 @@ export const getAddClientBreadcrumbItems = (label, routeId) => {
 	return items;
 };
 
-export const createClient = async (form, onSuccess, onError) => {
+export const createClient = async (form, onSuccess, onError, onFinally) => {
 	const rq = {
 		name: form.name,
 		address: form.address,
@@ -71,6 +73,9 @@ export const createClient = async (form, onSuccess, onError) => {
 		.catch((r) => {
 			Toast.error(r.error?.message);
 			onError();
+		})
+		.finally(() => {
+			onFinally();
 		})
 };
 

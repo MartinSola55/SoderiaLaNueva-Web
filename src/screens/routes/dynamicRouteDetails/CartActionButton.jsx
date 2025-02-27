@@ -1,5 +1,4 @@
-import { Dropdown } from 'react-bootstrap';
-import { Button } from "@components"
+import { Button, Dropdown } from 'react-bootstrap';
 import { CartStatuses } from "@constants/Cart";
 
 export const CartActionButton = ({

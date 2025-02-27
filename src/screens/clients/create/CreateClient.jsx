@@ -44,6 +44,7 @@ const CreateClient = () => {
         setSubmitting(true);
         createClient(form,
             () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
+			() => { },
             () => { setSubmitting(false) }
         );
     };
