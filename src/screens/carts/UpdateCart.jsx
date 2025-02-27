@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router';
 import { Loader } from 'rsuite';
 import { InitialFormStates } from '@app/InitialFormStates.js';
 import API from '@app/API.js';
-import App from '@app/App.js';
 import { BreadCrumb, Button, Toast } from '@components';
 import { PaymentMethodsTable, ProductsTable, ReturnedProductsTable, SubscriptionProductsTable } from './tables';
 import { getBreadcrumbItems } from './Cart.data.js';
@@ -59,9 +58,6 @@ const UpdateCart = () => {
 			}
 		);
 	}, [form, navigate, submitting]);
-
-	if (!App.isAdmin())
-		return navigate('/notAllowed');
 
 	return (
 		<>

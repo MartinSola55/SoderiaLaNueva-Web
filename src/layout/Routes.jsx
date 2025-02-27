@@ -233,15 +233,6 @@ export const AppRoutes = () => (
 							</DefaultLayout>
 						}
 					/>
-
-					<Route
-						path='/planillas/bajada/:id'
-						element={
-							<DefaultLayout>
-								<UpdateCart isEditing />
-							</DefaultLayout>
-						}
-					/>
 				</Route>
 				
 				{/* Planilla Admin y Dealer */}
@@ -259,6 +250,14 @@ export const AppRoutes = () => (
 						element={
 							<DefaultLayout>
 								<AddClientList />
+							</DefaultLayout>
+						}
+					/>
+					<Route
+						path='/planillas/bajada/:id'
+						element={
+							<DefaultLayout>
+								<UpdateCart isEditing />
 							</DefaultLayout>
 						}
 					/>

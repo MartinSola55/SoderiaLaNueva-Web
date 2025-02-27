@@ -145,6 +145,9 @@ export const getFilteredCarts = (carts, filters) => {
 			filteredCarts = filteredCarts.filter(x => x.products.some(y => y.soldQuantity));
 	}
 
+	if (filters.text)
+		filteredCarts = filteredCarts.filter((x) => x.client.name.toLowerCase().includes(filters.text.toLowerCase()));
+
 	return filteredCarts;
 };
 

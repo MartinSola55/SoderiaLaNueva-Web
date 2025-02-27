@@ -109,7 +109,7 @@ const StaticRouteDetails = () => {
 						) : (
 							<Row>
 								{form.carts.length === 0 && (
-									<h6>No existen repartos para esta ruta</h6>
+									<h6>No existen repartos para esta planilla</h6>
 								)}
 								{form.carts.map((cart, i) => {
 									return (
