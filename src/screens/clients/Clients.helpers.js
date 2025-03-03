@@ -154,7 +154,7 @@ export const updateClientSubscriptions = async (form, onSuccess, onError) => {
 	API.post('client/updateClientSubscriptions', rq)
 		.then((r) => {
 			Toast.success(r.message);
-			onSuccess();
+			onSuccess(r);
 		})
 		.catch((r) => {
 			Toast.error(r.error?.message);

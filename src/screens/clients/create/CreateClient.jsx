@@ -6,7 +6,7 @@ import { BreadCrumb, Toast } from '@components';
 import { Messages } from '@constants/Messages';
 import App from '@app/App';
 import { ClientInfo, ClientProductsTable } from '../cards';
-import { createClient, getBreadcrumbItems, getProducts, handleInputChange, handleProductsChange } from '../Clients.helpers';
+import { createClient, getBreadcrumbItems, getProducts } from '../Clients.helpers';
 
 const CreateClient = () => {
 	const navigate = useNavigate();
@@ -70,11 +70,6 @@ const CreateClient = () => {
 
         handleInputChange(products, 'products');
     };
-
-    // Render
-    if (!App.isAdmin()) {
-        return navigate('/notAllowed');
-    }
 
 	return (
 		<>

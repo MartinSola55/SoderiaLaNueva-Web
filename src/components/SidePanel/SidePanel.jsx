@@ -55,7 +55,6 @@ const SidePanel = ({
                 )}
                 {App.isDealer() && (
                     <>
-                        <hr className="my-3" />
                         <span className="item-container d-block" onClick={() => handleItemClick('/planillas/misPlanillas')}>
                             <FontAwesomeIcon icon={faClipboard} /> Mis planillas
                         </span>
