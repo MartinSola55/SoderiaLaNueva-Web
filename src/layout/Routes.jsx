@@ -22,7 +22,6 @@ const DefaultLayout = lazy(() => import('./DefaultLayout'));
 const NotFound = lazy(() => import('../screens/public/NotFound.jsx'));
 const NotAllowed = lazy(() => import('../screens/public/NotAllowed.jsx'));
 const Home = lazy(() => import('../screens/main/Home.jsx'));
-const CreateUser = lazy(() => import('../screens/users/CreateUser.jsx'));
 const UserList = lazy(() => import('../screens/users/UserList.jsx'));
 const CreateProduct = lazy(() => import('../screens/products/CreateProduct.jsx'));
 const ProductList = lazy(() => import('../screens/products/ProductList.jsx'));
@@ -30,6 +29,7 @@ const DealerRouteList = lazy(() => import('../screens/routes/DealerRouteList.jsx
 const AddClientList = lazy(() => import('../screens/routes/dynamicRouteDetails/AddClientList.jsx'));
 const CreateTransfer = lazy(() => import('../screens/transfers/CreateTransfer.jsx'));
 const GeneralStats = lazy(() => import('../screens/stats/GeneralStats.jsx'));
+const CreateUser = lazy(() => import('../screens/users/create/CreateUser.jsx'));
 
 const PrivateRoute = () => (App.isLoggedIn() ? <Outlet /> : <Navigate to='/login' />);
 
