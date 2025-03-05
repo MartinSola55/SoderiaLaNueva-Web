@@ -89,36 +89,38 @@ export const initializeMapLayers = (map, initialLocation) => {
 };
 
 export const updateDropoffs = (map, dropOffPoints, visitedPoints, initialLocation) => {
-    const dropoffSource = map.getSource('dropoffs');
-    const routeSource = map.getSource('route');
+	const dropoffSource = map.getSource('dropoffs');
+	const routeSource = map.getSource('route');
 
-    if (dropoffSource) {
-        const features = dropOffPoints.map((point) => {
-			return turf.point([point.lng, point.lat], { 
-				visited: point.status === CartStatuses.Confirmed ? true : false,
+	if (dropoffSource) {
+		const allPoints = [...visitedPoints, ...dropOffPoints];
+
+		const features = allPoints.map((point) => {
+			return turf.point([point.lng, point.lat], {
+				visited: point.status === CartStatuses.Confirmed,
 				status: point.status,
 				color: point.status === CartStatuses.Confirmed ? 'green' : 'yellow',
 				clientName: point.clientName
 			});
 		});
-        const geojson = turf.featureCollection(features);
-        dropoffSource.setData(geojson);
+
+		const geojson = turf.featureCollection(features);
+		dropoffSource.setData(geojson);
 
 		map.setPaintProperty('dropoffs-circle', 'circle-color', [
 			'case',
 			['get', 'visited'], 'green',
-			['==', ['get', 'status'], CartStatuses.Confirmed], 'green',
 			'yellow'
 		]);
 
-        if (features.length > 0) {
-            const coordinates = [initialLocation, ...features.map((f) => f.geometry.coordinates)];
-            fetchRoute(coordinates, (routeData) => {
-                if (routeData) {
-                    const routeGeoJson = turf.featureCollection([turf.feature(routeData)]);
-                    routeSource.setData(routeGeoJson);
-                }
-            });
-        }
-    }
+		if (features.length > 0) {
+			const coordinates = [initialLocation, ...features.map((f) => f.geometry.coordinates)];
+			fetchRoute(coordinates, (routeData) => {
+				if (routeData) {
+					const routeGeoJson = turf.featureCollection([turf.feature(routeData)]);
+					routeSource.setData(routeGeoJson);
+				}
+			});
+		}
+	}
 };

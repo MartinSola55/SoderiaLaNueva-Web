@@ -38,6 +38,13 @@ const Map = ({
 				mapRef.current = null;
 			}
 		};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accessToken, initialLocation]);
+
+	useEffect(() => {
+        if (mapRef.current) {
+            updateDropoffs(mapRef.current, dropOffPoints, visitedPoints, initialLocation);
+        }
     }, [dropOffPoints, visitedPoints, initialLocation]);
 
     if (!accessToken)

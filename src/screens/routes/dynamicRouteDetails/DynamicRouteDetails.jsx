@@ -226,7 +226,30 @@ const DynamicRouteDetails = () => {
 	};
 
 	const handleOpenMap = () => {
-		mapModalRef.current.open(dropOffPoints, visitedPoints);
+		const points = form.carts.map((cart) => {
+			const client = cart.client;
+			if (client && client.address.lat && client.address.lon) {
+				const isVisited = cart.status === CartStatuses.Confirmed;
+				const color = isVisited ? 'green' : 'yellow';
+				return {
+					id: cart.id,
+					lng: client.address.lon,
+					lat: client.address.lat,
+					color,
+					status: cart.status,
+					clientName: client.name,
+					isVisited: isVisited,
+				};
+			}
+			return null;
+		}).filter(point => point !== null);
+		const visited = points.filter(point => point.isVisited);
+		const dropOff = points.filter(point => !point.isVisited);
+
+		setVisitedPoints(visited);
+		setDropOffPoints(dropOff);
+
+		mapModalRef.current.open(dropOff, visited);
 	};
 
 	return (
