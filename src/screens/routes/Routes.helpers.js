@@ -1,7 +1,7 @@
-import API from "../../app/API";
-import { buildGenericGetAllRq, formatClients, formatDeliveryDay } from "../../app/Helpers";
-import { CartPaymentStatuses, CartServiceType, CartStatuses } from "../../constants/Cart";
-import { Roles } from "../../constants/Roles";
+import API from "@app/API";
+import { buildGenericGetAllRq, formatClients, formatDeliveryDay } from "@app/Helpers";
+import { CartPaymentStatuses, CartServiceType, CartStatuses } from "constants//Cart";
+import { Roles } from "@constants/Roles";
 
 // Routes List
 export const getAllRoutes = (dayFilter, onSuccess) => {
@@ -143,6 +143,10 @@ export const getFilteredCarts = (carts, filters) => {
 
 		if (filters.cartServiceType.includes(CartServiceType.Cart))
 			filteredCarts = filteredCarts.filter(x => x.products.some(y => y.soldQuantity));
+	}
+
+	if (filters.cartTransfersType.length) {
+		filteredCarts = filteredCarts.filter(x => x.paymentMethods.some(y => filters.cartTransfersType.includes(y.id)));
 	}
 
 	if (filters.text)

@@ -39,7 +39,7 @@ export const SubscriptionProductsTable = ({
 			const product = cart.products.find(y => y.productTypeId === x.typeId);
 			return {
 				...x,
-				quantity: product ? product.subscriptionQuantity : 0,
+				quantity: !isNaN(Number(x.quantity)) ? x.quantity: (product ? product.subscriptionQuantity : 0),
 			}
 		});
 

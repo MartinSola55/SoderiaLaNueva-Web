@@ -1,8 +1,8 @@
 import { Col } from "react-bootstrap"
-import { Dropdown, Input, ProductTypesDropdown } from "@components"
+import { Dropdown, Input, PaymentMethodsDropdown, ProductTypesDropdown } from "@components"
 import App from "@app/App";
 
-export const DynamicRouteFilters = ({ filters, cartStatuses, cartTransfersTypes, cartPaymentStatuses, cartServiceTypes, setFilters }) => {
+export const DynamicRouteFilters = ({ filters, cartStatuses, cartPaymentStatuses, cartServiceTypes, setFilters }) => {
 	const handleFilterRows = (value, name) => {
 		setFilters((prevFilters) => ({
 			...prevFilters,
@@ -39,11 +39,9 @@ export const DynamicRouteFilters = ({ filters, cartStatuses, cartTransfersTypes,
 			</Col>
 			{App.isDealer() && (
 				<Col xs={12} sm={6} lg={3} className='mb-3'>
-					<Dropdown
-						placeholder='Método de pago'
-						items={cartTransfersTypes}
-						isMulti
+					<PaymentMethodsDropdown
 						value={filters.cartTransfersType}
+						isMulti
 						onChange={(options) => handleFilterRows(options.map(o => o.value), 'cartTransfersType')}
 					/>
 				</Col>

@@ -45,7 +45,6 @@ const DynamicRouteDetails = () => {
 	const [submitting, setSubmitting] = useState(false);
 	const [filters, setFilters] = useState(initialFilters);
 	const [cartStatuses, setCartStatuses] = useState([]);
-	const [cartTransfersTypes, setCartTransfersTypes] = useState([]);
 	const [cartPaymentStatuses, setCartPaymentStatuses] = useState([]);
 	const [paymentMethods, setPaymentMethods] = useState([]);
 	const [dropOffPoints, setDropOffPoints] = useState([]);
@@ -61,7 +60,6 @@ const DynamicRouteDetails = () => {
 		API.get('cart/getFormData')
 			.then((r) => {
 				setCartStatuses(formatOptions(r.data.cartStatuses));
-				setCartTransfersTypes(formatOptions(r.data.cartTransfersTypes));
 				setCartPaymentStatuses(formatOptions(r.data.cartPaymentStatuses));
 			});
 		API.get('cart/getPaymentMethodsCombo')
@@ -179,7 +177,7 @@ const DynamicRouteDetails = () => {
 		const cart = form.carts.find(x => x.id === id);
 		const totalPaid = cart.paymentMethods.reduce((sum, x) => sum + x.amount, 0);
 
-		if (!cart.products.length && !cart.client.subscriptionProducts.length) {
+		if (!cart.products.length && !cart.client.subscriptionProducts.some(x => x.quantity)) {
 			Toast.warning("Debes bajar al menos un producto pago o del abono.");
 			return;
 		};
@@ -285,7 +283,6 @@ const DynamicRouteDetails = () => {
 								filters={filters}
 								setFilters={setFilters}
 								cartStatuses={cartStatuses}
-								cartTransfersTypes={cartTransfersTypes}
 								cartPaymentStatuses={cartPaymentStatuses}
 								cartServiceTypes={cartServiceTypes}
 							/>

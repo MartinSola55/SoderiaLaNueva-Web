@@ -64,7 +64,7 @@ const StaticRouteDetails = () => {
 			'subscription/renewByRoute',
 			'Esta acción no se puede revertir',
 			'¿Seguro deseas renovar TODOS los abonos? Esto sólo incluye los clientes de esta planilla. Si un abono ya se renovó, no se volverá a renovar',
-			() => { }
+			(r) => { handleUpdatecLientsDebt(r) }
 		);
 	};
 
@@ -79,6 +79,24 @@ const StaticRouteDetails = () => {
 
 	const handleOpenLastProducts = (products) => {
 		lastProductsRef.current.open(products);
+	};
+
+	const handleUpdatecLientsDebt = (r) => {
+		const newCarts = form.carts.map(x => {
+			const newCart = r.data.clientDebts.find(x => x.clientId === r.clientId);
+			if (newCart) {
+				return {
+					...x,
+					debt: newCart.debt
+				};
+			};
+			return  { ...x };
+		});
+
+		setForm((prevForm) => ({
+			...prevForm,
+			carts: newCarts,
+		}));
 	};
 
 	return (

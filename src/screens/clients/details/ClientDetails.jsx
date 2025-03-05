@@ -83,10 +83,37 @@ const ClientDetails = () => {
 
 		setSubmitting(true);
 		updateClientSubscriptions(form,
-			() => { setSubmitting(false) },
+			(r) => { 
+				setSubmitting(false);
+				handleUpdateClientStock(r)
+			},
 			() => { setSubmitting(false) }
 		);
 	};
+
+	const handleUpdateClientStock = (r) => {
+		setForm((prevForm) => ({
+			...prevForm,
+			products: products.map(x => {
+				const oldProduct = form.products.find(y => y.id === x.id);
+				const newProduct = r.data.products.find(y => y.productId === x.id);
+	
+				if (!oldProduct && !newProduct) return { id: null };
+	
+				if (!oldProduct && newProduct)
+					return {
+						id: newProduct.productId,
+						name: x.name,
+						quantity: newProduct.stock
+					};
+	
+				return { 
+					...oldProduct,
+					quantity: newProduct ? newProduct.stock : oldProduct.quantity 
+				};
+			}).filter(x => x.id)
+		}));
+	}
 
 	return (
 		<>

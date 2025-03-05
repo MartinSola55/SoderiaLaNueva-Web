@@ -29,7 +29,7 @@ export const DynamicRouteCartDetailCard = ({
 
 	// Handlers
 	const handleSubscriptionProductsChange = (product, value) => {
-		const prodIdx = cart.client.subscriptionProducts.findIndex((x) => x.id === product.id);
+		const prodIdx = cart.client.subscriptionProducts.findIndex((x) => x.typeId === product.typeId);
 		const subscriptionProduct = {
 			...product,
 			quantity: value,

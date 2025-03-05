@@ -1,6 +1,6 @@
-import API from "../../../app/API";
+import API from "@app/API";
 import { Toast } from "../../../components";
-import { CartStatuses } from "../../../constants/Cart";
+import { CartStatuses } from "@constants/Cart";
 
 export const getTotalSold = (cart) => {
 	const total = cart.products.reduce((acc, x) => acc + x.soldQuantity * x.price, 0);
@@ -63,8 +63,8 @@ export const confirmCart = (cart, onSuccess, onError) => {
 };
 
 export const updateAfterSubmit = (form, newCart, response) => {
-	// TODO: UPDATE CLIENT DEBT AND FORMAT PRODUCTS AS NEEDED AFTER CONFIRM
 	const oldCart = form.carts.find(x => x.id === newCart.id);
+
 	oldCart.products.forEach(x => {
 		const product = newCart.products.find(y => y.productTypeId === x.productTypeId);
 		const subscriptionProduct = newCart.subscriptionProducts.find(y => y.productTypeId === x.productTypeId);
@@ -73,10 +73,24 @@ export const updateAfterSubmit = (form, newCart, response) => {
 			x.returnedQuantity = product.returnedQuantity;
 		}
 		if (subscriptionProduct) {
-			x.subscriptionQuantity = subscriptionProduct.quantity;
 			x.returnedQuantity += subscriptionProduct.quantity;
 		}
 	});
+	if (oldCart.products.length === 0) {
+		oldCart.products = oldCart.client.products.map(x => {
+			const subscriptionProduct = newCart.subscriptionProducts.find(y => y.productTypeId === x.productTypeId);
+
+			return ({
+				name: x.name,
+				soldQuantity: 0,
+				returnedQuantity: subscriptionProduct?.quantity || 0,
+				productTypeId: x.productTypeId
+			});
+		})
+	};
+	if (newCart.subscriptionProducts.length === 0) {
+		oldCart.client.subscriptionProducts = oldCart.client.subscriptionProducts.map(x => ({ ...x, quantity: 0}));
+	};
 	oldCart.client.debt = response.clientDebt;
 	oldCart.status = CartStatuses.Confirmed;
 	return form;
