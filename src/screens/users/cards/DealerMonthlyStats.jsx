@@ -48,7 +48,7 @@ export const DealerMonthlyStats = ({id}) => {
 												</span>
 												<input
 													disabled
-													className="w-100 d-block custom-range"
+													className="w-100 d-block custom-range completed"
 													type="range"
 													min="0"
 													max="100"
@@ -79,7 +79,7 @@ export const DealerMonthlyStats = ({id}) => {
 												</span>
 												<input
 													disabled
-													className="w-100 d-block custom-range"
+													className="w-100 d-block custom-range non-completed"
 													type="range"
 													min="0"
 													max="100"

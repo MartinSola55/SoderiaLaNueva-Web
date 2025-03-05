@@ -34,9 +34,28 @@
         border-radius: 5px;
     }
 
-    &::-moz-range-track {
-        background: linear-gradient(90deg, steelblue var(--progress, 0%), #ddd var(--progress, 0%));
-        height: 8px;
-        border-radius: 5px;
-    }
+	&::-moz-range-track {
+		background: linear-gradient(90deg, steelblue var(--progress, 0%), #ddd var(--progress, 0%));
+		height: 8px;
+		border-radius: 5px;
+	}
+
+	&.completed {
+		&::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg, steelblue var(--progress, 0%), #ddd var(--progress, 0%));
+		}
+		&::-moz-range-track {
+			background: linear-gradient(90deg, steelblue var(--progress, 0%), #ddd var(--progress, 0%));
+		}
+	}
+
+	&.non-completed {
+		&::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg,crimson var(--progress, 0%), #ddd var(--progress, 0%));
+		}
+		&::-moz-range-track {
+			background: linear-gradient(90deg, crimson var(--progress, 0%), #ddd var(--progress, 0%));
+		}
+	}
+
 }

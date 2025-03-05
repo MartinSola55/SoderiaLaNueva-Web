@@ -12,6 +12,8 @@ import { DealerMonthlyStats } from '../cards/DealerMonthlyStats';
 import { SoldProducts } from '../cards/SoldProducts';
 import { ClientsDebt } from '../cards/ClientsDebt';
 import { Roles } from '@constants/Roles';
+import { ClientStock } from '../cards/ClientStock';
+import { NonVisited } from '../cards/NonVisited';
 
 const initialForm = InitialFormStates.User;
 
@@ -135,6 +137,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 					/>
 					{isWatching && form.roleName === Roles.Dealer && (
 						<>
+							<hr />
 							<DealerMonthlyStats 
 								id={id}
 							/>
@@ -143,6 +146,12 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 									id={id}
 								/>
 								<ClientsDebt 
+									id={id}
+								/>
+								<ClientStock
+									id={id}
+								/>
+								<NonVisited
 									id={id}
 								/>
 							</Row>
