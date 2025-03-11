@@ -116,12 +116,9 @@ const Table = ({
 													: col.formatter
 														? col.formatter(row[col.name], row)
 														: row[col.name]
-										) : <col.component
-											row={row}
-											disabled={row.disabled}
-											onClick={handleCellClick}
-											onUpdate={onUpdate}
-										/>}
+										) : 
+											col.component({row, disabled: row.disabled, onClick: handleCellClick, onUpdate})
+										}
 									</td>
 								);
 							})}
