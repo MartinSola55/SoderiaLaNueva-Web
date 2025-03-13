@@ -1,6 +1,6 @@
 import API from "../../app/API";
 import { buildDealerRouteName, buildGenericGetAllRq, formatCurrency } from "../../app/Helpers";
-import { Toast } from "../../components";
+import { Toast } from "@components";
 
 export const getBreadcrumbItems = (label) => {
     const items = [
@@ -21,8 +21,10 @@ export const getBreadcrumbItems = (label) => {
     return items;
 };
 
-export const getAllProducts = (sort, currentPage, onSuccess) => {
+export const getAllProducts = (sort, currentPage, statusSelected, onSuccess) => {
     const rq = buildGenericGetAllRq(sort, currentPage);
+
+	rq.statuses = statusSelected;
 
     API.post('product/getAll', rq).then((r) => {
         const { totalCount } = r.data;

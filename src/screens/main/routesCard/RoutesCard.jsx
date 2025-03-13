@@ -53,6 +53,7 @@ export const RoutesCard = ({ isAdmin }) => {
 	// Render
 	return (
 		<Card
+			className={`routes-table ${App.isAdmin() ? 'admin-routes-table' : ''}`}
 			cardBodyClassName='p-0'
 			header={
 				<div className="d-flex flex-row align-items-center">
@@ -73,7 +74,6 @@ export const RoutesCard = ({ isAdmin }) => {
 			body={loading ? <Spinner /> :
 				<>
 					<Table
-						className={`routes-table ${App.isAdmin() ? 'admin-routes-table' : ''}`}
 						rows={data}
 						onRowClick={(_, id) => navigate('planillas/abierta/' + id)}
 						clickable={true}

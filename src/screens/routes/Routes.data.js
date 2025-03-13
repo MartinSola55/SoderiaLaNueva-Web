@@ -1,4 +1,4 @@
-import { AddressFormatter } from "../../components";
+import { AddressFormatter } from "@components";
 import { CartServiceType } from "../../constants/Cart";
 
 export const listColumns = [

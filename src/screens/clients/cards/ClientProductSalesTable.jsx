@@ -27,6 +27,7 @@ export const ClientProductSalesTable = ({
 	return (
 		<Card
 			title='Historial de bajadas y transferencias'
+			className="client-product-sales-table"
 			body={loading ? <Spinner /> :
 				<Row className='align-items-center'>
 					<Col xs={12}>

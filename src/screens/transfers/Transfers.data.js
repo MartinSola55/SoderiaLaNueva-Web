@@ -1,5 +1,5 @@
 import { formatCurrency } from "../../app/Helpers";
-import { AddressFormatter, DebtFormatter } from "../../components";
+import { AddressFormatter, DebtFormatter } from "@components";
 
 export const transferColumns = [
     {

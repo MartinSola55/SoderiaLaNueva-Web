@@ -77,7 +77,11 @@ const Table = ({
 							key={i}
 							style={row.style}
 							data-href={row.href}
-							className={`${clickable ? 'clickable-row' : ''} ${row.isSelected ? 'selected-row' : ''}`}
+							className={classNames({
+								'clickable-row': clickable,
+								'selected-row': row.isSelected,
+								'inactive': row.isActive === false
+							})}
 							onClick={handleRowClick}
 						>
 							{columns && columns.map((col, j) => {

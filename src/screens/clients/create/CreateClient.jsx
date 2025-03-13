@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
 import { InitialFormStates } from '@app/InitialFormStates';
-import { BreadCrumb, Toast } from '@components';
+import { ActionConfirmationModal, BreadCrumb, Toast } from '@components';
 import { Messages } from '@constants/Messages';
 import App from '@app/App';
 import { ClientInfo, ClientProductsTable } from '../cards';
@@ -14,6 +14,8 @@ const CreateClient = () => {
 	const [loading, setLoading] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [form, setForm] = useState(InitialFormStates.Client);
+
+	const modalRef = useRef(null);
 
 	// Effects
 	useEffect(() => {
@@ -44,7 +46,18 @@ const CreateClient = () => {
         setSubmitting(true);
         createClient(form,
             () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
-			() => { },
+			(r) => {
+				if (r.data){
+					modalRef.current?.open(
+						null,
+						'',
+						'¿Esta queriendo ingresar este cliente?',
+						`${r.data.name} - ${r.data.address} - ${r.data.phone} ${r.data.cuit ? '- '+r.data.cuit : ''}.
+						En caso de confirmar se redijirá a dicho cliente, caso contrario revise los datos ingresados`,
+						() => {navigate('/clientes/' + r.data.id)}
+					)
+				}
+			 },
             () => { setSubmitting(false) }
         );
     };
@@ -73,6 +86,7 @@ const CreateClient = () => {
 
 	return (
 		<>
+			<ActionConfirmationModal ref={modalRef}/>
 			<BreadCrumb items={getBreadcrumbItems('Nuevo')} title='Clientes' />
 			<Col xs={11} className='container'>
 				<Row>

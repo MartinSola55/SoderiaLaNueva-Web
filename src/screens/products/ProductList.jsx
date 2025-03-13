@@ -1,15 +1,23 @@
 import { Col, Row } from 'react-bootstrap';
-import { ActionButtons, BreadCrumb, Button, Card, Input, ProductsDropdown, Table, TableSort, Toast } from '../../components';
+import { ActionButtons, BreadCrumb, Button, Card, Dropdown, Input, ProductsDropdown, Table, TableSort, Toast } from '@components';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Messages } from '../../constants/Messages';
 import App from '../../app/App';
-import { clientCols, productCols, sortProductItems } from './Products.data';
+import { statusItems, clientCols, productCols, sortProductItems } from './Products.data';
 import { getAllProducts, getBreadcrumbItems, getClientProducts } from './Products.helpers';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const ProductList = () => {
     const allProductCols = [
         ...productCols,
+		{
+			name: 'isActive',
+			text: 'Activo',
+			formatter: (value) => <FontAwesomeIcon icon={value ? faCheck : faXmark}/>,
+            className: 'text-center',
+		},
         {
             name: 'actions',
             text: 'Acciones',
@@ -30,10 +38,11 @@ const ProductList = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [sort, setSort] = useState(null);
     const [loading, setLoading] = useState(false);
+	const [statusSelected, setStatusSelected] = useState(['active']);
 
     // Effects
     useEffect(() => {
-        getAllProducts(sort, currentPage, ({ products, totalCount }) => {
+        getAllProducts(sort, currentPage, statusSelected, ({ products, totalCount }) => {
             setTotalCount(totalCount);
             setProducts(products);
 
@@ -41,7 +50,7 @@ const ProductList = () => {
                 Toast.warning(Messages.Error.noRows);
             }
         });
-    }, [currentPage, sort]);
+    }, [currentPage, sort, statusSelected]);
 
     useEffect(() => {
         if (!selectedProduct)
@@ -94,6 +103,14 @@ const ProductList = () => {
                                         <TableSort
                                             items={sortProductItems}
                                             onChange={handleSortChange}
+                                        />
+                                    </Col>
+                                    <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
+										<Dropdown
+											items={statusItems}
+											value={statusSelected}
+											isMulti
+                                            onChange={(values) => setStatusSelected(values.map(x => x.value))}
                                         />
                                     </Col>
                                     <Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>

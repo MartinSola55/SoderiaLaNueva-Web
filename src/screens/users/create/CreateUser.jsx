@@ -136,7 +136,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 						viewProfileDetails={viewProfileDetails}
 					/>
 					{isWatching && form.roleName === Roles.Dealer && (
-						<>
+						<div className='dealer-stats'>
 							<hr />
 							<DealerMonthlyStats 
 								id={id}
@@ -155,7 +155,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 									id={id}
 								/>
 							</Row>
-						</>
+						</div>
 					)}
 				</Col>
 			</div>

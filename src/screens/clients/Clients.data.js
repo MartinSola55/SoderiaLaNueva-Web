@@ -1,4 +1,4 @@
-import { DebtFormatter, AddressFormatter } from "../../components";
+import { DebtFormatter, AddressFormatter } from "@components";
 
 export const clientColumns = [
     {

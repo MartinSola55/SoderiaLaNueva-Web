@@ -1,7 +1,7 @@
 import App from "@app/App";
 import API from "../../app/API";
 import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "../../app/Helpers";
-import { Toast } from "../../components";
+import { Toast } from "@components";
 import { CartsTransfersTypes } from "../../constants/CartsTransfersTypes";
 
 export const getBreadcrumbItems = (label) => {
@@ -72,7 +72,7 @@ export const createClient = async (form, onSuccess, onError, onFinally) => {
 		})
 		.catch((r) => {
 			Toast.error(r.error?.message);
-			onError();
+			onError(r);
 		})
 		.finally(() => {
 			onFinally();

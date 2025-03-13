@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { Button, Card, DateRangePicker, Spinner, Table } from "../../../components";
+import { Button, Card, DateRangePicker, Spinner, Table } from "@components";
 import API from "@app/API";
-import './dealerMonthlySales.scss';
 import { Dates } from "@app/Helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";

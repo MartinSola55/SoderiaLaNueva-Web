@@ -1,5 +1,5 @@
 import API from "@app/API";
-import { Toast } from "../../../components";
+import { Toast } from "@components";
 import { CartStatuses } from "@constants/Cart";
 
 export const getTotalSold = (cart) => {
