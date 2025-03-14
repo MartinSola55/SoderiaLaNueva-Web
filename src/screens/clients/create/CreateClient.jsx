@@ -33,60 +33,60 @@ const CreateClient = () => {
 		if (submitting)
 			return;
 
-        if (!form.name || !form.address.lat || !form.address.lon || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
-            Toast.warning(Messages.Validation.requiredFields);
-            return;
-        }
+		if (!form.name || !form.address.lat || !form.address.lon || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
+			Toast.warning(Messages.Validation.requiredFields);
+			return;
+		}
 
 		if (form.products.every(x => x.quantity === '')) {
 			Toast.warning("El cliente debe tener al menos un producto asociado.");
 			return;
 		}
 
-        setSubmitting(true);
-        createClient(form,
-            () => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
+		setSubmitting(true);
+		createClient(form,
+			() => { navigate(App.isAdmin() ? '/clientes/list' : '/') },
 			(r) => {
-				if (r.data){
-					modalRef.current?.open(
+				if (r.data) {
+					modalRef.current.open(
 						null,
 						'',
 						'¿Esta queriendo ingresar este cliente?',
-						`${r.data.name} - ${r.data.address} - ${r.data.phone} ${r.data.cuit ? '- '+r.data.cuit : ''}.
+						`${r.data.name} - ${r.data.address} - ${r.data.phone} ${r.data.cuit ? '- ' + r.data.cuit : ''}.
 						En caso de confirmar se redijirá a dicho cliente, caso contrario revise los datos ingresados`,
-						() => {navigate('/clientes/' + r.data.id)}
+						() => { navigate('/clientes/' + r.data.id) }
 					)
 				}
-			 },
-            () => { setSubmitting(false) }
-        );
-    };
+			},
+			() => { setSubmitting(false) }
+		);
+	};
 
-    const handleInputChange = (value, field) => {
-        setForm((prevForm) => {
-            return {
-                ...prevForm,
-                [field]: value,
-            };
-        });
-    };
+	const handleInputChange = (value, field) => {
+		setForm((prevForm) => {
+			return {
+				...prevForm,
+				[field]: value,
+			};
+		});
+	};
 
-    const handleProductsChange = (props, value) => {
-        const products = form.products.map((x) => {
-            if (x.id === props.row.id)
-                return {
-                    ...x,
-                    quantity: value,
-                };
-            return x;
-        });
+	const handleProductsChange = (props, value) => {
+		const products = form.products.map((x) => {
+			if (x.id === props.row.id)
+				return {
+					...x,
+					quantity: value,
+				};
+			return x;
+		});
 
-        handleInputChange(products, 'products');
-    };
+		handleInputChange(products, 'products');
+	};
 
 	return (
 		<>
-			<ActionConfirmationModal ref={modalRef}/>
+			<ActionConfirmationModal ref={modalRef} />
 			<BreadCrumb items={getBreadcrumbItems('Nuevo')} title='Clientes' />
 			<Col xs={11} className='container'>
 				<Row>

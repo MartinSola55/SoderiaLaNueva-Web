@@ -3,11 +3,10 @@ import { Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faEye, faPencil, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { DeleteConfirmationModal, Tooltip } from "@components";
+import { ActiveConfirmationModal, DeleteConfirmationModal, Tooltip } from "@components";
 import App from "@app/App";
 
 import "./ActionButtons.scss";
-import ActiveConfirmationModal from "../ActiveConfirmationModal/ActiveConfirmationModal";
 
 const ActionButtons = ({
 	row = {},
@@ -22,8 +21,7 @@ const ActionButtons = ({
 	onEdit = () => { },
 }) => {
 	const navigate = useNavigate();
-	const id = row.id;
-	const endpoint = row.endpoint;
+	const { id, endpoint } = row;
 
 	const deleteModalRef = useRef();
 	const activeModalRef = useRef();
@@ -49,7 +47,6 @@ const ActionButtons = ({
 	const handleDelete = () => {
 		deleteModalRef.current.open(id, endpoint);
 	};
-
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import API from "../../app/API";
+import API from "@app/API";
 
 export const updateCart = (form, onSuccess, onError) => {
 	const rq = {

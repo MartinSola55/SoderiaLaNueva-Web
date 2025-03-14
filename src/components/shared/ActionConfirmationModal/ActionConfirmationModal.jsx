@@ -26,7 +26,7 @@ const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {
 	};
 
 	const handleConfirm = () => {
-		API.post(`${endpoint}`, request)
+		API.post(endpoint, request)
 			.then((r) => {
 				Toast.success(r.message);
 				handleClose();
@@ -61,15 +61,15 @@ const ActionConfirmationModal = forwardRef(({ disabled }, ref) => {
 				<Button link onClick={handleClose}>
 					Cancelar
 				</Button>
-				{ endpoint ? (
-						<Button variant='primary' onClick={handleConfirm} disabled={disabled}>
-							{disabled ? <Loader /> : 'Confirmar'}
-						</Button>
-					) : (
-						<Button variant='primary' onClick={callbacks.onSuccess} disabled={disabled}>
-							{disabled ? <Loader /> : 'Confirmar'}
-						</Button>
-					) 
+				{endpoint ? (
+					<Button variant='primary' onClick={handleConfirm} disabled={disabled}>
+						{disabled ? <Loader /> : 'Confirmar'}
+					</Button>
+				) : (
+					<Button variant='primary' onClick={callbacks.onSuccess} disabled={disabled}>
+						{disabled ? <Loader /> : 'Confirmar'}
+					</Button>
+				)
 				}
 			</Modal.Footer>
 		</Modal>

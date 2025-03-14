@@ -44,6 +44,7 @@ import CellButton from './shared/CellInputs/CellButton';
 import TableFilters from './shared/TableFilters/TableFilters';
 import MonthDropdown from './shared/MonthDropdown/MonthDropdown';
 import SalesYearsDropdown from './shared/SalesYearsDropdown/SalesYearsDropdown';
+import ActiveConfirmationModal from './shared/ActiveConfirmationModal/ActiveConfirmationModal';
 
 import { LineChart } from './charts/LineChart/LineChart';
 import { AreaChart } from './charts/AreaChart/AreaChart';
@@ -99,12 +100,13 @@ export {
 	TableFilters,
 	MonthDropdown,
 	SalesYearsDropdown,
+	ActiveConfirmationModal,
 
 	// Charts
 	LineChart,
 	AreaChart,
 
-    // Formatters
-    DebtFormatter,
-    AddressFormatter,
+	// Formatters
+	DebtFormatter,
+	AddressFormatter,
 };
