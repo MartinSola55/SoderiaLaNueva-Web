@@ -21,6 +21,7 @@ import Toast from './Toast/Toast';
 import Tooltip from './Tooltip/Tooltip';
 import TopBar from './TopBar/TopBar';
 import AddressInput from './AddressInput/AddressInput';
+import Map from './Map/Map';
 
 import ActionButtons from './shared/ActionButtons/ActionButtons';
 import ActionConfirmationModal from './shared/ActionConfirmationModal/ActionConfirmationModal';
@@ -76,6 +77,7 @@ export {
 	Tooltip,
 	TopBar,
 	AddressInput,
+	Map,
 
 	// Shared components
 	ActionButtons,

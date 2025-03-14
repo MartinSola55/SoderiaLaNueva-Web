@@ -4,7 +4,12 @@ import { Button, Loader, Toast } from "@components";
 import API from "@app/API";
 
 // eslint-disable-next-line
-const DeleteConfirmationModal = forwardRef(({ disabled, item, message, onConfirm = () => { } }, ref) => {
+const DeleteConfirmationModal = forwardRef(({
+	disabled,
+	item,
+	message,
+	onConfirm = () => { }
+}, ref) => {
 
 	const [isVisible, setIsVisible] = useState(false);
 	const [id, setId] = useState(null);
@@ -25,7 +30,7 @@ const DeleteConfirmationModal = forwardRef(({ disabled, item, message, onConfirm
 			.then((r) => {
 				Toast.success(r.message);
 				handleClose();
-				onConfirm && onConfirm(id);
+				onConfirm(id);
 			})
 			.catch((r) => {
 				Toast.error(r.error?.message);
