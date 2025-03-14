@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import { Button, Card, Input, Label, Loader, RolesDropdown, Spinner } from "../../../components";
+import { Button, Card, Input, Label, Loader, RolesDropdown, Spinner } from "@components";
 
 export const UserInfo = ({
 	id,
@@ -13,7 +13,7 @@ export const UserInfo = ({
 	viewProfileDetails
 }) => {
 
-    return (
+	return (
 		<Card
 			title='Usuario'
 			body={
@@ -110,5 +110,5 @@ export const UserInfo = ({
 				)
 			}
 		/>
-    );
+	);
 };

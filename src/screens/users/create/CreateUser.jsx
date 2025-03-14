@@ -120,11 +120,11 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 
 	return (
 		<>
-			<BreadCrumb items={breadcrumbItems} title='Ususssssssssarios' />
+			<BreadCrumb items={breadcrumbItems} title='Usuarios' />
 			<ChangePasswordModal ref={modalRef} />
 			<div>
 				<Col xs={11} className='container'>
-					<UserInfo 
+					<UserInfo
 						id={id}
 						form={form}
 						loading={loading}
@@ -138,14 +138,14 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 					{isWatching && form.roleName === Roles.Dealer && (
 						<>
 							<hr />
-							<DealerMonthlyStats 
+							<DealerMonthlyStats
 								id={id}
 							/>
 							<Row>
-								<SoldProducts 
+								<SoldProducts
 									id={id}
 								/>
-								<ClientsDebt 
+								<ClientsDebt
 									id={id}
 								/>
 								<ClientStock

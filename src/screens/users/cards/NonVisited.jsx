@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { Button, Card, DateRangePicker, Spinner, Table } from "../../../components";
+import { Button, Card, DateRangePicker, Spinner, Table } from "@components";
 import API from "@app/API";
-import './dealerMonthlySales.scss';
 import { Dates } from "@app/Helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
+import './dealerMonthlySales.scss';
 
-export const NonVisited = ({id}) => {
+export const NonVisited = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState({});
 	const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
 
 	const columns = [
 		{
-			name:'name',
+			name: 'name',
 			text: 'Cliente'
 		},
 		{
-			name:'address',
+			name: 'address',
 			text: 'Dirección'
 		},
 	]
@@ -26,7 +26,7 @@ export const NonVisited = ({id}) => {
 	useEffect(() => {
 		setLoading(true);
 
-	API.get('stats/nonVisitedClients', { dealerId: id, dateFrom: Dates.formatDate(dateRange.from), dateTo: Dates.formatDate(dateRange.to) })
+		API.get('stats/NonVisitedClients', { dealerId: id, dateFrom: Dates.formatDate(dateRange.from), dateTo: Dates.formatDate(dateRange.to) })
 			.then((r) => {
 				setData(r.data);
 				setLoading(false);
@@ -45,7 +45,7 @@ export const NonVisited = ({id}) => {
 		setDateRange({ from: new Date(), to: new Date() });
 	};
 
-    return (
+	return (
 		<Col className="mt-5" xs={6}>
 			<Card
 				cardBodyClassName='p-0'
@@ -81,7 +81,7 @@ export const NonVisited = ({id}) => {
 				body={loading ? <Spinner /> :
 					<Row>
 						<Col>
-							<Table 
+							<Table
 								columns={columns}
 								rows={data?.clients}
 								emptyTableMessage='No hay datos disponibles'
@@ -91,5 +91,5 @@ export const NonVisited = ({id}) => {
 				}
 			/>
 		</Col>
-    );
+	);
 };
