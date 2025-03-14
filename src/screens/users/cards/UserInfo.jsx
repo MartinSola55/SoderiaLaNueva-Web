@@ -15,7 +15,7 @@ export const UserInfo = ({
 	viewProfileDetails
 }) => {
 
-    return (
+	return (
 		<Card
 			title='Usuario'
 			body={
@@ -112,5 +112,5 @@ export const UserInfo = ({
 				)
 			}
 		/>
-    );
+	);
 };

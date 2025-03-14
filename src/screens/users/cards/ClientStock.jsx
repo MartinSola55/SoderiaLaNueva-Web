@@ -3,17 +3,17 @@ import { Col, Row } from "react-bootstrap";
 import { Card, Spinner, Table } from "@components";
 import API from "@app/API";
 
-export const ClientStock = ({id}) => {
+export const ClientStock = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
 
 	const columns = [
 		{
-			name:'name',
+			name: 'name',
 			text: 'Producto'
 		},
 		{
-			name:'stock',
+			name: 'stock',
 			text: 'Stock',
 		},
 	]
@@ -21,14 +21,14 @@ export const ClientStock = ({id}) => {
 	useEffect(() => {
 		setLoading(true);
 
-	API.get('stats/clientsStock', { dealerId: id })
+		API.get('stats/ClientsStock', { dealerId: id })
 			.then((r) => {
 				setData(r.data.products);
 				setLoading(false);
 			});
 	}, [id]);
 
-    return (
+	return (
 		<Col className="mt-5" xs={6}>
 			<Card
 				cardBodyClassName='p-0'
@@ -42,7 +42,7 @@ export const ClientStock = ({id}) => {
 				body={loading ? <Spinner /> :
 					<Row>
 						<Col>
-							<Table 
+							<Table
 								columns={columns}
 								rows={data}
 								emptyTableMessage='No se encontró stock en los porductos de los clientes del repartidor.'
@@ -52,5 +52,5 @@ export const ClientStock = ({id}) => {
 				}
 			/>
 		</Col>
-    );
+	);
 };

@@ -5,23 +5,24 @@ import API from "@app/API";
 import { Dates, formatCurrency } from "@app/Helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
+import './dealerMonthlySales.scss';
 
-export const SoldProducts = ({id}) => {
+export const SoldProducts = ({ id }) => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState({});
 	const [dateRange, setDateRange] = useState({ from: new Date(), to: new Date() });
 
 	const columns = [
 		{
-			name:'name',
+			name: 'name',
 			text: 'Producto'
 		},
 		{
-			name:'amount',
+			name: 'amount',
 			text: 'Cantidad'
 		},
 		{
-			name:'total',
+			name: 'total',
 			text: 'Total',
 			formatter: (_, row) => `${formatCurrency(row.total)}`,
 		},
@@ -30,7 +31,7 @@ export const SoldProducts = ({id}) => {
 	useEffect(() => {
 		setLoading(true);
 
-	API.get('stats/soldProductsByRange', { dealerId: id, dateFrom: Dates.formatDate(dateRange.from), dateTo: Dates.formatDate(dateRange.to) })
+		API.get('stats/SoldProductsByRange', { dealerId: id, dateFrom: Dates.formatDate(dateRange.from), dateTo: Dates.formatDate(dateRange.to) })
 			.then((r) => {
 				setData(r.data.products);
 				setLoading(false);
@@ -50,7 +51,7 @@ export const SoldProducts = ({id}) => {
 	};
 
 
-    return (
+	return (
 		<Col className="mt-5" xs={6}>
 			<Card
 				cardBodyClassName='p-0'
@@ -80,7 +81,7 @@ export const SoldProducts = ({id}) => {
 				body={loading ? <Spinner /> :
 					<Row>
 						<Col>
-							<Table 
+							<Table
 								columns={columns}
 								rows={data}
 								emptyTableMessage='No se encontraron productos vendidos entre esas fechas.'
@@ -90,5 +91,5 @@ export const SoldProducts = ({id}) => {
 				}
 			/>
 		</Col>
-    );
+	);
 };

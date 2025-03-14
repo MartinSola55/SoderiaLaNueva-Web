@@ -5,9 +5,9 @@ import { ActionButtons, BreadCrumb, Button, Card, Dropdown, Input, Table, TableS
 import API from '@app/API';
 import App from '@app/App';
 import { Messages } from '@constants/Messages';
+import { Roles } from '@constants/Roles';
 import { buildGenericGetAllRq, formatRole } from '@app/Helpers';
 import { columns, rolesItems, sortUserItems } from './User.data';
-import { Roles } from '@constants/Roles';
 
 const breadcrumbItems = [
 	{
@@ -34,8 +34,8 @@ const UserList = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalCount, setTotalCount] = useState(0);
 	const [sort, setSort] = useState(null);
-    const [rolesSelected, setRolesSelected] = useState([Roles.Dealer]);
-    
+	const [rolesSelected, setRolesSelected] = useState([Roles.Dealer]);
+
 	const handleFilterRows = (value) => {
 		setFilter(value.toLowerCase());
 	};
@@ -59,22 +59,22 @@ const UserList = () => {
 
 		rq.roles = rolesSelected;
 
-        API.post('User/GetAll', rq).then((r) => {
-            setTotalCount(r.data.totalCount);
-            setRows(
-                r.data.users.map((user) => {
+		API.post('User/GetAll', rq).then((r) => {
+			setTotalCount(r.data.totalCount);
+			setRows(
+				r.data.users.map((user) => {
 					return {
 						...user,
 						role: formatRole(user.role),
 						endpoint: 'User',
 					};
-                }),
-            );
-            if (r.data.users.length === 0) {
-                Toast.warning(Messages.Error.noRows);
-            }
-        });
-    }, [currentPage, rolesSelected, sort]);
+				}),
+			);
+			if (r.data.users.length === 0) {
+				Toast.warning(Messages.Error.noRows);
+			}
+		});
+	}, [currentPage, rolesSelected, sort]);
 
 	const updateDeletedRow = (id) => {
 		setRows((prevRow) => prevRow.filter((row) => row.id !== id));
@@ -96,14 +96,14 @@ const UserList = () => {
 											onChange={handleSortChange}
 										/>
 									</Col>
-                                    <Col xs={12} sm={6} lg={3} className='mb-3'>
-                                        <Dropdown
+									<Col xs={12} sm={6} lg={3} className='mb-3'>
+										<Dropdown
 											items={rolesItems}
 											value={rolesSelected}
 											isMulti
-                                            onChange={(values) => setRolesSelected(values.map(x => x.value))}
-                                        />
-                                    </Col>
+											onChange={(values) => setRolesSelected(values.map(x => x.value))}
+										/>
+									</Col>
 									<Col xs={12} sm={6} lg={4} className='pe-3 mb-3'>
 										<Input
 											showIcon

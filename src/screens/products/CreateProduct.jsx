@@ -35,9 +35,10 @@ const CreateProduct = ({ isWatching = false }) => {
 
 	// Handlers
 	const handleSubmit = async () => {
-		if (submitting) return;
+		if (submitting)
+			return;
 
-		if (!form.name || !form.price || !form.typeId) {
+		if (!form.name || form.price < 0 || !form.typeId) {
 			Toast.warning(Messages.Validation.requiredFields);
 			return;
 		}
