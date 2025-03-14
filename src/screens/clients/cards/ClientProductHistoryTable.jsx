@@ -1,5 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 import { Card, Spinner, Table } from "@components";
+import './clientCards.scss'
 
 export const ClientProductHistoryTable = ({
 	products = [],
@@ -31,6 +32,7 @@ export const ClientProductHistoryTable = ({
 	return (
 		<Card
 			title='Historial de envases'
+			className="client-product-history-table"
 			body={loading ? <Spinner /> :
 				<Row className='align-items-center'>
 					<Col xs={12}>

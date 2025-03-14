@@ -42,7 +42,7 @@ const Dropdown = forwardRef(({
 	helpPlacement = 'right',
 	onChange = () => { },
 	onDirt = () => { },
-	disbaleOption = () => { },
+	disableOption = () => { },
 	...props
 }, ref) => {
 	const [selectedValue, setSelectedValue] = useState(isMulti ? [] : null);
@@ -77,7 +77,7 @@ const Dropdown = forwardRef(({
 					isClearable={clearable}
 					isMulti={isMulti}
 					options={items}
-					isOptionDisabled={disbaleOption}
+					isOptionDisabled={disableOption}
 					onChange={handleChange}
 					noOptionsMessage={() => 'Sin resultados'}
 				/>

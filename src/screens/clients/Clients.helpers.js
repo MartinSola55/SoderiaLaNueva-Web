@@ -1,8 +1,8 @@
+import { Toast } from "@components";
 import App from "@app/App";
-import API from "../../app/API";
-import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "../../app/Helpers";
-import { Toast } from "../../components";
-import { CartsTransfersTypes } from "../../constants/CartsTransfersTypes";
+import API from "@app/API";
+import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "@app/Helpers";
+import { CartsTransfersTypes } from "@constants/CartsTransfersTypes";
 
 export const getBreadcrumbItems = (label) => {
 	const items = [
@@ -72,7 +72,7 @@ export const createClient = async (form, onSuccess, onError, onFinally) => {
 		})
 		.catch((r) => {
 			Toast.error(r.error?.message);
-			onError();
+			onError(r);
 		})
 		.finally(() => {
 			onFinally();
@@ -80,39 +80,39 @@ export const createClient = async (form, onSuccess, onError, onFinally) => {
 };
 
 export const updateClient = async (form, onSuccess, onError) => {
-    const rq = {
-        id: form.id,
-        name: form.name,
-        address: {
-            houseNumber: form.address.houseNumber ?? '',
-            road: form.address.road ?? '',
-            neighbourhood: form.address.neighbourhood ?? '',
-            suburb: form.address.suburb ?? '',
-            cityDistrict: form.address.cityDistrict ?? '',
-            city: form.address.city ?? '',
-            town: form.address.town ?? '',
-            village: form.address.village ?? '',
-            county: form.address.county ?? '',
-            state: form.address.state ?? '',
-            country: form.address.country ?? '',
-            postcode: form.address.postcode ?? '',
-            lat: form.address.lat,
-            lon: form.address.lon,
-        },
-        phone: form.phone,
-        observations: form.observations,
-        dealerId: form.dealerId,
-        deliveryDay: form.deliveryDay,
-        hasInvoice: form.hasInvoice,
-        invoiceType: form.invoiceType,
-        taxCondition: form.taxCondition,
-        cuit: form.cuit,
-        debt: form.debt,
-        products: form.products.map((x) => ({
-            productId: x.id,
-            quantity: x.quantity,
-        })).filter((x) => x.quantity >= 0),
-    };
+	const rq = {
+		id: form.id,
+		name: form.name,
+		address: {
+			houseNumber: form.address.houseNumber ?? '',
+			road: form.address.road ?? '',
+			neighbourhood: form.address.neighbourhood ?? '',
+			suburb: form.address.suburb ?? '',
+			cityDistrict: form.address.cityDistrict ?? '',
+			city: form.address.city ?? '',
+			town: form.address.town ?? '',
+			village: form.address.village ?? '',
+			county: form.address.county ?? '',
+			state: form.address.state ?? '',
+			country: form.address.country ?? '',
+			postcode: form.address.postcode ?? '',
+			lat: form.address.lat,
+			lon: form.address.lon,
+		},
+		phone: form.phone,
+		observations: form.observations,
+		dealerId: form.dealerId,
+		deliveryDay: form.deliveryDay,
+		hasInvoice: form.hasInvoice,
+		invoiceType: form.invoiceType,
+		taxCondition: form.taxCondition,
+		cuit: form.cuit,
+		debt: form.debt,
+		products: form.products.map((x) => ({
+			productId: x.id,
+			quantity: x.quantity,
+		})).filter((x) => x.quantity >= 0),
+	};
 
 	API.post('client/updateClientData', rq)
 		.then((r) => {
@@ -196,18 +196,18 @@ export const getClients = (sort, currentPage, filterClients = [], onSuccess) => 
 
 	if (filterClients.length > 0) rq.filterClients = filterClients;
 
-    API.post('client/getAll', rq).then((r) => {
-        const { clients, totalCount } = r.data;
-        const formattedClients = clients.map((client) => {
-            return {
-                ...client,
-                address: client.address,
-                deliveryDay: client.dealerName
-                    ? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`
-                    : ' Sin repartidor asignado - Sin día asignado ',
-                endpoint: 'client',
-            };
-        });
+	API.post('client/getAll', rq).then((r) => {
+		const { clients, totalCount } = r.data;
+		const formattedClients = clients.map((client) => {
+			return {
+				...client,
+				address: client.address,
+				deliveryDay: client.dealerName
+					? `${client.dealerName} - ${formatDeliveryDay(client.deliveryDay)}`
+					: ' Sin repartidor asignado - Sin día asignado ',
+				endpoint: 'client',
+			};
+		});
 
 		onSuccess({ clients: formattedClients, totalCount });
 	});

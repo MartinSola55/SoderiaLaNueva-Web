@@ -4,12 +4,7 @@ import { Button, Loader, Toast } from "@components";
 import API from "@app/API";
 
 // eslint-disable-next-line
-const DeleteConfirmationModal = forwardRef(({
-	disabled,
-	item,
-	message,
-	onConfirm = () => { }
-}, ref) => {
+const ActiveConfirmationModal = forwardRef(({ disabled, item, message, onConfirm = () => { } }, ref) => {
 
 	const [isVisible, setIsVisible] = useState(false);
 	const [id, setId] = useState(null);
@@ -26,11 +21,11 @@ const DeleteConfirmationModal = forwardRef(({
 	};
 
 	const handleConfirm = () => {
-		API.post(`${endpoint}/delete`, { id })
+		API.post(`${endpoint}/activate`, { id })
 			.then((r) => {
 				Toast.success(r.message);
 				handleClose();
-				onConfirm(id);
+				onConfirm && onConfirm(id);
 			})
 			.catch((r) => {
 				Toast.error(r.error?.message);
@@ -48,7 +43,7 @@ const DeleteConfirmationModal = forwardRef(({
 		<Modal size="lg" centered show={isVisible} onHide={handleClose} backdrop="static">
 			<Modal.Header>
 				<Modal.Title>
-					¿Seguro deseas eliminar {item}?
+					¿Seguro deseas activar {item}?
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
@@ -66,4 +61,4 @@ const DeleteConfirmationModal = forwardRef(({
 	);
 });
 
-export default DeleteConfirmationModal;
+export default ActiveConfirmationModal;

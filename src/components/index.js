@@ -21,6 +21,7 @@ import Toast from './Toast/Toast';
 import Tooltip from './Tooltip/Tooltip';
 import TopBar from './TopBar/TopBar';
 import AddressInput from './AddressInput/AddressInput';
+import Map from './Map/Map';
 
 import ActionButtons from './shared/ActionButtons/ActionButtons';
 import ActionConfirmationModal from './shared/ActionConfirmationModal/ActionConfirmationModal';
@@ -44,6 +45,7 @@ import CellButton from './shared/CellInputs/CellButton';
 import TableFilters from './shared/TableFilters/TableFilters';
 import MonthDropdown from './shared/MonthDropdown/MonthDropdown';
 import SalesYearsDropdown from './shared/SalesYearsDropdown/SalesYearsDropdown';
+import ActiveConfirmationModal from './shared/ActiveConfirmationModal/ActiveConfirmationModal';
 
 import { LineChart } from './charts/LineChart/LineChart';
 import { AreaChart } from './charts/AreaChart/AreaChart';
@@ -75,6 +77,7 @@ export {
 	Tooltip,
 	TopBar,
 	AddressInput,
+	Map,
 
 	// Shared components
 	ActionButtons,
@@ -99,12 +102,13 @@ export {
 	TableFilters,
 	MonthDropdown,
 	SalesYearsDropdown,
+	ActiveConfirmationModal,
 
 	// Charts
 	LineChart,
 	AreaChart,
 
-    // Formatters
-    DebtFormatter,
-    AddressFormatter,
+	// Formatters
+	DebtFormatter,
+	AddressFormatter,
 };

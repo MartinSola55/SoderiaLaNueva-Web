@@ -77,7 +77,11 @@ const Table = ({
 							key={i}
 							style={row.style}
 							data-href={row.href}
-							className={`${clickable ? 'clickable-row' : ''} ${row.isSelected ? 'selected-row' : ''}`}
+							className={classNames({
+								'clickable-row': clickable,
+								'selected-row': row.isSelected,
+								'inactive': row.isActive === false
+							})}
 							onClick={handleRowClick}
 						>
 							{columns && columns.map((col, j) => {
@@ -116,12 +120,9 @@ const Table = ({
 													: col.formatter
 														? col.formatter(row[col.name], row)
 														: row[col.name]
-										) : <col.component
-											row={row}
-											disabled={row.disabled}
-											onClick={handleCellClick}
-											onUpdate={onUpdate}
-										/>}
+										) : 
+											col.component({row, disabled: row.disabled, onClick: handleCellClick, onUpdate})
+										}
 									</td>
 								);
 							})}

@@ -1,10 +1,10 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import Map from '../../../components/Map/Map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import './mapModal.scss';
+import { Map } from '@components';
 import { CartStatuses } from '@constants/Cart';
+import './mapModal.scss';
 
 // eslint-disable-next-line react/display-name
 const MapModal = forwardRef((_, ref) => {

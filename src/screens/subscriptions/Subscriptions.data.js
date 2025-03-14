@@ -1,4 +1,4 @@
-import { AddressFormatter } from "../../components";
+import { AddressFormatter } from "@components";
 
 export const sortProductItems = [
     { value: 'price-asc', label: 'Precio - Asc.' },

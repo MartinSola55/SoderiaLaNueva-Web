@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { Card, Spinner, Table } from "../../../components";
+import { Card, Spinner, Table } from "@components";
 import API from "@app/API";
-import './dealerMonthlySales.scss';
 
 export const ClientStock = ({ id }) => {
 	const [loading, setLoading] = useState(false);

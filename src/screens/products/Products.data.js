@@ -1,4 +1,4 @@
-import { AddressFormatter } from "../../components";
+import { AddressFormatter } from "@components";
 
 export const productCols = [
     {
@@ -45,4 +45,9 @@ export const clientCols = [
 export const sortProductItems = [
     { value: 'createdAt-asc', label: 'Creado - Asc.' },
     { value: 'createdAt-desc', label: 'Creado - Desc.' },
+];
+
+export const statusItems = [
+    { value: 'active', label: 'Activo' },
+    { value: 'inactive', label: 'Inactivo' },
 ];

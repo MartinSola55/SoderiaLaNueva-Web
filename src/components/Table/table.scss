@@ -16,6 +16,17 @@
                 cursor: pointer;
             }
 
+			&.inactive {
+				td {
+					background-color: #f0f0f0 !important; 
+					color: #6c757d; 
+				}
+
+				&:hover {
+					background-color: #e0e0e0;
+				}
+            }
+
             .loader {
                 width: 26px;
                 height: 26px;

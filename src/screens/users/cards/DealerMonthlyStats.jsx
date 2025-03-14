@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 import { SimpleCard, Spinner } from "@components";
 import API from "@app/API";
 import { formatCurrency } from "@app/Helpers";
-import './dealerMonthlySales.scss';
 
 export const DealerMonthlyStats = ({ id }) => {
 	const [loading, setLoading] = useState(false);

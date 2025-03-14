@@ -5,32 +5,31 @@ import './map.scss';
 
 const accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-
 const Map = ({
-    dropOffPoints = [],
+	dropOffPoints = [],
 	visitedPoints = []
 }) => {
-    const initialLocation = useMemo(() => [-68.10348998645422, -38.95008965955272], []);
-    const mapRef = useRef(null);
+	const initialLocation = useMemo(() => [-68.10348998645422, -38.95008965955272], []);
+	const mapRef = useRef(null);
 
-    useEffect(() => {
-        if (accessToken) {
-            mapboxgl.accessToken = accessToken;
+	useEffect(() => {
+		if (accessToken) {
+			mapboxgl.accessToken = accessToken;
 
-            if (!mapRef.current) {
-                mapRef.current = new mapboxgl.Map({
-                    container: 'map',
-                    style: 'mapbox://styles/mapbox/light-v11',
-                    center: initialLocation,
-                    zoom: 13,
-                });
+			if (!mapRef.current) {
+				mapRef.current = new mapboxgl.Map({
+					container: 'map',
+					style: 'mapbox://styles/mapbox/light-v11',
+					center: initialLocation,
+					zoom: 13,
+				});
 
-                mapRef.current.on('load', () => {
-                    initializeMapLayers(mapRef.current, initialLocation);
-                    updateDropoffs(mapRef.current, dropOffPoints, visitedPoints, initialLocation);
-                });
-            }
-        }
+				mapRef.current.on('load', () => {
+					initializeMapLayers(mapRef.current, initialLocation);
+					updateDropoffs(mapRef.current, dropOffPoints, visitedPoints, initialLocation);
+				});
+			}
+		}
 
 		return () => {
 			if (mapRef.current) {
@@ -38,19 +37,19 @@ const Map = ({
 				mapRef.current = null;
 			}
 		};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [accessToken, initialLocation]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [accessToken, initialLocation]);
 
 	useEffect(() => {
-        if (mapRef.current) {
-            updateDropoffs(mapRef.current, dropOffPoints, visitedPoints, initialLocation);
-        }
-    }, [dropOffPoints, visitedPoints, initialLocation]);
+		if (mapRef.current) {
+			updateDropoffs(mapRef.current, dropOffPoints, visitedPoints, initialLocation);
+		}
+	}, [dropOffPoints, visitedPoints, initialLocation]);
 
-    if (!accessToken)
-        return null;
+	if (!accessToken)
+		return null;
 
-    return <div id="map" className="map-container"></div>;
+	return <div id="map" className="map-container"></div>;
 };
 
 export default Map;
