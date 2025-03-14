@@ -142,18 +142,10 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 								id={id}
 							/>
 							<Row>
-								<SoldProducts
-									id={id}
-								/>
-								<ClientsDebt
-									id={id}
-								/>
-								<ClientStock
-									id={id}
-								/>
-								<NonVisited
-									id={id}
-								/>
+								<SoldProducts id={id} />
+								<ClientsDebt id={id} />
+								<ClientStock id={id} />
+								<NonVisited id={id} />
 							</Row>
 						</div>
 					)}
