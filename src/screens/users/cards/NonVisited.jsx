@@ -5,7 +5,6 @@ import API from "@app/API";
 import { Dates } from "@app/Helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
-import './dealerMonthlySales.scss';
 
 export const NonVisited = ({ id }) => {
 	const [loading, setLoading] = useState(false);

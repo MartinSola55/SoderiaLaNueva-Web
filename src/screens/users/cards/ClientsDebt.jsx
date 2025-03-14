@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 import { Card, DeliveryDayDropdown, Spinner, Table } from "@components";
 import API from "@app/API";
 import { formatCurrency, getDayIndex } from "@app/Helpers";
-import './dealerMonthlySales.scss';
 
 export const ClientsDebt = ({ id }) => {
 	const [loading, setLoading] = useState(false);
