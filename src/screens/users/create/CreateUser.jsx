@@ -113,11 +113,6 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 	const handleChangePassword = () => {
 		modalRef.current.open(id);
 	};
-
-	if (!App.isAdmin() && !viewProfileDetails) {
-		return navigate('/notAllowed');
-	}
-
 	return (
 		<>
 			<BreadCrumb items={breadcrumbItems} title='Usuarios' />
@@ -135,7 +130,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 						handleChangePassword={handleChangePassword}
 						viewProfileDetails={viewProfileDetails}
 					/>
-					{isWatching && form.roleName === Roles.Dealer && (
+					{isWatching && form.roleName === Roles.Dealer && App.isAdmin() && (
 						<div className='dealer-stats'>
 							<hr />
 							<DealerMonthlyStats

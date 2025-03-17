@@ -10,19 +10,19 @@ const SubscriptionsDropdown = ({
 	disabled = false,
 	placeholder = 'Seleccione un abono',
 	isMulti = false,
-	roles = [],
 	onChange = () => { },
 }) => {
 	const [items, setItems] = useState(null);
 
 	// Get users
 	useEffect(() => {
-		if (items) return;
+		if (items)
+			return;
 
 		API.get('subscription/getComboSubscriptions').then((r) => {
 			setItems(formatComboItems(r.data.items));
 		});
-	}, [roles, items]);
+	}, [items]);
 
 	const handleChange = (options) => {
 		const value = isMulti ? options : options.value;

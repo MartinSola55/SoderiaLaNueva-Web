@@ -21,7 +21,12 @@ const ProductList = () => {
 		{
 			name: 'actions',
 			text: 'Acciones',
-			component: (props) => <ActionButtons entity='producto' {...props} />,
+			component: (props) =>
+				<ActionButtons
+					entity='producto'
+					message='Una vez deshabilitado el producto, se podrá recuperar.'
+					showEnableDisable
+					{...props} />,
 			className: 'text-center',
 		},
 	];
@@ -81,12 +86,18 @@ const ProductList = () => {
 	};
 
 	const updateDeletedRow = (id) => {
-		setProducts((prevRow) => prevRow.filter((row) => row.id !== id));
+		setProducts((prevProducts) => prevProducts.map((x) => x.id === id ? { ...x, isActive: false } : x));
 	};
 
 	// Render
 	if (!App.isAdmin()) {
 		return navigate('/notAllowed');
+	}
+
+	const filterRows = () => {
+		return products
+			.filter((x) => x.name.toLowerCase().includes(prodFilter.toLowerCase()))
+			.filter((x) => statusSelected.includes('active') && x.isActive || statusSelected.includes('inactive') && !x.isActive);
 	}
 
 	return (
@@ -126,7 +137,7 @@ const ProductList = () => {
 								<Table
 									className='mb-5'
 									columns={allProductCols}
-									rows={products.filter((x) => x.name.toLowerCase().includes(prodFilter.toLowerCase()))}
+									rows={filterRows()}
 									pagination={true}
 									currentPage={currentPage}
 									totalCount={totalCount}

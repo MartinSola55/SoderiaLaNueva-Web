@@ -6,6 +6,7 @@ import { faBars, faClose, faUser } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
 import { Button, Loader, SidePanel, Toast } from '@components';
 import { LocalStorage } from '@app/LocalStorage';
+import { formatRole } from '@app/Helpers';
 import API from '@app/API';
 import Logo from '../../assets/logo.png';
 import LogoMini from '../../assets/logo-mini.png';
@@ -131,7 +132,7 @@ const TopBar = () => {
 						<div className='user-data'>
 							<h5>{LocalStorage.getUserName()}</h5>
 							<h6>{LocalStorage.getUserEmail()}</h6>
-							<small>Rol: {LocalStorage.getUserRole()}</small>
+							<small>Rol: {formatRole(LocalStorage.getUserRole())}</small>
 						</div>
 					</div>
 					<div>

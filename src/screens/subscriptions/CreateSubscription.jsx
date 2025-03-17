@@ -20,7 +20,13 @@ const CreateSubscription = ({ isWatching = false }) => {
 			name: 'quantity',
 			text: 'Cantidad',
 			className: 'text-center',
-			component: (props) => <CellNumericInput {...props} value={props.row.quantity} disabled={isWatching} maxValue={null} onChange={(v) => handleProductsChange(props, v)} />
+			component: (props) => <CellNumericInput
+				{...props}
+				value={props.row.quantity}
+				disabled={isWatching}
+				minValue={0}
+				maxValue={null}
+				onChange={(v) => handleProductsChange(props, v)} />
 		},
 	];
 

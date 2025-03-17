@@ -3,10 +3,10 @@ import { Modal } from "react-bootstrap";
 import { Button, Loader, Toast } from "@components";
 import API from "@app/API";
 
-// eslint-disable-next-line
 const DeleteConfirmationModal = forwardRef(({
 	disabled,
 	item,
+	showEnableDisable,
 	message,
 	onConfirm = () => { }
 }, ref) => {
@@ -48,7 +48,7 @@ const DeleteConfirmationModal = forwardRef(({
 		<Modal size="lg" centered show={isVisible} onHide={handleClose} backdrop="static">
 			<Modal.Header>
 				<Modal.Title>
-					¿Seguro deseas eliminar {item}?
+					¿Seguro deseas {showEnableDisable ? 'deshabilitar' : 'eliminar'} {item}?
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>

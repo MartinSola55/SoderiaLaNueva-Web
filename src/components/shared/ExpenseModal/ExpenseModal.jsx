@@ -4,6 +4,7 @@ import { Button, DealerDropdown, Input, Label, Loader, Toast } from '@components
 import { Messages } from '@constants/Messages';
 import { InitialFormStates } from '@app/InitialFormStates';
 import API from '@app/API';
+import App from '@app/App';
 
 const initialExpense = InitialFormStates.Expense;
 
@@ -23,7 +24,10 @@ const ExpenseModal = forwardRef((_, ref) => {
 
 	const open = (onSuccess, expense, title, isWatching) => {
 		setCallBacks({ onSuccess })
-		setExpense(expense || initialExpense);
+		setExpense({
+			...expense || initialExpense,
+			dealerId: App.isDealer() ? App.getUser().userId : expense?.dealerId,
+		});
 		setTitle(title);
 		setIsWatching(isWatching);
 		setIsVisible(true);
@@ -92,16 +96,18 @@ const ExpenseModal = forwardRef((_, ref) => {
 			</Modal.Header>
 			<Modal.Body>
 				<Row>
+					{App.isAdmin() &&
+						<Col xs={6} className='mb-3'>
+							<Label required={!isWatching}>Repartidor</Label>
+							<DealerDropdown
+								disabled={isWatching}
+								value={expense.dealerId}
+								required
+								onChange={(v) => handleChange(v, 'dealerId')}
+							/>
+						</Col>
+					}
 					<Col xs={6} className='mb-3'>
-						<Label required={!isWatching}>Repartidor</Label>
-						<DealerDropdown
-							disabled={isWatching}
-							value={expense.dealerId}
-							required
-							onChange={(v) => handleChange(v, 'dealerId')}
-						/>
-					</Col>
-					<Col xs={6}>
 						<Label required={!isWatching}>Monto</Label>
 						<Input
 							disabled={isWatching}

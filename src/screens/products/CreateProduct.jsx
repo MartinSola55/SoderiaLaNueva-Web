@@ -89,6 +89,7 @@ const CreateProduct = ({ isWatching = false }) => {
 											disabled={isWatching}
 											numeric
 											isFloat
+											minValue={0}
 											placeholder='Precio'
 											type='number'
 											value={form.price}

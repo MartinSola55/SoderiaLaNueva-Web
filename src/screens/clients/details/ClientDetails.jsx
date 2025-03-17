@@ -83,7 +83,7 @@ const ClientDetails = () => {
 
 		setSubmitting(true);
 		updateClientSubscriptions(form,
-			(r) => { 
+			(r) => {
 				setSubmitting(false);
 				handleUpdateClientStock(r)
 			},
@@ -97,19 +97,19 @@ const ClientDetails = () => {
 			products: products.map(x => {
 				const oldProduct = form.products.find(y => y.id === x.id);
 				const newProduct = r.data.products.find(y => y.productId === x.id);
-	
+
 				if (!oldProduct && !newProduct) return { id: null };
-	
+
 				if (!oldProduct && newProduct)
 					return {
 						id: newProduct.productId,
 						name: x.name,
 						quantity: newProduct.stock
 					};
-	
-				return { 
+
+				return {
 					...oldProduct,
-					quantity: newProduct ? newProduct.stock : oldProduct.quantity 
+					quantity: newProduct ? newProduct.stock : oldProduct.quantity
 				};
 			}).filter(x => x.id)
 		}));

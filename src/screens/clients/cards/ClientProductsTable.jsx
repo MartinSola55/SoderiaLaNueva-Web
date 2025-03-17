@@ -27,7 +27,11 @@ export const ClientProductsTable = ({
 				if (interalIsWatching)
 					return <span>{props.row.quantity !== '' ? props.row.quantity : '-'}</span>
 				else
-					return <CellNumericInput {...props} value={props.row.quantity} maxValue={null} onChange={(v) => onProductsChange(props, v)} />
+					return <CellNumericInput
+						{...props}
+						value={props.row.quantity}
+						maxValue={null}
+						onChange={(v) => onProductsChange(props, v)} />
 			}
 		},
 	];
@@ -38,9 +42,9 @@ export const ClientProductsTable = ({
 			body={loading ? <Spinner /> :
 				<Row className='align-items-center'>
 					<Col xs={12}>
-						<Table 
-							rows={products} 
-							columns={productsColumns} 
+						<Table
+							rows={products}
+							columns={productsColumns}
 							emptyTableMessage='No se encontraron productos creados'
 						/>
 					</Col>

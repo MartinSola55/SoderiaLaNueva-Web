@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faEye, faPencil, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPencil, faToggleOff, faToggleOn, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { ActiveConfirmationModal, DeleteConfirmationModal, Tooltip } from "@components";
 import App from "@app/App";
 
@@ -13,7 +13,9 @@ const ActionButtons = ({
 	canDelete = App.isAdmin(),
 	showEdit = true,
 	showWatch = true,
+	showEnableDisable = false,
 	entity = "entidad",
+	message,
 	female = false,
 	navigateTo = true,
 	onUpdate = () => { },
@@ -53,7 +55,8 @@ const ActionButtons = ({
 			<DeleteConfirmationModal
 				ref={deleteModalRef}
 				item={`est${female ? 'a' : 'e'} ${entity}`}
-				message={`Esta acción se puede deshacer. Una vez eliminad${female ? 'a' : 'o'} ${female ? 'la' : 'el'} ${entity}, el producto se podrá recuperar.`}
+				showEnableDisable={showEnableDisable}
+				message={message || `Esta acción no se puede deshacer. Una vez eliminad${female ? 'a' : 'o'} ${female ? 'la' : 'el'} ${entity}, no se podrá recuperar.`}
 				onConfirm={() => onUpdate(row.id)}
 			/>
 			<ActiveConfirmationModal
@@ -85,20 +88,20 @@ const ActionButtons = ({
 						</Tooltip>
 					)}
 					{row.isActive === false && (
-						<Tooltip text="Activar" placement="top">
+						<Tooltip text="Habilitar" placement="top">
 							<FontAwesomeIcon
 								className="action-button action-button--activate"
-								icon={faCheck}
+								icon={faToggleOff}
 								color="green"
 								onClick={handleActivate}
 							/>
 						</Tooltip>
 					)}
 					{canDelete && row.isActive !== false && (
-						<Tooltip text="Eliminar" placement="top">
+						<Tooltip text={showEnableDisable ? "Deshabilitar" : "Eliminar"} placement="top">
 							<FontAwesomeIcon
 								className="action-button action-button--delete"
-								icon={faTrashAlt}
+								icon={showEnableDisable ? faToggleOn : faTrashAlt}
 								color="red"
 								onClick={handleDelete}
 							/>

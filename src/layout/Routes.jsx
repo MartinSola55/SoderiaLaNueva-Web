@@ -60,20 +60,22 @@ export const AppRoutes = () => (
 				/>
 
 				{/* Users */}
+				<Route path='/usuarios' element={<PrivateRoute />}>
+					<Route
+						path='/usuarios/:id'
+						element={
+							<DefaultLayout>
+								<CreateUser isWatching />
+							</DefaultLayout>
+						}
+					/>
+				</Route>
 				<Route path='/usuarios' element={<AdminRoute />}>
 					<Route
 						path='/usuarios/list'
 						element={
 							<DefaultLayout>
 								<UserList />
-							</DefaultLayout>
-						}
-					/>
-					<Route
-						path='/usuarios/:id'
-						element={
-							<DefaultLayout>
-								<CreateUser isWatching />
 							</DefaultLayout>
 						}
 					/>
@@ -234,7 +236,7 @@ export const AppRoutes = () => (
 						}
 					/>
 				</Route>
-				
+
 				{/* Planilla Admin y Dealer */}
 				<Route path='/planillas' element={<PrivateRoute />}>
 					<Route
