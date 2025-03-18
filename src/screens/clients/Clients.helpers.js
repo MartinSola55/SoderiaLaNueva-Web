@@ -3,6 +3,7 @@ import App from "@app/App";
 import API from "@app/API";
 import { buildGenericGetAllRq, formatCurrency, formatDeliveryDay } from "@app/Helpers";
 import { CartsTransfersTypes } from "@constants/CartsTransfersTypes";
+import { Messages } from "@constants/Messages";
 
 export const getBreadcrumbItems = (label) => {
 	const items = [
@@ -45,6 +46,22 @@ export const getAddClientBreadcrumbItems = (label, routeId) => {
 	}
 
 	return items;
+};
+
+export const validateClient = (form) => {
+	if (!form.name || !form.address.lat || !form.address.lon || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
+		return Messages.Validation.requiredFields;
+	}
+
+	if (form.products.every(x => x.quantity === '')) {
+		return "El cliente debe tener al menos un producto asociado.";
+	}
+
+	if (form.products.some(x => x.quantity < 0)) {
+		return Messages.Validation.fieldGreaterThan('cantidad de un producto', 0);
+	}
+
+	return '';
 };
 
 export const createClient = async (form, onSuccess, onError, onFinally) => {

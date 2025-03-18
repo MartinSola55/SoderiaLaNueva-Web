@@ -168,12 +168,12 @@ export const buildGenericGetAllRq = (sort, currentPage, dateRange) => {
 
 export const validateInt = (value) => {
 	const parsedValue = parseInt(value);
-	return value === null || (!isNaN(parsedValue) && parsedValue);
+	return value === null || !isNaN(parsedValue);
 };
 
-export const validateFloat = (value) => {
+export const validateDecimal = (value) => {
 	const parsedValue = parseFloat(value);
-	return value === null || (!isNaN(parsedValue) && parsedValue);
+	return value === null || !isNaN(parsedValue);
 };
 
 const formatDate = (dateString) => {

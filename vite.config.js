@@ -13,4 +13,12 @@ export default defineConfig({
 			VITE_SECURE_LOCAL_STORAGE_PREFIX: 'soderia-la-nueva'
 		},
 	},
+	test: {
+		globals: true,
+		environment: 'jsdom',
+		coverage: {
+			all: false, // Only include files that have been imported in tests
+			include: ['src/*.{js,jsx,ts,tsx,vue}', 'src/*.test.jsx']
+		}
+	}
 })

@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router';
 import { Col, Row } from 'react-bootstrap';
 import { InitialFormStates } from '@app/InitialFormStates';
 import { ActionConfirmationModal, BreadCrumb, Toast } from '@components';
-import { Messages } from '@constants/Messages';
 import App from '@app/App';
 import { ClientInfo, ClientProductsTable } from '../cards';
-import { createClient, getBreadcrumbItems, getProducts } from '../Clients.helpers';
+import { createClient, getBreadcrumbItems, getProducts, validateClient } from '../Clients.helpers';
 
 const CreateClient = () => {
 	const navigate = useNavigate();
@@ -33,13 +32,10 @@ const CreateClient = () => {
 		if (submitting)
 			return;
 
-		if (!form.name || !form.address.lat || !form.address.lon || !form.phone || (form.hasInvoice && (!form.invoiceType || !form.taxCondition || !form.cuit))) {
-			Toast.warning(Messages.Validation.requiredFields);
-			return;
-		}
+		const errorMessage = validateClient(form);
 
-		if (form.products.every(x => x.quantity === '')) {
-			Toast.warning("El cliente debe tener al menos un producto asociado.");
+		if (errorMessage) {
+			Toast.warning(errorMessage);
 			return;
 		}
 

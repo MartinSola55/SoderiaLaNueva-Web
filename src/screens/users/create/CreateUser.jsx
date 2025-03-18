@@ -14,6 +14,7 @@ import { ClientsDebt } from '../cards/ClientsDebt';
 import { Roles } from '@constants/Roles';
 import { ClientStock } from '../cards/ClientStock';
 import { NonVisited } from '../cards/NonVisited';
+import { getBreadcrumbItems, validateUser } from '../User.helpers';
 
 const initialForm = InitialFormStates.User;
 
@@ -27,21 +28,6 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 	const [form, setForm] = useState(initialForm);
 	const [submitting, setSubmitting] = useState(false);
 	const [loading, setLoading] = useState(id ? true : false);
-
-	const breadcrumbItems = [
-		{
-			active: true,
-			label: isWatching ? 'Ver' : id ? 'Editar' : viewProfileDetails ? 'Mi perfil' : 'Nuevo',
-		},
-	];
-
-	if (!viewProfileDetails) {
-		breadcrumbItems.unshift({
-			active: false,
-			url: '/usuarios/list',
-			label: 'Usuarios',
-		});
-	}
 
 	// Get form data
 	useEffect(() => {
@@ -62,15 +48,10 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 	}, [id, navigate, viewProfileDetails]);
 
 	const handleSubmit = async () => {
-		if (submitting) return;
+		if (submitting)
+			return;
 
-		if (
-			!form.fullName ||
-			!form.email ||
-			(!form.password && !viewProfileDetails && !isEditing) ||
-			(!form.phoneNumber && !viewProfileDetails) ||
-			(!form.role && !viewProfileDetails)
-		) {
+		if (!validateUser(form, viewProfileDetails, isEditing)) {
 			Toast.warning(Messages.Validation.requiredFields);
 			return;
 		}
@@ -115,7 +96,7 @@ const CreateUser = ({ isWatching = false, isEditing = false, viewProfileDetails 
 	};
 	return (
 		<>
-			<BreadCrumb items={breadcrumbItems} title='Usuarios' />
+			<BreadCrumb items={getBreadcrumbItems(isWatching, id, viewProfileDetails)} title='Usuarios' />
 			<ChangePasswordModal ref={modalRef} />
 			<div>
 				<Col xs={11} className='container'>
