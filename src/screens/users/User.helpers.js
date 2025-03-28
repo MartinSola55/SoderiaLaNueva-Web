@@ -24,4 +24,6 @@ export const getBreadcrumbItems = (isWatching, id, viewProfileDetails) => {
 			label: 'Usuarios',
 		});
 	}
+
+	return breadcrumbItems;
 };
