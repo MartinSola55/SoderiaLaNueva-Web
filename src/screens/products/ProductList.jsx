@@ -86,7 +86,7 @@ const ProductList = () => {
 	};
 
 	const updateDeletedRow = (id) => {
-		setProducts((prevProducts) => prevProducts.map((x) => x.id === id ? { ...x, isActive: false } : x));
+		setProducts((prevProducts) => prevProducts.map((x) => x.id === id ? { ...x, isActive: !x.isActive } : x));
 	};
 
 	// Render
