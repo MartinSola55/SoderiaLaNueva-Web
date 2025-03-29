@@ -3,8 +3,9 @@ import { Col, Modal, Row } from 'react-bootstrap';
 import { Button, DealerDropdown, Input, Label, Loader, Toast } from '@components';
 import { Messages } from '@constants/Messages';
 import { InitialFormStates } from '@app/InitialFormStates';
-import API from '@app/API';
 import App from '@app/App';
+import { LocalStorage } from '@app/LocalStorage';
+import API from '@app/API';
 
 const initialExpense = InitialFormStates.Expense;
 
@@ -26,7 +27,7 @@ const ExpenseModal = forwardRef((_, ref) => {
 		setCallBacks({ onSuccess })
 		setExpense({
 			...expense || initialExpense,
-			dealerId: App.isDealer() ? App.getUser().userId : expense?.dealerId,
+			dealerId: App.isDealer() ? LocalStorage.getUserId() : expense?.dealerId,
 		});
 		setTitle(title);
 		setIsWatching(isWatching);
