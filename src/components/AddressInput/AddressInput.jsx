@@ -25,7 +25,8 @@ const AddressInput = ({
 		setLoading(true);
 		try {
 			const results = await fetchAddress(value);
-			setSuggestions(results);
+
+			setSuggestions(results.filter(x => x.address?.house_number));
 		} catch (error) {
 			Toast.error("Error fetching address");
 			setSuggestions([]);
@@ -40,6 +41,7 @@ const AddressInput = ({
 		setValue(value);
 		debouncedFetchSuggestions(value);
 	};
+
 
 	const handleSelectAddress = (suggestion) => {
 		setSuggestions([]);
