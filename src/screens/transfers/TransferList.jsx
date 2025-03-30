@@ -20,7 +20,8 @@ const TransferList = () => {
 					navigateTo={false}
 					showEdit={false}
 					showWatch={false}
-					entity='gasto'
+					entity='transferencia'
+					female
 					{...props} />
 		},
 	];
