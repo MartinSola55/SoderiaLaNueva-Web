@@ -6,13 +6,13 @@ import { CartsTransfersTypes } from "@constants/CartsTransfersTypes";
 import { Messages } from "@constants/Messages";
 
 export const getBreadcrumbItems = (label) => {
-	const items = [
+	const items = App.isAdmin() ? [
 		{
 			active: label ? false : true,
 			url: '/clientes/list',
 			label: 'Clientes',
 		}
-	];
+	] : [];
 
 	if (label) {
 		items.push({
