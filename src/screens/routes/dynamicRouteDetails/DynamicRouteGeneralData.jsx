@@ -56,9 +56,11 @@ export const DynamicRouteGeneralData = ({ form }) => {
 									description={
 										<>
 											<span className='me-2'>Recaudado en el día</span>
-											<Tooltip tooltipContent={getMoneyCollectedTooltip()}>
-												<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)' />
-											</Tooltip>
+											{geTotalCollectedByMethod(form).length > 0 && (
+												<Tooltip tooltipContent={getMoneyCollectedTooltip()}>
+													<FontAwesomeIcon icon={faInfoCircle} color='rgb(0, 158, 251)' />
+												</Tooltip>
+											)}
 										</>
 									}
 								/>

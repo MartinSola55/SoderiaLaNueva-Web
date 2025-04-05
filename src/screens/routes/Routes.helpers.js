@@ -95,6 +95,7 @@ export const geTotalCollectedByMethod = (form) => {
 
 export const getSoldProductsRows = (form) => {
 	const productSummary = {};
+
 	form.productTypes.forEach(product => {
 		productSummary[product.id] = {
 			name: product.name,
@@ -107,8 +108,8 @@ export const getSoldProductsRows = (form) => {
 	form.carts.forEach(cart => {
 		if (cart.status === CartStatuses.Confirmed) {
 			cart.products?.length && cart.products.forEach(product => {
-				productSummary[product.productTypeId].sold += product.soldQuantity + product.subscriptionQuantity;
-				productSummary[product.productTypeId].returned += product.returnedQuantity;
+				productSummary[product.productTypeId].sold += product.soldQuantity || 0 + product.subscriptionQuantity || 0;
+				productSummary[product.productTypeId].returned += product.returnedQuantity || 0;
 			});
 		}
 

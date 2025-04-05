@@ -63,6 +63,7 @@ export const confirmCart = (cart, onSuccess, onError) => {
 };
 
 export const updateAfterSubmit = (form, newCart, response) => {
+	// debugger;
 	const oldCart = form.carts.find(x => x.id === newCart.id);
 
 	oldCart.products.forEach(x => {
@@ -82,6 +83,7 @@ export const updateAfterSubmit = (form, newCart, response) => {
 
 			return ({
 				name: x.name,
+				price: x.price,
 				soldQuantity: 0,
 				returnedQuantity: subscriptionProduct?.quantity || 0,
 				productTypeId: x.productTypeId
