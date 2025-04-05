@@ -75,7 +75,7 @@ export const createClient = async (form, onSuccess, onError, onFinally) => {
 		hasInvoice: form.hasInvoice,
 		invoiceType: form.invoiceType,
 		taxCondition: form.taxCondition,
-		cuit: form.cuit,
+		cuit: form.cuit?.toString(),
 		products: form.products.filter(x => x.quantity !== '').map((x) => ({
 			productId: x.id,
 			quantity: x.quantity,

@@ -89,7 +89,7 @@ export const updateAfterSubmit = (form, newCart, response) => {
 		})
 	};
 	if (newCart.subscriptionProducts.length === 0) {
-		oldCart.client.subscriptionProducts = oldCart.client.subscriptionProducts.map(x => ({ ...x, quantity: 0}));
+		oldCart.client.subscriptionProducts = oldCart.client.subscriptionProducts.map(x => ({ ...x, quantity: 0 }));
 	};
 	oldCart.client.debt = response.clientDebt;
 	oldCart.status = CartStatuses.Confirmed;

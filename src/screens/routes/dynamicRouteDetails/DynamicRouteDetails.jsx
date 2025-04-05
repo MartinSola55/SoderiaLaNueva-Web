@@ -93,7 +93,7 @@ const DynamicRouteDetails = () => {
 			.catch(() => {
 				navigate('/notFound');
 			});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, navigate]);
 
 	//  Handlers
@@ -199,7 +199,6 @@ const DynamicRouteDetails = () => {
 
 		if (totalPaid !== getTotalSold(cart))
 			Toast.warning("Alerta, la cantidad total de dinero no coincide con el total");
-		//TODO, poner un modal capaz (Modal de Toaster)
 
 		setSubmitting(true);
 		confirmCart(
@@ -254,7 +253,7 @@ const DynamicRouteDetails = () => {
 
 	return (
 		<>
-			<MapModal ref={mapModalRef}/>
+			<MapModal ref={mapModalRef} />
 			<BreadCrumb items={breadcrumbItems} title='Planillas' />
 			<LastProductsModal ref={lastProductsRef} />
 			<ActionConfirmationModal ref={actionConfirmationRef} disabled={submitting} />
