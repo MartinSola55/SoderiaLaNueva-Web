@@ -195,7 +195,7 @@ export const DynamicRouteCartDetailCard = ({
 					)}
 				</Col>
 				<Col xs={12} md={2} className='d-flex flex-md-column justify-content-between align-items-end' >
-					<LastProductsButton onClick={() => onOpenLastProducts(cart.client.lastProducts)} />
+					<LastProductsButton onClick={() => onOpenLastProducts(cart.client.id)} />
 					{cart.status === CartStatuses.Pending && cart.client.products.length > 0 && (
 						<CartActionButton onOpenUpdateCartStatus={(action, message) => onOpenUpdateCartStatus(cart.id, action, message)} />
 					)}

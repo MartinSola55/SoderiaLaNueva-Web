@@ -19,7 +19,7 @@ export const CartDetailCard = ({
 							<h4>{cart.name}</h4>
 						</Col>
 						<Col xs={4} md={2} className='d-flex justify-content-center align-items-center p-0'>
-							<LastProductsButton onClick={() => onOpenLastProducts(cart.lastProducts)} />
+							<LastProductsButton onClick={() => onOpenLastProducts(cart.clientId)} />
 						</Col>
 						<Col xs={12} className='mt-1 p-0'>
 							<p className='mb-1'>Creado: {cart.createdAt}</p>

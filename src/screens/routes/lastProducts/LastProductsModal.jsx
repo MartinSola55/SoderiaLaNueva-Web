@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Modal, Row } from 'react-bootstrap';
 import { Button, Table } from '@components';
+import API from '@app/API';
 
 const LastProductsModal = forwardRef((_, ref) => {
 	const columns = [
@@ -35,10 +36,13 @@ const LastProductsModal = forwardRef((_, ref) => {
 		close,
 	}));
 
-	const open = (rows, onClose) => {
-		setRows(rows);
+	const open = (id, onClose) => {
 		setCallbacks({ onClose });
 		setIsVisible(true);
+		if (id)
+			API.get('client/GetLastProducts',{ clientId: id }).then((r) => {
+				setRows(r.data.lastProducts);
+			});
 	};
 
 	const close = () => {
