@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { Button, Card, DateRangePicker, Spinner, Table } from "@components";
+import { AddressFormatter, Button, Card, DateRangePicker, Spinner, Table } from "@components";
 import API from "@app/API";
 import { Dates } from "@app/Helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,8 +18,10 @@ export const NonVisited = ({ id }) => {
 		},
 		{
 			name: 'address',
-			text: 'Dirección'
-		},
+			text: 'Dirección',
+			textCenter: true,
+			formatter: AddressFormatter,
+		}
 	]
 
 	useEffect(() => {
@@ -56,7 +58,7 @@ export const NonVisited = ({ id }) => {
 								<DateRangePicker
 									value={dateRange ? [dateRange.from, dateRange.to] : null}
 									placeholder='Filtrar por fechas'
-									maxDate={new Date()}
+									// maxDate={new Date()}
 									onChange={handleRangeChange}
 								/>
 								<Button
