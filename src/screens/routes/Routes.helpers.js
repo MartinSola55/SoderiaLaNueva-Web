@@ -84,7 +84,7 @@ export const geTotalCollectedByMethod = (form) => {
 		cart.paymentMethods.map((x) => {
 			const index = totalCollectedByMethod.findIndex(y => y.name === x.name);
 			if (index === -1) {
-				totalCollectedByMethod.push(x);
+				totalCollectedByMethod.push({ ...x });
 			} else {
 				totalCollectedByMethod[index].amount += x.amount;
 			}
