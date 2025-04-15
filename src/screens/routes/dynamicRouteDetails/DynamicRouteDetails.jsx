@@ -47,8 +47,6 @@ const DynamicRouteDetails = () => {
 	const [cartStatuses, setCartStatuses] = useState([]);
 	const [cartPaymentStatuses, setCartPaymentStatuses] = useState([]);
 	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [dropOffPoints, setDropOffPoints] = useState([]);
-	const [visitedPoints, setVisitedPoints] = useState([]);
 
 	// Refs
 	const lastProductsRef = useRef(null);
@@ -69,31 +67,11 @@ const DynamicRouteDetails = () => {
 		API.get('route/getDynamicRoute', { id })
 			.then((r) => {
 				setForm(r.data);
-				const points = r.data.carts.map((cart) => {
-					const client = cart.client;
-					if (client && client.address.lat && client.address.lon) {
-						const isVisited = cart.status === CartStatuses.Confirmed;
-						const color = isVisited ? 'green' : 'yellow';
-						return {
-							id: cart.id,
-							lng: client.address.lon,
-							lat: client.address.lat,
-							color,
-							status: cart.status,
-							clientName: client.name,
-							isVisited: isVisited,
-						};
-					}
-					return null;
-				}).filter(point => point !== null);
-				setVisitedPoints(() => points.filter(point => point.isVisited));
-				setDropOffPoints(() => points.filter(point => !point.isVisited));
 				setLoading(false);
 			})
 			.catch(() => {
 				navigate('/notFound');
 			});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, navigate]);
 
 	//  Handlers
@@ -244,9 +222,6 @@ const DynamicRouteDetails = () => {
 		}).filter(point => point !== null);
 		const visited = points.filter(point => point.isVisited);
 		const dropOff = points.filter(point => !point.isVisited);
-
-		setVisitedPoints(visited);
-		setDropOffPoints(dropOff);
 
 		mapModalRef.current.open(dropOff, visited);
 	};

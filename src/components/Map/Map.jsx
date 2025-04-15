@@ -9,7 +9,9 @@ const Map = ({
 	dropOffPoints = [],
 	visitedPoints = []
 }) => {
-	const initialLocation = useMemo(() => [-68.10348998645422, -38.95008965955272], []);
+	// const initialLocation = useMemo(() => [-68.10348998645422, -38.95008965955272], []
+	// UTN
+	const initialLocation = useMemo(() => [-60.6438082765585, -32.954323094788634], []);
 	const mapRef = useRef(null);
 
 	useEffect(() => {

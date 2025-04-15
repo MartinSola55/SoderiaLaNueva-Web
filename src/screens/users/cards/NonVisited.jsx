@@ -58,7 +58,7 @@ export const NonVisited = ({ id }) => {
 								<DateRangePicker
 									value={dateRange ? [dateRange.from, dateRange.to] : null}
 									placeholder='Filtrar por fechas'
-									// maxDate={new Date()}
+									maxDate={new Date()}
 									onChange={handleRangeChange}
 								/>
 								<Button

@@ -44,7 +44,7 @@ export const PaymentMethodsTable = ({
 			const formPaymentMethod = form.paymentMethods?.find(x => x.paymentMethodId === row.id);
 			if (formPaymentMethod)
 				return form.paymentMethods.map(x => x.paymentMethodId === row.id ? { ...x, amount: value } : x);
-			return [...form.paymentMethods, {paymentMethodId: row.id, amount: value}]
+			return [...form.paymentMethods, { paymentMethodId: row.id, amount: value }]
 		};
 
 		const newForm = {

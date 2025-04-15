@@ -64,14 +64,14 @@ export const getAllDealers = (currentPage, onSuccess) => {
 // Dynamic Route General Data
 export const getTotalDebt = (form) => {
 	let totalDebt = 0;
-	form.carts.forEach((cart) => (totalDebt = totalDebt + cart.client.debt));
+	form.carts.map((cart) => (totalDebt = totalDebt + cart.client.debt));
 	return totalDebt;
 };
 
 export const getMoneyCollected = (form) => {
 	let total = 0;
-	form.carts.filter(x => x.status === CartStatuses.Confirmed).forEach((cart) => {
-		cart.paymentMethods.forEach((pm) => {
+	form.carts.filter(x => x.status === CartStatuses.Confirmed).map((cart) => {
+		cart.paymentMethods.map((pm) => {
 			total = total + pm.amount
 		})
 	});
@@ -80,8 +80,8 @@ export const getMoneyCollected = (form) => {
 
 export const geTotalCollectedByMethod = (form) => {
 	const totalCollectedByMethod = [];
-	form.carts.filter(x => x.status === CartStatuses.Confirmed).forEach((cart) => {
-		cart.paymentMethods.forEach((x) => {
+	form.carts.filter(x => x.status === CartStatuses.Confirmed).map((cart) => {
+		cart.paymentMethods.map((x) => {
 			const index = totalCollectedByMethod.findIndex(y => y.name === x.name);
 			if (index === -1) {
 				totalCollectedByMethod.push(x);
@@ -96,7 +96,7 @@ export const geTotalCollectedByMethod = (form) => {
 export const getSoldProductsRows = (form) => {
 	const productSummary = {};
 
-	form.productTypes.forEach(product => {
+	form.productTypes.map(product => {
 		productSummary[product.id] = {
 			name: product.name,
 			sold: 0,
@@ -105,15 +105,15 @@ export const getSoldProductsRows = (form) => {
 		};
 	});
 
-	form.carts.forEach(cart => {
+	form.carts.map(cart => {
 		if (cart.status === CartStatuses.Confirmed) {
-			cart.products?.length && cart.products.forEach(product => {
+			cart.products?.length && cart.products.map(product => {
 				productSummary[product.productTypeId].sold += product.soldQuantity || 0 + product.subscriptionQuantity || 0;
 				productSummary[product.productTypeId].returned += product.returnedQuantity || 0;
 			});
 		}
 
-		cart.client.products?.length && cart.client.products.forEach(product => {
+		cart.client.products?.length && cart.client.products.map(product => {
 			productSummary[product.productTypeId].stock += product.stock;
 		});
 	});
@@ -244,7 +244,7 @@ export const handleChangePaymentMethods = (props, value, paymentMethods, setPaym
 
 export const getTotalCart = (id, cartProductRows = []) => {
 	let total = 0;
-	cartProductRows.find(x => x.id === id)?.products.filter(x => !Number.isNaN(x.quantity)).forEach((product) => (total = total + product.quantity * product.price));
+	cartProductRows.find(x => x.id === id)?.products.filter(x => !Number.isNaN(x.quantity)).map((product) => (total = total + product.quantity * product.price));
 	return total;
 };
 

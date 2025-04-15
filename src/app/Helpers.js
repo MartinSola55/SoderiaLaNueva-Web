@@ -48,7 +48,7 @@ export const formatProducts = (prod, disabled = false) => {
 export const formatCartProducts = (prod, cartId) => {
 	return prod?.map((p) => ({
 		id: p.productId,
-		name: p.name,
+		name: `${p.name} - ${formatCurrency(p.price)}`,
 		quantity: "",
 		price: parseFloat(p.price),
 		cartId
