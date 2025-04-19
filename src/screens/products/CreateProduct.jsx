@@ -66,7 +66,7 @@ const CreateProduct = ({ isWatching = false }) => {
 
 	return (
 		<>
-			<BreadCrumb items={getBreadcrumbItems(id ? 'Editar' : 'Nuevo')} title='Productos' />
+			<BreadCrumb items={getBreadcrumbItems(id ? (isWatching ? 'Ver' : 'Editar') : 'Nuevo')} title='Productos' />
 			<div>
 				<Col xs={11} className='container'>
 					<Card
