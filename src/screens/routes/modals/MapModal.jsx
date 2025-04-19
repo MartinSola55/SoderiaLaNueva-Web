@@ -40,7 +40,7 @@ const MapModal = forwardRef((_, ref) => {
 	return (
 		<Modal
 			dialogClassName='modal-dialog-centered'
-			size='lg'
+			size='xl'
 			show={isVisible}
 			onHide={handleClose}
 			backdrop='static'

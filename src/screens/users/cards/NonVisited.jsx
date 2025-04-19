@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { Button, Card, DateRangePicker, Spinner, Table } from "@components";
+import { AddressFormatter, Button, Card, DateRangePicker, Spinner, Table } from "@components";
 import API from "@app/API";
 import { Dates } from "@app/Helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,8 +18,10 @@ export const NonVisited = ({ id }) => {
 		},
 		{
 			name: 'address',
-			text: 'Dirección'
-		},
+			text: 'Dirección',
+			textCenter: true,
+			formatter: AddressFormatter,
+		}
 	]
 
 	useEffect(() => {
@@ -72,7 +74,7 @@ export const NonVisited = ({ id }) => {
 						{data?.clients?.length > 0 && (
 							<p className="mb-0 mt-1">
 								{`No se han bajado productos a ${data.nonVisited} de los ${data.total} clientes del repartidor entre las fechas seleccionadas.
-								Esto representa un total del ${data.nonVisited * 100 / data.total}% de los clientes.`}
+								Esto representa un total del ${(data.nonVisited * 100 / data.total).toFixed(2)}% de los clientes.`}
 							</p>
 						)}
 					</>

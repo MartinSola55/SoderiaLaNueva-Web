@@ -63,10 +63,9 @@ export const confirmCart = (cart, onSuccess, onError) => {
 };
 
 export const updateAfterSubmit = (form, newCart, response) => {
-	// debugger;
 	const oldCart = form.carts.find(x => x.id === newCart.id);
 
-	oldCart.products.forEach(x => {
+	oldCart.products.map(x => {
 		const product = newCart.products.find(y => y.productTypeId === x.productTypeId);
 		const subscriptionProduct = newCart.subscriptionProducts.find(y => y.productTypeId === x.productTypeId);
 		if (product) {
